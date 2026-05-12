@@ -1,0 +1,44 @@
+[
+  {
+    "id": "pochette-fid-elle-001",
+    "categorie": "Hygiène féminine",
+    "sousCategorie": "Pochette menstruelle",
+    "nom": "Pochette Fid'Elle - Rouge Carroté",
+    "description": "La Pochette Fid'Elle a été conçue avec soin pour accompagner les femmes et les adolescentes dans tous les moments du cycle menstruel.\n\nPratique, élégante et discrète, elle permet de se sentir en confiance, organisée et prête à toute situation.\n\n• Deux compartiments refermables pour bien ranger les essentiels\n• Un espace discret sur le dessus, idéal pour y glisser les protège-dessous\n• Une pochette intérieure imperméable à fermeture éclair, parfaite pour une culotte propre ou à laver en toute discrétion\n• Format compact et léger, qui se glisse facilement dans un sac à main, un sac à dos ou une valise\n\nCe qu'on peut y mettre : Serviettes hygiéniques, protège-dessous, coupe menstruelle, lingettes intimes, petit contenant de bien-être (pour soulager les inconforts), ou tout autre article personnel.\n\nCette trousse forme un ensemble complet et discret, pensé pour rendre le quotidien plus simple, plus pratique et plus serein.\n\nUne alliée du quotidien pour toutes celles qui veulent se sentir prêtes, où qu'elles soient.\n\nLa Pochette imperméable est comprise dans le prix.",
+    "prix": 38.00,
+    "devise": "CAD",
+    "quantiteDisponible": 2,
+    "surCommande": true,
+    "delaisFabrication": "5 à 7 jours ouvrables",
+    "options": {
+      "couleurs": ["Rouge carroté"],
+      "tailles": []
+    },
+    "photos": [
+      "/images/pochette-fidelle/rouge-carrote/photo-01.jpg",
+      "/images/pochette-fidelle/rouge-carrote/photo-02.jpg"
+    ],
+    "etiquettes": ["pochette", "fid'elle", "carroté", "rouge", "menstruelle", "hygiène"]
+  },
+  {
+    "id": "pochette-fid-elle-002",
+    "categorie": "Hygiène féminine",
+    "sousCategorie": "Pochette menstruelle",
+    "nom": "Pochette Fid'Elle - Rouge Fleuri",
+    "description": "La Pochette Fid'Elle a été conçue avec soin pour accompagner les femmes et les adolescentes dans tous les moments du cycle menstruel.\n\nPratique, élégante et discrète, elle permet de se sentir en confiance, organisée et prête à toute situation.\n\n• Deux compartiments refermables pour bien ranger les essentiels\n• Un espace discret sur le dessus, idéal pour y glisser les protège-dessous\n• Une pochette intérieure imperméable à fermeture éclair, parfaite pour une culotte propre ou à laver en toute discrétion\n• Format compact et léger, qui se glisse facilement dans un sac à main, un sac à dos ou une valise\n\nCe qu'on peut y mettre : Serviettes hygiéniques, protège-dessous, coupe menstruelle, lingettes intimes, petit contenant de bien-être (pour soulager les inconforts), ou tout autre article personnel.\n\nCette trousse forme un ensemble complet et discret, pensé pour rendre le quotidien plus simple, plus pratique et plus serein.\n\nUne alliée du quotidien pour toutes celles qui veulent se sentir prêtes, où qu'elles soient.\n\nLa Pochette imperméable est comprise dans le prix.",
+    "prix": 38.00,
+    "devise": "CAD",
+    "quantiteDisponible": 1,
+    "surCommande": true,
+    "delaisFabrication": "5 à 7 jours ouvrables",
+    "options": {
+      "couleurs": ["Rouge fleuri"],
+      "tailles": []
+    },
+    "photos": [
+      "/images/pochette-fidelle/rouge-fleuri/photo-01.jpg",
+      "/images/pochette-fidelle/rouge-fleuri/photo-02.jpg"
+    ],
+    "etiquettes": ["pochette", "fid'elle", "fleuri", "rouge", "menstruelle", "hygiène"]
+  }
+]

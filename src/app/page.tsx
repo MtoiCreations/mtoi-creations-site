@@ -1,101 +1,190 @@
 import Image from "next/image";
+import Link from "next/link";
+import { categories } from "@/data/categories";
+import produits from "@/data/produits.json";
+import { Produit } from "@/types";
+import ProductCard from "@/components/ProductCard";
+import CategoryCard from "@/components/CategoryCard";
+import Button from "@/components/Button";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const produitsTyped = produits as Produit[];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <>
+      {/* Hero Section */}
+      <section className="relative min-h-[80vh] flex items-center bg-cream">
+        <div className="absolute inset-0 overflow-hidden">
+          <Image
+            src="/images/hero-bg.jpg"
+            alt="Créations artisanales MToi"
+            fill
+            className="object-cover opacity-20"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/80 to-transparent" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <div className="container-custom relative z-10">
+          <div className="max-w-2xl">
+            <p className="font-display text-secondary tracking-widest uppercase mb-4 animate-fade-in">
+              Créations artisanales
+            </p>
+            <h1 className="heading-1 text-primary mb-6 animate-slide-up">
+              Fait avec soin
+              <br />
+              <span className="text-secondary">et passion</span>
+            </h1>
+            <p className="body-large mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+              Des pièces uniques et durables pour accompagner votre quotidien.
+              Chaque création est pensée pour allier élégance, praticité et authenticité.
+            </p>
+            <div className="flex flex-wrap gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+              <Link href="/boutique">
+                <Button size="lg">Découvrir la boutique</Button>
+              </Link>
+              <Link href="/contact">
+                <Button variant="outline" size="lg">Me contacter</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Image décorative */}
+        <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-1/2">
+          <div className="relative h-full">
+            <Image
+              src="/images/hero-product.png"
+              alt="Pochette Fid'Elle"
+              fill
+              className="object-contain object-right"
+              priority
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Valeurs */}
+      <section className="bg-cream-light py-8 border-y border-cream-dark">
+        <div className="container-custom">
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-center">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">✨</span>
+              <span className="font-display text-primary">Authenticité</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">💎</span>
+              <span className="font-display text-primary">Qualité</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🌿</span>
+              <span className="font-display text-primary">Simplicité</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🇨🇦</span>
+              <span className="font-display text-primary">Fait au Québec</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Catégories */}
+      <section className="section-padding bg-cream-light">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <h2 className="heading-2 text-primary mb-4">Nos catégories</h2>
+            <p className="body-large max-w-2xl mx-auto">
+              Explorez nos créations artisanales, conçues avec amour pour répondre à vos besoins quotidiens.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {categories.map((categorie) => (
+              <CategoryCard key={categorie.id} categorie={categorie} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Nouveautés / Produits en vedette */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <div>
+              <h2 className="heading-2 text-primary mb-4">Nos créations</h2>
+              <p className="body-large max-w-xl">
+                Découvrez nos dernières pièces, fabriquées avec soin dans notre atelier.
+              </p>
+            </div>
+            <Link href="/boutique" className="mt-4 md:mt-0">
+              <Button variant="outline">Voir tout</Button>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {produitsTyped.slice(0, 6).map((produit) => (
+              <ProductCard key={produit.id} produit={produit} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section À propos */}
+      <section className="section-padding bg-cream">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="relative aspect-square rounded-image overflow-hidden">
+              <Image
+                src="/images/atelier.jpg"
+                alt="Atelier MToi Créations"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div>
+              <p className="font-display text-secondary tracking-widest uppercase mb-4">
+                Notre histoire
+              </p>
+              <h2 className="heading-2 text-primary mb-6">
+                Derrière chaque création, il y a une passion
+              </h2>
+              <div className="space-y-4 text-text-secondary">
+                <p>
+                  MToi Créations est née d&apos;une passion pour la couture et du désir de créer
+                  des pièces uniques qui accompagnent les femmes dans leur quotidien.
+                </p>
+                <p>
+                  Chaque produit est conçu et fabriqué avec soin dans mon atelier au Québec,
+                  en utilisant des matériaux de qualité soigneusement sélectionnés.
+                </p>
+                <p>
+                  Mon objectif : vous offrir des créations pratiques, élégantes et durables,
+                  qui reflètent votre personnalité et répondent à vos besoins.
+                </p>
+              </div>
+              <div className="mt-8">
+                <Link href="/contact">
+                  <Button variant="secondary">En savoir plus</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Témoignage / Citation */}
+      <section className="section-padding bg-secondary text-white text-center">
+        <div className="container-custom max-w-3xl">
+          <blockquote className="font-serif text-2xl md:text-3xl lg:text-4xl italic mb-6">
+            &ldquo;Une alliée du quotidien pour toutes celles qui veulent se sentir prêtes,
+            où qu&apos;elles soient.&rdquo;
+          </blockquote>
+          <p className="font-display text-accent tracking-widest uppercase">
+            MToi Créations
+          </p>
+        </div>
+      </section>
+    </>
   );
 }
