@@ -204,7 +204,7 @@ export default function ContactPage() {
                     <div>
                       <p className="font-medium text-primary">Email</p>
                       <a
-                        href="mailto:contact@mtoicreations.ca"
+                        href="mailto:mtoicreations@hotmail.com"
                         className="text-text-secondary hover:text-secondary transition-colors"
                       >
                         contact@mtoicreations.ca

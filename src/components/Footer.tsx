@@ -64,7 +64,7 @@ export default function Footer() {
             <ul className="space-y-2 text-cream/80">
               <li>
                 <a
-                  href="mailto:contact@mtoicreations.ca"
+                  href="mailto:mtoicreations@hotmail.com"
                   className="hover:text-accent transition-colors"
                 >
                   contact@mtoicreations.ca
@@ -72,7 +72,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://facebook.com/mtoicreations"
+                  href="https://www.facebook.com/849299194923840"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-accent transition-colors"
