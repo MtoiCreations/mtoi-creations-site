@@ -67,7 +67,7 @@ export default function Footer() {
                   href="mailto:mtoicreations@hotmail.com"
                   className="hover:text-accent transition-colors"
                 >
-                  contact@mtoicreations.ca
+                  mtoicreations@hotmail.com
                 </a>
               </li>
               <li>

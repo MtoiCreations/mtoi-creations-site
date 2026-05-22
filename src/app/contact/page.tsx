@@ -207,7 +207,7 @@ export default function ContactPage() {
                         href="mailto:mtoicreations@hotmail.com"
                         className="text-text-secondary hover:text-secondary transition-colors"
                       >
-                        contact@mtoicreations.ca
+                        mtoicreations@hotmail.com
                       </a>
                     </div>
                   </div>
@@ -217,7 +217,7 @@ export default function ContactPage() {
                     <div>
                       <p className="font-medium text-primary">Facebook</p>
                       <a
-                        href="https://facebook.com/mtoicreations"
+                        href="https://www.facebook.com/849299194923840"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-text-secondary hover:text-secondary transition-colors"
