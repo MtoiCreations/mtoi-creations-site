@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { CartItem, Produit } from "@/types";
 
 interface CartStore {
@@ -13,6 +13,12 @@ interface CartStore {
   getTotal: () => number;
   getItemCount: () => number;
 }
+
+const noopStorage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+};
 
 export const useCartStore = create<CartStore>()(
   persist(
@@ -88,6 +94,9 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "mtoi-cart",
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined" ? localStorage : noopStorage
+      ),
     }
   )
 );
