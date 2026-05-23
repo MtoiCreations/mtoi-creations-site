@@ -32,6 +32,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
+  // Vérifier que Supabase est configuré
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return NextResponse.json({ error: "Supabase non configuré" }, { status: 500 });
+  }
+
   try {
     const body = await request.json();
 
@@ -63,7 +68,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Erreur POST produit:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
+    return NextResponse.json({ error: `Erreur: ${errorMessage}` }, { status: 500 });
   }
 }
 
