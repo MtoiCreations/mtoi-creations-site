@@ -63,13 +63,21 @@ export async function POST(request: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      return NextResponse.json({
+        error: `Supabase: ${error.message}`,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      }, { status: 500 });
+    }
 
     return NextResponse.json(data);
   } catch (error) {
     console.error("Erreur POST produit:", error);
-    const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
-    return NextResponse.json({ error: `Erreur: ${errorMessage}` }, { status: 500 });
+    return NextResponse.json({
+      error: `Exception: ${JSON.stringify(error)}`
+    }, { status: 500 });
   }
 }
 
