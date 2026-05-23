@@ -1,31 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, notFound, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import produits from "@/data/produits.json";
 import { Produit } from "@/types";
 import { useCartStore } from "@/lib/store";
 import { formatPrice, getStatutBadge } from "@/lib/utils";
 import ProductGallery from "@/components/ProductGallery";
 import QuantitySelector from "@/components/QuantitySelector";
 import Button from "@/components/Button";
-import { ShoppingBag, Zap, Clock, Check } from "lucide-react";
+import { ShoppingBag, Zap, Clock, Check, Loader2 } from "lucide-react";
 
 export default function ProduitPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
 
-  const produitsTyped = produits as Produit[];
-  const produit = produitsTyped.find((p) => p.id === id);
-
+  const [produit, setProduit] = useState<Produit | null>(null);
+  const [loading, setLoading] = useState(true);
   const [quantite, setQuantite] = useState(1);
   const [couleurSelectionnee, setCouleurSelectionnee] = useState<string>("");
   const [tailleSelectionnee, setTailleSelectionnee] = useState<string>("");
   const [ajouteAuPanier, setAjouteAuPanier] = useState(false);
 
   const addItem = useCartStore((state) => state.addItem);
+
+  useEffect(() => {
+    async function loadProduit() {
+      try {
+        const res = await fetch("/api/produits");
+        if (res.ok) {
+          const produits: Produit[] = await res.json();
+          const found = produits.find((p) => p.id === id);
+          setProduit(found || null);
+        }
+      } catch (err) {
+        console.error("Erreur chargement produit:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProduit();
+  }, [id]);
 
   useEffect(() => {
     if (produit) {
@@ -38,8 +54,23 @@ export default function ProduitPage() {
     }
   }, [produit]);
 
+  if (loading) {
+    return (
+      <div className="section-padding bg-cream-light min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-secondary" />
+      </div>
+    );
+  }
+
   if (!produit) {
-    notFound();
+    return (
+      <div className="section-padding bg-cream-light min-h-screen flex flex-col items-center justify-center">
+        <h1 className="heading-2 text-primary mb-4">Produit non trouvé</h1>
+        <Link href="/boutique">
+          <Button>Retour à la boutique</Button>
+        </Link>
+      </div>
+    );
   }
 
   const statut = getStatutBadge(produit.quantiteDisponible, produit.surCommande);

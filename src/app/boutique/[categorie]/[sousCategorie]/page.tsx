@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import produits from "@/data/produits.json";
-import { Produit } from "@/types";
+import { getProduits } from "@/lib/supabase";
 import ProductCard from "@/components/ProductCard";
 import { categories, getSousCategorieBySlug, getCategorieBySlug } from "@/data/categories";
+
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ categorie: string; sousCategorie: string }>;
@@ -51,7 +52,7 @@ export default async function SousCategoriePage({ params }: PageProps) {
 
   const { sousCategorie } = result;
 
-  const produitsTyped = produits as Produit[];
+  const produitsTyped = await getProduits();
   const produitsFiltres = produitsTyped.filter(
     (p) =>
       p.categorie.toLowerCase() === categorie.nom.toLowerCase() &&

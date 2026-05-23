@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import produits from "@/data/produits.json";
-import { Produit } from "@/types";
+import { getProduits } from "@/lib/supabase";
 import ProductCard from "@/components/ProductCard";
 import { categories } from "@/data/categories";
 import Link from "next/link";
@@ -10,13 +9,15 @@ export const metadata: Metadata = {
   description: "Découvrez toutes nos créations artisanales : pochettes, accessoires d'hygiène féminine et soins personnalisés.",
 };
 
+export const revalidate = 60; // Recharger les produits toutes les 60 secondes
+
 interface PageProps {
   searchParams: Promise<{ recherche?: string; categorie?: string }>;
 }
 
 export default async function BoutiquePage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const produitsTyped = produits as Produit[];
+  const produitsTyped = await getProduits();
 
   let produitsFiltres = produitsTyped;
 

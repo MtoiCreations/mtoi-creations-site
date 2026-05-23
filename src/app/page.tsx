@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { categories } from "@/data/categories";
-import produits from "@/data/produits.json";
-import { Produit } from "@/types";
+import { getProduits } from "@/lib/supabase";
 import ProductCard from "@/components/ProductCard";
 import CategoryCard from "@/components/CategoryCard";
 import Button from "@/components/Button";
 
-export default function Home() {
-  const produitsTyped = produits as Produit[];
+export const revalidate = 60;
+
+export default async function Home() {
+  const produitsTyped = await getProduits();
 
   return (
     <>
