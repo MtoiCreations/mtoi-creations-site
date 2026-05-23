@@ -10,7 +10,6 @@ import {
   Image as ImageIcon,
   X,
   Plus,
-  GripVertical,
 } from "lucide-react";
 import { categories } from "@/data/categories";
 
