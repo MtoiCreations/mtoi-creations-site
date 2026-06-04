@@ -127,9 +127,13 @@ export default function VariantesPage() {
       if (res.ok) {
         const data = await res.json();
         return data.url;
+      } else {
+        const errData = await res.json();
+        setError(`Erreur upload: ${errData.error || res.status}`);
       }
     } catch (err) {
       console.error("Erreur upload:", err);
+      setError(`Erreur upload: ${String(err)}`);
     }
     return null;
   };
