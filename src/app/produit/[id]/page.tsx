@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Produit } from "@/types";
+import Image from "next/image";
+import { Produit, Variante, AccessoireVariante } from "@/types";
 import { useCartStore } from "@/lib/store";
 import { formatPrice, getStatutBadge } from "@/lib/utils";
-import ProductGallery from "@/components/ProductGallery";
 import QuantitySelector from "@/components/QuantitySelector";
 import Button from "@/components/Button";
-import { ShoppingBag, Zap, Clock, Check, Loader2 } from "lucide-react";
+import { ShoppingBag, Zap, Clock, Check, Loader2, X, AlertCircle } from "lucide-react";
 
 export default function ProduitPage() {
   const params = useParams();
@@ -19,11 +19,46 @@ export default function ProduitPage() {
   const [produit, setProduit] = useState<Produit | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantite, setQuantite] = useState(1);
+
+  // Sélections
+  const [varianteSelectionnee, setVarianteSelectionnee] = useState<Variante | null>(null);
+  const [accessoiresSelectionnes, setAccessoiresSelectionnes] = useState<Map<string, AccessoireVariante>>(new Map());
+
+  // Anciennes options (rétrocompatibilité)
   const [couleurSelectionnee, setCouleurSelectionnee] = useState<string>("");
   const [tailleSelectionnee, setTailleSelectionnee] = useState<string>("");
+
+  // États UI
   const [ajouteAuPanier, setAjouteAuPanier] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const addItem = useCartStore((state) => state.addItem);
+
+  // Vérifie si toutes les sélections obligatoires sont faites
+  const hasVariantes = produit?.variantes && produit.variantes.length > 0;
+  const hasAccessoires = produit?.accessoires && produit.accessoires.length > 0;
+
+  const allSelectionsComplete = () => {
+    // Si pas de variantes, on vérifie les anciennes options de couleur
+    if (!hasVariantes && produit?.options.couleurs.length && produit.options.couleurs[0]) {
+      if (!couleurSelectionnee) return false;
+    }
+
+    // Si variantes, une doit être sélectionnée
+    if (hasVariantes && !varianteSelectionnee) return false;
+
+    // Tous les accessoires obligatoires doivent avoir une variante sélectionnée
+    if (hasAccessoires) {
+      for (const acc of produit!.accessoires!) {
+        if (acc.obligatoire && !accessoiresSelectionnes.has(acc.id)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
 
   useEffect(() => {
     async function loadProduit() {
@@ -45,6 +80,7 @@ export default function ProduitPage() {
 
   useEffect(() => {
     if (produit) {
+      // Anciennes options (rétrocompatibilité)
       if (produit.options.couleurs.length > 0 && produit.options.couleurs[0]) {
         setCouleurSelectionnee(produit.options.couleurs[0]);
       }
@@ -83,15 +119,70 @@ export default function ProduitPage() {
     epuise: "bg-gray-100 text-gray-500 border-gray-200",
   };
 
-  const handleAjouterAuPanier = () => {
-    addItem(produit, quantite, couleurSelectionnee || undefined, tailleSelectionnee || undefined);
+  // Photo principale à afficher
+  const getMainPhoto = () => {
+    if (varianteSelectionnee) {
+      return varianteSelectionnee.photo;
+    }
+    return produit.photos[0] || "/images/placeholder.jpg";
+  };
+
+  const handleAjouterClick = () => {
+    if (!allSelectionsComplete()) {
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmerAjout = () => {
+    const accessoiresArray = Array.from(accessoiresSelectionnes.entries()).map(([accId, variante]) => {
+      const accessoire = produit.accessoires?.find(a => a.id === accId);
+      return { accessoire: accessoire!, variante };
+    });
+
+    addItem(
+      produit,
+      quantite,
+      couleurSelectionnee || undefined,
+      tailleSelectionnee || undefined,
+      varianteSelectionnee || undefined,
+      accessoiresArray.length > 0 ? accessoiresArray : undefined
+    );
+
+    setShowConfirmation(false);
     setAjouteAuPanier(true);
     setTimeout(() => setAjouteAuPanier(false), 2000);
   };
 
   const handleCommanderMaintenant = () => {
-    addItem(produit, quantite, couleurSelectionnee || undefined, tailleSelectionnee || undefined);
+    if (!allSelectionsComplete()) {
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
+
+    const accessoiresArray = Array.from(accessoiresSelectionnes.entries()).map(([accId, variante]) => {
+      const accessoire = produit.accessoires?.find(a => a.id === accId);
+      return { accessoire: accessoire!, variante };
+    });
+
+    addItem(
+      produit,
+      quantite,
+      couleurSelectionnee || undefined,
+      tailleSelectionnee || undefined,
+      varianteSelectionnee || undefined,
+      accessoiresArray.length > 0 ? accessoiresArray : undefined
+    );
     router.push("/panier");
+  };
+
+  const handleSelectAccessoireVariante = (accessoireId: string, variante: AccessoireVariante) => {
+    const newMap = new Map(accessoiresSelectionnes);
+    newMap.set(accessoireId, variante);
+    setAccessoiresSelectionnes(newMap);
   };
 
   return (
@@ -119,7 +210,48 @@ export default function ProduitPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Galerie photos */}
           <div>
-            <ProductGallery photos={produit.photos} nomProduit={produit.nom} />
+            {/* Photo principale */}
+            <div className="relative aspect-square overflow-hidden rounded-image bg-cream mb-4">
+              <Image
+                src={getMainPhoto()}
+                alt={produit.nom}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
+            </div>
+
+            {/* Sélecteur de variantes (carrés avec photos) */}
+            {hasVariantes && (
+              <div className="mb-6">
+                <label className="block font-display text-primary mb-3">
+                  Couleur / Motif : <span className="font-normal text-text-secondary">{varianteSelectionnee?.nom || "Aucune sélection"}</span>
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {produit.variantes!.map((variante) => (
+                    <button
+                      key={variante.id}
+                      onClick={() => setVarianteSelectionnee(variante)}
+                      className={`relative w-16 h-16 rounded-lg overflow-hidden transition-all ${
+                        varianteSelectionnee?.id === variante.id
+                          ? "ring-4 ring-secondary ring-offset-2"
+                          : "ring-1 ring-cream-dark hover:ring-secondary"
+                      }`}
+                      title={variante.nom}
+                    >
+                      <Image
+                        src={variante.photo}
+                        alt={variante.nom}
+                        fill
+                        className="object-cover"
+                        sizes="64px"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Informations produit */}
@@ -158,8 +290,8 @@ export default function ProduitPage() {
               </div>
             )}
 
-            {/* Sélecteur de couleur */}
-            {produit.options.couleurs.length > 0 && produit.options.couleurs[0] && (
+            {/* Anciennes options de couleur (rétrocompatibilité) */}
+            {!hasVariantes && produit.options.couleurs.length > 0 && produit.options.couleurs[0] && (
               <div className="mb-6">
                 <label className="block font-display text-primary mb-3">
                   Couleur : <span className="font-normal text-text-secondary">{couleurSelectionnee}</span>
@@ -171,7 +303,7 @@ export default function ProduitPage() {
                       onClick={() => setCouleurSelectionnee(couleur)}
                       className={`px-4 py-2 rounded-button border transition-all ${
                         couleurSelectionnee === couleur
-                          ? "border-secondary bg-secondary/10 text-secondary"
+                          ? "border-secondary bg-secondary/10 text-secondary font-medium"
                           : "border-cream-dark bg-white text-primary hover:border-secondary"
                       }`}
                     >
@@ -195,7 +327,7 @@ export default function ProduitPage() {
                       onClick={() => setTailleSelectionnee(taille)}
                       className={`px-4 py-2 rounded-button border transition-all ${
                         tailleSelectionnee === taille
-                          ? "border-secondary bg-secondary/10 text-secondary"
+                          ? "border-secondary bg-secondary/10 text-secondary font-medium"
                           : "border-cream-dark bg-white text-primary hover:border-secondary"
                       }`}
                     >
@@ -203,6 +335,68 @@ export default function ProduitPage() {
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Accessoires inclus */}
+            {hasAccessoires && (
+              <div className="mb-6 space-y-6">
+                {produit.accessoires!.map((accessoire) => (
+                  <div key={accessoire.id} className="p-4 bg-cream rounded-card">
+                    <label className="block font-display text-primary mb-3">
+                      {accessoire.nom}
+                      {accessoire.obligatoire && <span className="text-red-500 ml-1">*</span>}
+                      {accessoiresSelectionnes.has(accessoire.id) && (
+                        <span className="font-normal text-text-secondary ml-2">
+                          — {accessoiresSelectionnes.get(accessoire.id)?.nom}
+                        </span>
+                      )}
+                    </label>
+                    {accessoire.description && (
+                      <p className="text-sm text-text-secondary mb-3">{accessoire.description}</p>
+                    )}
+                    <div className="flex flex-wrap gap-3">
+                      {accessoire.variantes.map((variante) => {
+                        const isSelected = accessoiresSelectionnes.get(accessoire.id)?.id === variante.id;
+                        return (
+                          <button
+                            key={variante.id}
+                            onClick={() => handleSelectAccessoireVariante(accessoire.id, variante)}
+                            className={`relative w-20 h-20 rounded-lg overflow-hidden transition-all ${
+                              isSelected
+                                ? "ring-4 ring-secondary ring-offset-2"
+                                : "ring-1 ring-cream-dark hover:ring-secondary"
+                            }`}
+                            title={variante.nom}
+                          >
+                            <Image
+                              src={variante.photo}
+                              alt={variante.nom}
+                              fill
+                              className="object-cover"
+                              sizes="80px"
+                            />
+                            {isSelected && (
+                              <div className="absolute inset-0 bg-secondary/20 flex items-center justify-center">
+                                <Check className="w-6 h-6 text-secondary" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Message d'erreur */}
+            {showError && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-card flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                <p className="text-red-700 text-sm">
+                  Veuillez choisir toutes les options de couleurs avant d&apos;ajouter au panier.
+                </p>
               </div>
             )}
 
@@ -225,11 +419,13 @@ export default function ProduitPage() {
             {/* Boutons d'action */}
             <div className="space-y-3">
               <Button
-                onClick={handleAjouterAuPanier}
+                onClick={handleAjouterClick}
                 disabled={estEpuise}
                 fullWidth
                 size="lg"
-                className={ajouteAuPanier ? "bg-green-600 hover:bg-green-600" : ""}
+                className={`${
+                  ajouteAuPanier ? "bg-green-600 hover:bg-green-600" : ""
+                } ${!allSelectionsComplete() && !estEpuise ? "opacity-60" : ""}`}
               >
                 {ajouteAuPanier ? (
                   <>
@@ -250,6 +446,7 @@ export default function ProduitPage() {
                 variant="outline"
                 fullWidth
                 size="lg"
+                className={!allSelectionsComplete() && !estEpuise ? "opacity-60" : ""}
               >
                 <Zap className="h-5 w-5 mr-2" />
                 Commander maintenant
@@ -282,6 +479,95 @@ export default function ProduitPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de confirmation */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-card max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-serif text-xl text-primary">Confirmer votre sélection</h3>
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="p-2 text-text-secondary hover:text-primary transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              {/* Produit principal */}
+              <div className="flex items-center gap-4 p-3 bg-cream rounded-lg">
+                <div className="w-16 h-16 rounded-lg overflow-hidden relative flex-shrink-0">
+                  <Image
+                    src={getMainPhoto()}
+                    alt={produit.nom}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                  />
+                </div>
+                <div>
+                  <p className="font-medium text-primary">{produit.nom}</p>
+                  {varianteSelectionnee && (
+                    <p className="text-sm text-text-secondary">{varianteSelectionnee.nom}</p>
+                  )}
+                  {couleurSelectionnee && !varianteSelectionnee && (
+                    <p className="text-sm text-text-secondary">{couleurSelectionnee}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Accessoires sélectionnés */}
+              {accessoiresSelectionnes.size > 0 && (
+                <>
+                  {Array.from(accessoiresSelectionnes.entries()).map(([accId, variante]) => {
+                    const accessoire = produit.accessoires?.find(a => a.id === accId);
+                    return (
+                      <div key={accId} className="flex items-center gap-4 p-3 bg-cream rounded-lg">
+                        <div className="w-16 h-16 rounded-lg overflow-hidden relative flex-shrink-0">
+                          <Image
+                            src={variante.photo}
+                            alt={variante.nom}
+                            fill
+                            className="object-cover"
+                            sizes="64px"
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium text-primary">{accessoire?.nom}</p>
+                          <p className="text-sm text-text-secondary">{variante.nom}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+
+              {/* Quantité et prix */}
+              <div className="flex justify-between items-center pt-4 border-t border-cream-dark">
+                <span className="text-text-secondary">Quantité : {quantite}</span>
+                <span className="font-display text-xl text-secondary font-semibold">
+                  {formatPrice(produit.prix * quantite, produit.devise)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setShowConfirmation(false)}
+                variant="outline"
+                fullWidth
+              >
+                Modifier
+              </Button>
+              <Button onClick={handleConfirmerAjout} fullWidth>
+                <Check className="w-5 h-5 mr-2" />
+                Confirmer
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

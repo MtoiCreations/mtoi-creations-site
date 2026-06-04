@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   X,
   Plus,
+  Palette,
 } from "lucide-react";
 import { categories } from "@/data/categories";
 
@@ -245,6 +246,23 @@ export default function EditProduitPage() {
 
       {/* Form */}
       <main className="max-w-2xl mx-auto px-4 py-6">
+        {/* Lien vers les variantes */}
+        <Link
+          href={`/admin/produits/${id}/variantes`}
+          className="block bg-white rounded-xl p-4 shadow-sm mb-6 hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+              <Palette className="w-6 h-6 text-secondary" />
+            </div>
+            <div className="flex-1">
+              <h2 className="font-medium text-primary">Gérer les variantes</h2>
+              <p className="text-sm text-text-secondary">Couleurs, motifs et accessoires inclus</p>
+            </div>
+            <ArrowLeft className="w-5 h-5 text-text-light rotate-180" />
+          </div>
+        </Link>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Photos */}
           <div className="bg-white rounded-xl p-4 shadow-sm">

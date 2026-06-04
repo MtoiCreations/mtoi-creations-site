@@ -2,13 +2,20 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { CartItem, Produit } from "@/types";
+import { CartItem, Produit, Variante, Accessoire, AccessoireVariante } from "@/types";
 
 interface CartStore {
   items: CartItem[];
-  addItem: (produit: Produit, quantite: number, couleur?: string, taille?: string) => void;
-  removeItem: (produitId: string, couleur?: string, taille?: string) => void;
-  updateQuantite: (produitId: string, quantite: number, couleur?: string, taille?: string) => void;
+  addItem: (
+    produit: Produit,
+    quantite: number,
+    couleur?: string,
+    taille?: string,
+    variante?: Variante,
+    accessoires?: { accessoire: Accessoire; variante: AccessoireVariante }[]
+  ) => void;
+  removeItem: (index: number) => void;
+  updateQuantite: (index: number, quantite: number) => void;
   clearCart: () => void;
   getTotal: () => number;
   getItemCount: () => number;
@@ -20,18 +27,39 @@ const noopStorage = {
   removeItem: () => {},
 };
 
+// Fonction pour créer une clé unique pour un item
+const getItemKey = (item: CartItem): string => {
+  const parts = [
+    item.produit.id,
+    item.couleurSelectionnee || "",
+    item.tailleSelectionnee || "",
+    item.varianteSelectionnee?.id || "",
+    ...(item.accessoiresSelectionnes?.map(a => `${a.accessoire.id}:${a.variante.id}`) || []),
+  ];
+  return parts.join("|");
+};
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
 
-      addItem: (produit, quantite, couleur, taille) => {
+      addItem: (produit, quantite, couleur, taille, variante, accessoires) => {
         set((state) => {
+          const newItem: CartItem = {
+            produit,
+            quantite,
+            couleurSelectionnee: couleur,
+            tailleSelectionnee: taille,
+            varianteSelectionnee: variante,
+            accessoiresSelectionnes: accessoires,
+          };
+
+          const newItemKey = getItemKey(newItem);
+
+          // Chercher si un item identique existe
           const existingIndex = state.items.findIndex(
-            (item) =>
-              item.produit.id === produit.id &&
-              item.couleurSelectionnee === couleur &&
-              item.tailleSelectionnee === taille
+            (item) => getItemKey(item) === newItemKey
           );
 
           if (existingIndex > -1) {
@@ -41,40 +69,21 @@ export const useCartStore = create<CartStore>()(
           }
 
           return {
-            items: [
-              ...state.items,
-              {
-                produit,
-                quantite,
-                couleurSelectionnee: couleur,
-                tailleSelectionnee: taille,
-              },
-            ],
+            items: [...state.items, newItem],
           };
         });
       },
 
-      removeItem: (produitId, couleur, taille) => {
+      removeItem: (index) => {
         set((state) => ({
-          items: state.items.filter(
-            (item) =>
-              !(
-                item.produit.id === produitId &&
-                item.couleurSelectionnee === couleur &&
-                item.tailleSelectionnee === taille
-              )
-          ),
+          items: state.items.filter((_, i) => i !== index),
         }));
       },
 
-      updateQuantite: (produitId, quantite, couleur, taille) => {
+      updateQuantite: (index, quantite) => {
         set((state) => ({
-          items: state.items.map((item) =>
-            item.produit.id === produitId &&
-            item.couleurSelectionnee === couleur &&
-            item.tailleSelectionnee === taille
-              ? { ...item, quantite }
-              : item
+          items: state.items.map((item, i) =>
+            i === index ? { ...item, quantite } : item
           ),
         }));
       },

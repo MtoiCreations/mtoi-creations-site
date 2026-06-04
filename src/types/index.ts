@@ -1,3 +1,26 @@
+export interface Variante {
+  id: string;
+  nom: string;
+  photo: string;
+  ordre: number;
+}
+
+export interface AccessoireVariante {
+  id: string;
+  nom: string;
+  photo: string;
+  ordre: number;
+}
+
+export interface Accessoire {
+  id: string;
+  nom: string;
+  description?: string;
+  obligatoire: boolean;
+  ordre: number;
+  variantes: AccessoireVariante[];
+}
+
 export interface Produit {
   id: string;
   categorie: string;
@@ -15,6 +38,8 @@ export interface Produit {
   };
   photos: string[];
   etiquettes: string[];
+  variantes?: Variante[];
+  accessoires?: Accessoire[];
 }
 
 export interface CartItem {
@@ -22,6 +47,8 @@ export interface CartItem {
   quantite: number;
   couleurSelectionnee?: string;
   tailleSelectionnee?: string;
+  varianteSelectionnee?: Variante;
+  accessoiresSelectionnes?: { accessoire: Accessoire; variante: AccessoireVariante }[];
 }
 
 export interface Commande {

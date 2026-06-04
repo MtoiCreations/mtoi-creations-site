@@ -10,20 +10,24 @@ import QuantitySelector from "./QuantitySelector";
 
 interface CartItemProps {
   item: CartItemType;
+  index: number;
 }
 
-export default function CartItem({ item }: CartItemProps) {
+export default function CartItem({ item, index }: CartItemProps) {
   const { updateQuantite, removeItem } = useCartStore();
-  const { produit, quantite, couleurSelectionnee, tailleSelectionnee } = item;
+  const { produit, quantite, couleurSelectionnee, tailleSelectionnee, varianteSelectionnee, accessoiresSelectionnes } = item;
 
   const maxQuantite = produit.surCommande ? 99 : produit.quantiteDisponible;
 
+  // Photo à afficher (variante ou photo par défaut)
+  const photoUrl = varianteSelectionnee?.photo || produit.photos[0] || "/images/placeholder.jpg";
+
   const handleQuantiteChange = (newQuantite: number) => {
-    updateQuantite(produit.id, newQuantite, couleurSelectionnee, tailleSelectionnee);
+    updateQuantite(index, newQuantite);
   };
 
   const handleRemove = () => {
-    removeItem(produit.id, couleurSelectionnee, tailleSelectionnee);
+    removeItem(index);
   };
 
   return (
@@ -34,7 +38,7 @@ export default function CartItem({ item }: CartItemProps) {
         className="relative flex-shrink-0 w-24 h-32 rounded-lg overflow-hidden"
       >
         <Image
-          src={produit.photos[0] || "/images/placeholder.jpg"}
+          src={photoUrl}
           alt={produit.nom}
           fill
           className="object-cover"
@@ -52,8 +56,24 @@ export default function CartItem({ item }: CartItemProps) {
         </Link>
 
         <div className="mt-1 space-y-1 text-sm text-text-secondary">
-          {couleurSelectionnee && <p>Couleur: {couleurSelectionnee}</p>}
+          {/* Nouvelle variante */}
+          {varianteSelectionnee && <p>Couleur/Motif: {varianteSelectionnee.nom}</p>}
+
+          {/* Anciennes options (rétrocompatibilité) */}
+          {!varianteSelectionnee && couleurSelectionnee && <p>Couleur: {couleurSelectionnee}</p>}
           {tailleSelectionnee && <p>Taille: {tailleSelectionnee}</p>}
+
+          {/* Accessoires sélectionnés */}
+          {accessoiresSelectionnes && accessoiresSelectionnes.length > 0 && (
+            <div className="mt-2 pt-2 border-t border-cream">
+              {accessoiresSelectionnes.map(({ accessoire, variante }) => (
+                <p key={accessoire.id} className="flex items-center gap-2">
+                  <span className="text-text-light">{accessoire.nom}:</span>
+                  <span>{variante.nom}</span>
+                </p>
+              ))}
+            </div>
+          )}
         </div>
 
         <p className="mt-2 font-display text-lg text-secondary">

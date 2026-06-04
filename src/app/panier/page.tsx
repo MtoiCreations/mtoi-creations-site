@@ -53,8 +53,9 @@ export default function PanierPage() {
               {/* Articles */}
               {items.map((item, index) => (
                 <CartItemComponent
-                  key={`${item.produit.id}-${item.couleurSelectionnee}-${item.tailleSelectionnee}-${index}`}
+                  key={`${item.produit.id}-${item.varianteSelectionnee?.id || ''}-${item.couleurSelectionnee}-${item.tailleSelectionnee}-${index}`}
                   item={item}
+                  index={index}
                 />
               ))}
 
