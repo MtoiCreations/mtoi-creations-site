@@ -68,6 +68,7 @@ export default function VariantesPage() {
   const [activeAccId, setActiveAccId] = useState<string | null>(null);
   const [newAccVarNom, setNewAccVarNom] = useState("");
   const [newAccVarPhoto, setNewAccVarPhoto] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const token = sessionStorage.getItem("adminAuth");
@@ -137,6 +138,7 @@ export default function VariantesPage() {
     if (!newVarianteNom.trim() || !newVariantePhoto) return;
 
     setSaving(true);
+    setError("");
     const token = sessionStorage.getItem("adminAuth");
 
     try {
@@ -159,9 +161,13 @@ export default function VariantesPage() {
         setVariantes([...variantes, newVar]);
         setNewVarianteNom("");
         setNewVariantePhoto("");
+      } else {
+        const errData = await res.json();
+        setError(errData.error || "Erreur lors de l'ajout");
       }
     } catch (err) {
       console.error("Erreur ajout variante:", err);
+      setError(`Erreur: ${String(err)}`);
     } finally {
       setSaving(false);
     }
@@ -354,6 +360,13 @@ export default function VariantesPage() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-8">
+        {/* Message d'erreur */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
         {/* Section Variantes du produit */}
         <section className="bg-white rounded-xl p-4 shadow-sm">
           <h2 className="font-serif text-lg text-primary mb-4 flex items-center gap-2">

@@ -58,12 +58,19 @@ export async function POST(request: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Erreur Supabase:", error);
+      return NextResponse.json({
+        error: `Supabase: ${error.message}`,
+        code: error.code,
+        details: error.details
+      }, { status: 500 });
+    }
 
     return NextResponse.json(data);
   } catch (error) {
     console.error("Erreur POST variante:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    return NextResponse.json({ error: `Exception: ${String(error)}` }, { status: 500 });
   }
 }
 
