@@ -18,7 +18,31 @@
       "/images/pochette-fidelle/rouge-carrote/photo-01.jpg",
       "/images/pochette-fidelle/rouge-carrote/photo-02.jpg"
     ],
-    "etiquettes": ["pochette", "fid'elle", "carroté", "rouge", "menstruelle", "hygiène"]
+    "etiquettes": ["pochette", "fid'elle", "carroté", "rouge", "menstruelle", "hygiène"],
+    "dimensions": {
+      "largeur": 18,
+      "hauteur": 12,
+      "profondeur": 4,
+      "unite": "cm"
+    },
+    "avis": [
+      {
+        "id": "avis-001",
+        "auteur": "Marie-Josée",
+        "note": 5,
+        "commentaire": "Absolument parfaite! La pochette est super pratique et discrète. Je l'amène partout avec moi. La qualité est impeccable.",
+        "date": "2025-05-15",
+        "verifie": true
+      },
+      {
+        "id": "avis-002",
+        "auteur": "Sophie",
+        "note": 5,
+        "commentaire": "J'ai acheté cette pochette pour ma fille adolescente et elle l'adore! Les compartiments sont bien pensés et le tissu est magnifique.",
+        "date": "2025-04-28",
+        "verifie": true
+      }
+    ]
   },
   {
     "id": "pochette-fid-elle-002",
@@ -39,6 +63,22 @@
       "/images/pochette-fidelle/rouge-fleuri/photo-01.jpg",
       "/images/pochette-fidelle/rouge-fleuri/photo-02.jpg"
     ],
-    "etiquettes": ["pochette", "fid'elle", "fleuri", "rouge", "menstruelle", "hygiène"]
+    "etiquettes": ["pochette", "fid'elle", "fleuri", "rouge", "menstruelle", "hygiène"],
+    "dimensions": {
+      "largeur": 18,
+      "hauteur": 12,
+      "profondeur": 4,
+      "unite": "cm"
+    },
+    "avis": [
+      {
+        "id": "avis-003",
+        "auteur": "Isabelle",
+        "note": 5,
+        "commentaire": "Le motif fleuri est tellement beau! Très bien fait, coutures solides. Je recommande à 100%.",
+        "date": "2025-06-01",
+        "verifie": true
+      }
+    ]
   }
 ]
