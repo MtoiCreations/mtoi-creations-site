@@ -352,6 +352,10 @@ export default function CommandePage() {
                       {formatPrice(total)}
                     </span>
                   </div>
+
+                  <p className="text-xs text-text-light text-center pt-2">
+                    Taxes non applicables — petit fournisseur
+                  </p>
                 </div>
 
                 <div className="mt-6">

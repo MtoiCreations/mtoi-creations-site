@@ -6,10 +6,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ProductGalleryProps {
   photos: string[];
-  nomProduit: string;
+  alt: string;
+  nomProduit?: string;
 }
 
-export default function ProductGallery({ photos, nomProduit }: ProductGalleryProps) {
+export default function ProductGallery({ photos, alt, nomProduit }: ProductGalleryProps) {
+  const productName = alt || nomProduit || "Produit";
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
@@ -58,7 +60,7 @@ export default function ProductGallery({ photos, nomProduit }: ProductGalleryPro
       >
         <Image
           src={photos[currentIndex]}
-          alt={`${nomProduit} - Photo ${currentIndex + 1}`}
+          alt={`${productName} - Photo ${currentIndex + 1}`}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -119,7 +121,7 @@ export default function ProductGallery({ photos, nomProduit }: ProductGalleryPro
             >
               <Image
                 src={photo}
-                alt={`${nomProduit} - Vignette ${index + 1}`}
+                alt={`${productName} - Vignette ${index + 1}`}
                 fill
                 className="object-cover"
                 sizes="80px"

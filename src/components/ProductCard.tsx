@@ -26,7 +26,7 @@ export default function ProductCard({ produit }: ProductCardProps) {
       <div className="relative aspect-[3/4] overflow-hidden rounded-image bg-cream">
         <Image
           src={produit.photos[0] || "/images/placeholder.jpg"}
-          alt={produit.nom}
+          alt={`${produit.nom} - ${produit.sousCategorie || produit.categorie} fait main au Québec par MToi Créations`}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

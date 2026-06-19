@@ -1,0 +1,56 @@
+{
+  "produit-1779547876985": {
+    "dimensions": {
+      "largeur": 18,
+      "hauteur": 12,
+      "profondeur": 4,
+      "unite": "cm"
+    },
+    "avis": [
+      {
+        "id": "avis-001",
+        "auteur": "Marie-Josée",
+        "note": 5,
+        "commentaire": "Absolument parfaite! La pochette est super pratique et discrète. Je l'amène partout avec moi. La qualité est impeccable.",
+        "date": "2025-05-15",
+        "verifie": true
+      }
+    ]
+  },
+  "produit-1779547388770": {
+    "dimensions": {
+      "largeur": 20,
+      "hauteur": 5,
+      "profondeur": 2,
+      "unite": "cm"
+    },
+    "avis": [
+      {
+        "id": "avis-002",
+        "auteur": "Nathalie",
+        "note": 5,
+        "commentaire": "Parfait pour mes migraines! Je le garde toujours au frigo et ça me soulage instantanément.",
+        "date": "2025-06-10",
+        "verifie": true
+      }
+    ]
+  },
+  "produit-1779547306990": {
+    "dimensions": {
+      "largeur": 10,
+      "hauteur": 8,
+      "profondeur": 2,
+      "unite": "cm"
+    },
+    "avis": [
+      {
+        "id": "avis-003",
+        "auteur": "Caroline",
+        "note": 5,
+        "commentaire": "Mon fils de 6 ans l'adore! Ça le calme après une grosse peine. L'odeur de lavande est douce et apaisante.",
+        "date": "2025-05-20",
+        "verifie": true
+      }
+    ]
+  }
+}

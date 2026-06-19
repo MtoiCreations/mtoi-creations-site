@@ -17,13 +17,13 @@ export default async function Home() {
       <section className="relative min-h-[80vh] flex items-center bg-cream">
         <div className="absolute inset-0 overflow-hidden">
           <Image
-            src="/images/hero-bg.jpg"
+            src="/images/hero-bg.png"
             alt="Créations artisanales MToi"
             fill
-            className="object-cover opacity-20"
+            className="object-cover opacity-50"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/70 to-transparent" />
         </div>
 
         <div className="container-custom relative z-10">
@@ -48,19 +48,6 @@ export default async function Home() {
                 <Button variant="outline" size="lg">Me contacter</Button>
               </Link>
             </div>
-          </div>
-        </div>
-
-        {/* Image décorative */}
-        <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-1/2">
-          <div className="relative h-full">
-            <Image
-              src="/images/hero-product.png"
-              alt="Pochette Fid'Elle"
-              fill
-              className="object-contain object-right"
-              priority
-            />
           </div>
         </div>
       </section>
@@ -133,42 +120,31 @@ export default async function Home() {
       {/* Section À propos */}
       <section className="section-padding bg-cream">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="relative aspect-square rounded-image overflow-hidden">
-              <Image
-                src="/images/atelier.jpg"
-                alt="Atelier MToi Créations"
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            <div>
-              <p className="font-display text-secondary tracking-widest uppercase mb-4">
-                Notre histoire
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="font-display text-secondary tracking-widest uppercase mb-4">
+              Notre histoire
+            </p>
+            <h2 className="heading-2 text-primary mb-6">
+              Derrière chaque création, il y a une passion
+            </h2>
+            <div className="space-y-4 text-text-secondary text-lg">
+              <p>
+                MToi Créations est née d&apos;une passion pour la couture et du désir de créer
+                des pièces uniques qui accompagnent les femmes dans leur quotidien.
               </p>
-              <h2 className="heading-2 text-primary mb-6">
-                Derrière chaque création, il y a une passion
-              </h2>
-              <div className="space-y-4 text-text-secondary">
-                <p>
-                  MToi Créations est née d&apos;une passion pour la couture et du désir de créer
-                  des pièces uniques qui accompagnent les femmes dans leur quotidien.
-                </p>
-                <p>
-                  Chaque produit est conçu et fabriqué avec soin dans mon atelier au Québec,
-                  en utilisant des matériaux de qualité soigneusement sélectionnés.
-                </p>
-                <p>
-                  Mon objectif : vous offrir des créations pratiques, élégantes et durables,
-                  qui reflètent votre personnalité et répondent à vos besoins.
-                </p>
-              </div>
-              <div className="mt-8">
-                <Link href="/contact">
-                  <Button variant="secondary">En savoir plus</Button>
-                </Link>
-              </div>
+              <p>
+                Chaque produit est conçu et fabriqué avec soin dans mon atelier au Québec,
+                en utilisant des matériaux de qualité soigneusement sélectionnés.
+              </p>
+              <p>
+                Mon objectif : vous offrir des créations pratiques, élégantes et durables,
+                qui reflètent votre personnalité et répondent à vos besoins.
+              </p>
+            </div>
+            <div className="mt-8">
+              <Link href="/contact">
+                <Button variant="secondary">En savoir plus</Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,11 +1,26 @@
 import { createClient } from '@supabase/supabase-js';
-import { Produit, Variante, Accessoire, AccessoireVariante } from '@/types';
+import { Produit, Variante, Accessoire, AccessoireVariante, Dimensions, Avis } from '@/types';
 import produitsFallback from '@/data/produits.json';
+import produitsExtras from '@/data/produitsExtras.json';
+
+interface ProduitExtra {
+  dimensions?: Dimensions;
+  avis?: Avis[];
+}
+
+const extrasMap = produitsExtras as Record<string, ProduitExtra>;
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
+// Client public (lecture seule, côté navigateur)
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Client admin (accès complet, côté serveur uniquement)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+  auth: { autoRefreshToken: false, persistSession: false }
+});
 
 export interface ProduitDB {
   id: string;
@@ -116,6 +131,8 @@ export async function getProduits(): Promise<Produit[]> {
             })),
         }));
 
+      const extras = extrasMap[p.id];
+
       return {
         id: p.id,
         categorie: p.categorie,
@@ -135,6 +152,8 @@ export async function getProduits(): Promise<Produit[]> {
         etiquettes: p.etiquettes || [],
         variantes: variantes.length > 0 ? variantes : undefined,
         accessoires: accessoires.length > 0 ? accessoires : undefined,
+        dimensions: extras?.dimensions,
+        avis: extras?.avis,
       };
     });
   } catch {

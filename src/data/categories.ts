@@ -6,7 +6,7 @@ export const categories: Categorie[] = [
     nom: "Hygiène féminine",
     slug: "hygiene-feminine",
     description: "Des créations pensées pour accompagner les femmes au quotidien avec élégance et praticité.",
-    image: "/images/categories/hygiene-feminine.jpg",
+    image: "/images/Categories/hygiene-feminine.png",
     sousCategories: [
       {
         id: "pochette-menstruelle",
@@ -21,7 +21,7 @@ export const categories: Categorie[] = [
     nom: "Soins et Confort",
     slug: "soins-confort",
     description: "Des accessoires artisanaux pour prendre soin de vous et vous offrir un moment de détente.",
-    image: "/images/categories/soins-confort.jpg",
+    image: "/images/Categories/soin-et-confort.png",
     sousCategories: [
       {
         id: "sac-magique",

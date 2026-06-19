@@ -17,15 +17,15 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-cream-light border-b border-cream-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-28 md:h-36">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <Image
               src="/images/logo.png"
               alt="MToi Créations"
-              width={120}
-              height={50}
-              className="h-10 md:h-12 w-auto"
+              width={300}
+              height={120}
+              className="h-24 md:h-32 w-auto"
               priority
             />
           </Link>
@@ -34,7 +34,7 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               href="/boutique"
-              className="font-display text-primary hover:text-secondary transition-colors"
+              className="font-display text-lg md:text-xl text-primary hover:text-secondary transition-colors"
             >
               Boutique
             </Link>
@@ -44,11 +44,11 @@ export default function Header() {
               <button
                 onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
                 onBlur={() => setTimeout(() => setIsCategoriesOpen(false), 200)}
-                className="flex items-center font-display text-primary hover:text-secondary transition-colors"
+                className="flex items-center font-display text-lg md:text-xl text-primary hover:text-secondary transition-colors"
               >
                 Catégories
                 <ChevronDown
-                  className={`ml-1 h-4 w-4 transition-transform ${
+                  className={`ml-1 h-5 w-5 transition-transform ${
                     isCategoriesOpen ? "rotate-180" : ""
                   }`}
                 />
@@ -81,7 +81,7 @@ export default function Header() {
 
             <Link
               href="/contact"
-              className="font-display text-primary hover:text-secondary transition-colors"
+              className="font-display text-lg md:text-xl text-primary hover:text-secondary transition-colors"
             >
               Contact
             </Link>

@@ -25,6 +25,7 @@ const josefin = Josefin_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mtoicreations.ca"),
   title: {
     default: "MToi Créations | Créations artisanales",
     template: "%s | MToi Créations",
@@ -72,6 +73,29 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "MToi Créations",
+  url: "https://mtoicreations.ca",
+  logo: "https://mtoicreations.ca/images/logo.png",
+  description: "Créations artisanales faites avec soin et passion. Pochettes, accessoires d'hygiène féminine et soins personnalisés. Fait main au Québec.",
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "CA",
+    addressRegion: "QC",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "mtoicreations@hotmail.com",
+    contactType: "customer service",
+    availableLanguage: "French",
+  },
+  sameAs: [
+    "https://www.facebook.com/849299194923840",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -79,6 +103,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable} ${josefin.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+      </head>
       <body className="font-sans bg-cream-light text-primary antialiased">
         <div className="flex flex-col min-h-screen">
           <Header />

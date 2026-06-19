@@ -21,6 +21,22 @@ export interface Accessoire {
   variantes: AccessoireVariante[];
 }
 
+export interface Dimensions {
+  largeur?: number;
+  hauteur?: number;
+  profondeur?: number;
+  unite: "cm" | "po";
+}
+
+export interface Avis {
+  id: string;
+  auteur: string;
+  note: number;
+  commentaire: string;
+  date: string;
+  verifie?: boolean;
+}
+
 export interface Produit {
   id: string;
   categorie: string;
@@ -40,6 +56,8 @@ export interface Produit {
   etiquettes: string[];
   variantes?: Variante[];
   accessoires?: Accessoire[];
+  dimensions?: Dimensions;
+  avis?: Avis[];
 }
 
 export interface CartItem {
