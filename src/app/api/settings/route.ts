@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, settings: newSettings });
   } catch (error) {
     console.error("Erreur sauvegarde settings:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
     return NextResponse.json(
       { error: "Erreur lors de la sauvegarde", details: errorMessage },
       { status: 500 }
