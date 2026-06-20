@@ -4,17 +4,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store";
-import { formatPrice, generateOrderNumber } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import Button from "@/components/Button";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, CreditCard, Lock } from "lucide-react";
 
 export default function CommandePage() {
   const router = useRouter();
-  const { items, getTotal, clearCart } = useCartStore();
+  const { items, getTotal } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
+    prenom: "",
     nom: "",
     email: "",
     telephone: "",
@@ -59,6 +60,7 @@ export default function CommandePage() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
+    if (!formData.prenom.trim()) newErrors.prenom = "Le prénom est requis";
     if (!formData.nom.trim()) newErrors.nom = "Le nom est requis";
     if (!formData.email.trim()) {
       newErrors.email = "L'email est requis";
@@ -85,43 +87,36 @@ export default function CommandePage() {
     setIsLoading(true);
 
     try {
-      const numeroCommande = generateOrderNumber();
-
-      const commande = {
-        numeroCommande,
-        client: {
-          nom: formData.nom,
-          email: formData.email,
-          telephone: formData.telephone,
-          adresse: {
-            ligne1: formData.adresseLigne1,
-            ligne2: formData.adresseLigne2,
-            ville: formData.ville,
-            province: formData.province,
-            codePostal: formData.codePostal.toUpperCase(),
-          },
-        },
-        articles: items,
-        sousTotal,
-        fraisLivraison,
-        total,
-        note: formData.note,
-      };
-
-      const response = await fetch("/api/commandes", {
+      const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(commande),
+        body: JSON.stringify({
+          items: items,
+          clientInfo: {
+            prenom: formData.prenom,
+            nom: formData.nom,
+            email: formData.email,
+            telephone: formData.telephone,
+            adresse: `${formData.adresseLigne1}${formData.adresseLigne2 ? ', ' + formData.adresseLigne2 : ''}`,
+            ville: formData.ville,
+            codePostal: formData.codePostal.toUpperCase(),
+            province: formData.province,
+          },
+          livraison: fraisLivraison,
+          note: formData.note,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la création de la commande");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erreur lors de la création du paiement");
       }
 
-      const data = await response.json();
+      const { url } = await response.json();
 
-      clearCart();
-      router.push(`/confirmation?commande=${data.numeroCommande}`);
+      if (url) {
+        window.location.href = url;
+      }
     } catch (error) {
       console.error("Erreur:", error);
       alert("Une erreur est survenue. Veuillez réessayer.");
@@ -157,9 +152,25 @@ export default function CommandePage() {
                 <h2 className="font-serif text-xl text-primary mb-6">Informations de contact</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
+                  <div>
                     <label className="block text-sm font-medium text-primary mb-1">
-                      Nom complet *
+                      Prénom *
+                    </label>
+                    <input
+                      type="text"
+                      name="prenom"
+                      value={formData.prenom}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
+                        errors.prenom ? "border-red-500" : "border-cream-dark"
+                      }`}
+                    />
+                    {errors.prenom && <p className="mt-1 text-sm text-red-500">{errors.prenom}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-1">
+                      Nom *
                     </label>
                     <input
                       type="text"
@@ -363,17 +374,21 @@ export default function CommandePage() {
                     {isLoading ? (
                       <>
                         <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                        Traitement...
+                        Redirection vers le paiement...
                       </>
                     ) : (
-                      "Confirmer la commande"
+                      <>
+                        <CreditCard className="h-5 w-5 mr-2" />
+                        Payer {formatPrice(total)}
+                      </>
                     )}
                   </Button>
                 </div>
 
-                <p className="mt-4 text-center text-xs text-text-light">
-                  En confirmant, vous acceptez de payer par Virement Interac.
-                </p>
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-text-light">
+                  <Lock className="h-3 w-3" />
+                  <span>Paiement sécurisé par Stripe</span>
+                </div>
               </div>
             </div>
           </div>

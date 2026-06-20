@@ -179,7 +179,7 @@ export default function ProduitClient({ produit }: ProduitClientProps) {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Galerie photos */}
+          {/* Colonne gauche : Galerie, options couleurs, description */}
           <div>
             <ProductGallery
               photos={getAllPhotos()}
@@ -212,6 +212,31 @@ export default function ProduitClient({ produit }: ProduitClientProps) {
                         sizes="64px"
                       />
                     </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Description (déplacée sous les options de couleurs) */}
+            <div className="mt-8 pt-8 border-t border-cream-dark">
+              <h2 className="font-serif text-xl text-primary mb-4">Description</h2>
+              <div className="prose prose-sm text-text-secondary whitespace-pre-line">
+                {produit.description}
+              </div>
+            </div>
+
+            {/* Étiquettes */}
+            {produit.etiquettes.length > 0 && (
+              <div className="mt-6 pt-6 border-t border-cream-dark">
+                <div className="flex flex-wrap gap-2">
+                  {produit.etiquettes.map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/boutique?recherche=${encodeURIComponent(tag)}`}
+                      className="px-3 py-1 bg-cream rounded-full text-xs text-text-secondary hover:bg-secondary hover:text-white transition-colors"
+                    >
+                      #{tag}
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -414,41 +439,18 @@ export default function ProduitClient({ produit }: ProduitClientProps) {
               </Button>
             </div>
 
-            {/* Description */}
-            <div className="mt-8 pt-8 border-t border-cream-dark">
-              <h2 className="font-serif text-xl text-primary mb-4">Description</h2>
-              <div className="prose prose-sm text-text-secondary whitespace-pre-line">
-                {produit.description}
-              </div>
-            </div>
-
-            {/* Dimensions */}
+            {/* Dimensions (sous la section panier) */}
             {produit.dimensions && (
-              <div className="mt-6">
+              <div className="mt-8 pt-8 border-t border-cream-dark">
                 <ProductDimensions dimensions={produit.dimensions} />
               </div>
             )}
 
-            {/* Étiquettes */}
-            {produit.etiquettes.length > 0 && (
-              <div className="mt-6 pt-6 border-t border-cream-dark">
-                <div className="flex flex-wrap gap-2">
-                  {produit.etiquettes.map((tag) => (
-                    <Link
-                      key={tag}
-                      href={`/boutique?recherche=${encodeURIComponent(tag)}`}
-                      className="px-3 py-1 bg-cream rounded-full text-xs text-text-secondary hover:bg-secondary hover:text-white transition-colors"
-                    >
-                      #{tag}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Avis clients */}
+            {/* Avis clients (sous les dimensions) */}
             {produit.avis && produit.avis.length > 0 && (
-              <ProductReviews avis={produit.avis} />
+              <div className="mt-6">
+                <ProductReviews avis={produit.avis} />
+              </div>
             )}
           </div>
         </div>

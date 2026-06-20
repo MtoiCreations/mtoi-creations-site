@@ -209,22 +209,40 @@ export default function AdminPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Lien vers gestion produits */}
-        <Link
-          href="/admin/produits"
-          className="block bg-white rounded-card p-4 shadow-soft mb-8 hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
-              <Package className="w-6 h-6 text-secondary" />
+        {/* Liens rapides */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <Link
+            href="/admin/commandes"
+            className="block bg-white rounded-card p-4 shadow-soft hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <Truck className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <h2 className="font-serif text-lg text-primary">Gérer les commandes</h2>
+                <p className="text-sm text-text-secondary">Suivi, statuts et expéditions</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-text-light" />
             </div>
-            <div className="flex-1">
-              <h2 className="font-serif text-lg text-primary">Gérer les produits</h2>
-              <p className="text-sm text-text-secondary">Ajouter, modifier ou supprimer des produits</p>
+          </Link>
+
+          <Link
+            href="/admin/produits"
+            className="block bg-white rounded-card p-4 shadow-soft hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                <Package className="w-6 h-6 text-secondary" />
+              </div>
+              <div className="flex-1">
+                <h2 className="font-serif text-lg text-primary">Gérer les produits</h2>
+                <p className="text-sm text-text-secondary">Ajouter, modifier ou supprimer des produits</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-text-light" />
             </div>
-            <ChevronRight className="w-5 h-5 text-text-light" />
-          </div>
-        </Link>
+          </Link>
+        </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

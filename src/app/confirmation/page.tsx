@@ -2,24 +2,22 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Button from "@/components/Button";
-import { CheckCircle, Mail, Copy, Check } from "lucide-react";
-import { useState, Suspense } from "react";
+import { CheckCircle, Mail, Package } from "lucide-react";
+import { Suspense, useEffect } from "react";
+import { useCartStore } from "@/lib/store";
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
-  const numeroCommande = searchParams.get("commande");
-  const [copied, setCopied] = useState(false);
+  const sessionId = searchParams.get("session_id");
+  const clearCart = useCartStore((state) => state.clearCart);
 
-  const interacEmail = process.env.NEXT_PUBLIC_INTERAC_EMAIL || "paiement@mtoicreations.ca";
+  useEffect(() => {
+    if (sessionId) {
+      clearCart();
+    }
+  }, [sessionId, clearCart]);
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  if (!numeroCommande) {
+  if (!sessionId) {
     return (
       <div className="section-padding bg-cream-light min-h-screen">
         <div className="container-custom max-w-2xl text-center">
@@ -27,8 +25,11 @@ function ConfirmationContent() {
           <p className="text-text-secondary mb-8">
             Cette page de confirmation n&apos;est pas valide.
           </p>
-          <Link href="/boutique">
-            <Button>Retour à la boutique</Button>
+          <Link
+            href="/boutique"
+            className="inline-flex items-center justify-center font-display font-medium transition-all duration-200 rounded-button focus:outline-none focus:ring-2 focus:ring-offset-2 bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary px-6 py-3 text-base"
+          >
+            Retour à la boutique
           </Link>
         </div>
       </div>
@@ -42,97 +43,56 @@ function ConfirmationContent() {
         <div className="text-center mb-12">
           <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-6" />
           <h1 className="heading-2 text-primary mb-4">Merci pour votre commande !</h1>
-          <p className="body-large">
-            Votre commande a bien été enregistrée.
+          <p className="body-large text-text-secondary">
+            Votre paiement a été accepté avec succès.
           </p>
         </div>
 
-        {/* Instructions de paiement */}
+        {/* Confirmation */}
         <div className="bg-white rounded-card p-8 shadow-soft mb-8">
           <h2 className="font-serif text-2xl text-primary mb-6 text-center">
-            Instructions de paiement
+            Votre commande est confirmée
           </h2>
 
           <div className="space-y-6">
-            {/* Numéro de commande */}
-            <div className="bg-cream rounded-lg p-4">
-              <p className="text-sm text-text-secondary mb-1">Numéro de commande</p>
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xl font-bold text-primary">
-                  {numeroCommande}
-                </span>
-                <button
-                  onClick={() => handleCopy(numeroCommande)}
-                  className="p-2 text-text-secondary hover:text-secondary transition-colors"
-                  title="Copier"
-                >
-                  {copied ? (
-                    <Check className="h-5 w-5 text-green-500" />
-                  ) : (
-                    <Copy className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Étapes */}
+            {/* Prochaines étapes */}
             <div className="space-y-4">
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center font-bold">
-                  1
+                <div className="flex-shrink-0 w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-medium text-primary">
-                    Ouvrez votre application bancaire
-                  </p>
+                  <p className="font-medium text-primary">Paiement reçu</p>
                   <p className="text-sm text-text-secondary">
-                    Accédez à la section Virement Interac
+                    Votre paiement a été traité avec succès.
                   </p>
                 </div>
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center font-bold">
-                  2
+                <div className="flex-shrink-0 w-10 h-10 bg-secondary/10 text-secondary rounded-full flex items-center justify-center">
+                  <Package className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-medium text-primary">
-                    Envoyez le montant à l&apos;adresse suivante
+                  <p className="font-medium text-primary">Préparation de votre commande</p>
+                  <p className="text-sm text-text-secondary">
+                    Nous allons préparer vos articles avec soin.
+                    Chaque pièce est faite à la main avec amour.
                   </p>
-                  <div className="mt-2 bg-cream rounded-lg p-3 flex items-center justify-between">
-                    <span className="font-mono text-primary">{interacEmail}</span>
-                    <button
-                      onClick={() => handleCopy(interacEmail)}
-                      className="p-1 text-text-secondary hover:text-secondary transition-colors"
-                      title="Copier"
-                    >
-                      <Copy className="h-4 w-4" />
-                    </button>
-                  </div>
                 </div>
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center font-bold">
-                  3
+                <div className="flex-shrink-0 w-10 h-10 bg-cream text-text-secondary rounded-full flex items-center justify-center">
+                  <Mail className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-medium text-primary">
-                    Inscrivez votre numéro de commande dans la note
-                  </p>
+                  <p className="font-medium text-primary">Suivi par email</p>
                   <p className="text-sm text-text-secondary">
-                    C&apos;est important pour identifier votre paiement !
+                    Vous recevrez un email lorsque votre commande sera expédiée.
                   </p>
                 </div>
               </div>
-            </div>
-
-            {/* Message important */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-6">
-              <p className="text-amber-800 text-sm">
-                <strong>Important :</strong> Votre commande sera confirmée dès réception du virement.
-                Vous recevrez un email de confirmation sous 24h.
-              </p>
             </div>
           </div>
         </div>
@@ -142,20 +102,21 @@ function ConfirmationContent() {
           <Mail className="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5" />
           <div>
             <p className="font-medium text-green-800">
-              Un email récapitulatif vous a été envoyé
+              Un email de confirmation vous a été envoyé
             </p>
             <p className="text-sm text-green-700 mt-1">
-              Vous y trouverez toutes les informations et instructions de paiement.
+              Vous y trouverez le récapitulatif de votre commande et les informations de suivi.
             </p>
           </div>
         </div>
 
         {/* Actions */}
         <div className="text-center space-y-4">
-          <Link href="/boutique">
-            <Button variant="outline" size="lg">
-              Continuer les achats
-            </Button>
+          <Link
+            href="/boutique"
+            className="inline-flex items-center justify-center font-display font-medium transition-all duration-200 rounded-button focus:outline-none focus:ring-2 focus:ring-offset-2 bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary px-8 py-4 text-lg"
+          >
+            Continuer les achats
           </Link>
         </div>
       </div>
