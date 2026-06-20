@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store";
@@ -13,6 +13,11 @@ export default function CommandePage() {
   const { items, getTotal } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const [formData, setFormData] = useState({
     prenom: "",
@@ -114,7 +119,7 @@ export default function CommandePage() {
 
       const { url } = await response.json();
 
-      if (url) {
+      if (url && typeof window !== "undefined") {
         window.location.href = url;
       }
     } catch (error) {
@@ -125,9 +130,18 @@ export default function CommandePage() {
     }
   };
 
-  if (items.length === 0) {
-    router.push("/panier");
-    return null;
+  useEffect(() => {
+    if (isClient && items.length === 0) {
+      router.push("/panier");
+    }
+  }, [isClient, items.length, router]);
+
+  if (!isClient || items.length === 0) {
+    return (
+      <div className="section-padding bg-cream-light min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+      </div>
+    );
   }
 
   return (
