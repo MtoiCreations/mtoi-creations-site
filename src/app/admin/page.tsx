@@ -79,6 +79,7 @@ export default function AdminPage() {
         setIsAuthenticated(true);
         sessionStorage.setItem("adminAuth", password);
         loadCommandes(password);
+        loadSettings();
       } else {
         setError("Mot de passe incorrect");
       }
