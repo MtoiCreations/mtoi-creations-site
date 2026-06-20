@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,7 +12,7 @@ import Button from "@/components/Button";
 import ProductGallery from "@/components/ProductGallery";
 import ProductDimensions from "@/components/ProductDimensions";
 import ProductReviews from "@/components/ProductReviews";
-import { ShoppingBag, Zap, Clock, Check, X, AlertCircle } from "lucide-react";
+import { ShoppingBag, Zap, Clock, Check, X, AlertCircle, PauseCircle } from "lucide-react";
 
 interface ProduitClientProps {
   produit: Produit;
@@ -21,6 +21,7 @@ interface ProduitClientProps {
 export default function ProduitClient({ produit }: ProduitClientProps) {
   const router = useRouter();
   const [quantite, setQuantite] = useState(1);
+  const [accepteCommandesSurMesure, setAccepteCommandesSurMesure] = useState(true);
 
   // Sélections
   const [varianteSelectionnee, setVarianteSelectionnee] = useState<Variante | null>(null);
@@ -45,6 +46,21 @@ export default function ProduitClient({ produit }: ProduitClientProps) {
 
   const addItem = useCartStore((state) => state.addItem);
 
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch("/api/settings");
+        if (response.ok) {
+          const data = await response.json();
+          setAccepteCommandesSurMesure(data.accepteCommandesSurMesure);
+        }
+      } catch (error) {
+        console.error("Erreur chargement settings:", error);
+      }
+    };
+    loadSettings();
+  }, []);
+
   // Vérifie si toutes les sélections obligatoires sont faites
   const hasVariantes = produit.variantes && produit.variantes.length > 0;
   const hasAccessoires = produit.accessoires && produit.accessoires.length > 0;
@@ -68,7 +84,9 @@ export default function ProduitClient({ produit }: ProduitClientProps) {
   };
 
   const statut = getStatutBadge(produit.quantiteDisponible, produit.surCommande);
-  const estEpuise = statut.variant === "epuise";
+  const estSurCommandeUniquement = produit.surCommande && produit.quantiteDisponible === 0;
+  const commandesSurMesureBloquees = estSurCommandeUniquement && !accepteCommandesSurMesure;
+  const estEpuise = statut.variant === "epuise" || commandesSurMesureBloquees;
   const maxQuantite = produit.surCommande ? 99 : produit.quantiteDisponible;
 
   const badgeColors = {
@@ -269,8 +287,21 @@ export default function ProduitClient({ produit }: ProduitClientProps) {
               {formatPrice(produit.prix, produit.devise)}
             </p>
 
+            {/* Message commandes sur mesure bloquées */}
+            {commandesSurMesureBloquees && (
+              <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-card">
+                <p className="text-amber-800 text-sm flex items-start gap-2">
+                  <PauseCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Commandes sur mesure temporairement suspendues.</strong><br />
+                    Ce produit n&apos;est pas en stock actuellement. Revenez bientôt !
+                  </span>
+                </p>
+              </div>
+            )}
+
             {/* Note sur commande */}
-            {produit.surCommande && produit.delaisFabrication && (
+            {produit.surCommande && produit.delaisFabrication && !commandesSurMesureBloquees && (
               <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-card">
                 <p className="text-amber-800 text-sm">
                   <Clock className="inline h-4 w-4 mr-2" />

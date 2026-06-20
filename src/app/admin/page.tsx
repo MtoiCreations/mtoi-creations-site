@@ -15,6 +15,9 @@ import {
   X,
   Package,
   ChevronRight,
+  Settings,
+  PauseCircle,
+  PlayCircle,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -55,6 +58,8 @@ export default function AdminPage() {
   const [commandes, setCommandes] = useState<Commande[]>([]);
   const [selectedCommande, setSelectedCommande] = useState<Commande | null>(null);
   const [filterStatut, setFilterStatut] = useState<string>("all");
+  const [accepteCommandesSurMesure, setAccepteCommandesSurMesure] = useState(true);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,12 +142,43 @@ export default function AdminPage() {
     setCommandes([]);
   };
 
+  const loadSettings = async () => {
+    try {
+      const response = await fetch("/api/settings");
+      if (response.ok) {
+        const data = await response.json();
+        setAccepteCommandesSurMesure(data.accepteCommandesSurMesure);
+      }
+    } catch (error) {
+      console.error("Erreur chargement settings:", error);
+    }
+  };
+
+  const toggleCommandesSurMesure = async () => {
+    setSavingSettings(true);
+    try {
+      const response = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accepteCommandesSurMesure: !accepteCommandesSurMesure }),
+      });
+      if (response.ok) {
+        setAccepteCommandesSurMesure(!accepteCommandesSurMesure);
+      }
+    } catch (error) {
+      console.error("Erreur sauvegarde settings:", error);
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
   useEffect(() => {
     const savedAuth = sessionStorage.getItem("adminAuth");
     if (savedAuth) {
       setPassword(savedAuth);
       setIsAuthenticated(true);
       loadCommandes(savedAuth);
+      loadSettings();
     }
   }, []);
 
@@ -209,6 +245,44 @@ export default function AdminPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Paramètres boutique */}
+        <div className="bg-white rounded-card p-4 shadow-soft mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                accepteCommandesSurMesure ? "bg-green-100" : "bg-amber-100"
+              }`}>
+                {accepteCommandesSurMesure ? (
+                  <PlayCircle className="w-6 h-6 text-green-600" />
+                ) : (
+                  <PauseCircle className="w-6 h-6 text-amber-600" />
+                )}
+              </div>
+              <div>
+                <h2 className="font-serif text-lg text-primary">Commandes sur mesure</h2>
+                <p className="text-sm text-text-secondary">
+                  {accepteCommandesSurMesure
+                    ? "Les clients peuvent commander des produits sur mesure"
+                    : "Seuls les produits en stock sont disponibles"}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={toggleCommandesSurMesure}
+              disabled={savingSettings}
+              className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                accepteCommandesSurMesure ? "bg-green-500" : "bg-gray-300"
+              } ${savingSettings ? "opacity-50" : ""}`}
+            >
+              <span
+                className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-md transition-transform ${
+                  accepteCommandesSurMesure ? "translate-x-7" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+
         {/* Liens rapides */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <Link
