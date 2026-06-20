@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-
-const SETTINGS_FILE = path.join(process.cwd(), "data", "settings.json");
+import { supabaseAdmin } from "@/lib/supabase";
 
 interface Settings {
   accepteCommandesSurMesure: boolean;
@@ -16,17 +13,39 @@ const defaultSettings: Settings = {
 
 async function getSettings(): Promise<Settings> {
   try {
-    const data = await fs.readFile(SETTINGS_FILE, "utf-8");
-    return { ...defaultSettings, ...JSON.parse(data) };
+    const { data, error } = await supabaseAdmin
+      .from("settings")
+      .select("*")
+      .eq("id", "global")
+      .single();
+
+    if (error || !data) {
+      return defaultSettings;
+    }
+
+    return {
+      accepteCommandesSurMesure: data.accepte_commandes_sur_mesure ?? true,
+      messageIndisponible: data.message_indisponible || defaultSettings.messageIndisponible,
+    };
   } catch {
     return defaultSettings;
   }
 }
 
 async function saveSettings(settings: Settings) {
-  const dir = path.dirname(SETTINGS_FILE);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+  const { error } = await supabaseAdmin
+    .from("settings")
+    .upsert({
+      id: "global",
+      accepte_commandes_sur_mesure: settings.accepteCommandesSurMesure,
+      message_indisponible: settings.messageIndisponible,
+      updated_at: new Date().toISOString(),
+    });
+
+  if (error) {
+    console.error("Erreur sauvegarde settings:", error);
+    throw error;
+  }
 }
 
 export async function GET() {
