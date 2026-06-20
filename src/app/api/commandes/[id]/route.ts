@@ -48,22 +48,6 @@ async function saveCommandes(commandes: Commande[]) {
   await fs.writeFile(COMMANDES_FILE, JSON.stringify(commandes, null, 2));
 }
 
-function formatPrice(price: number): string {
-  return new Intl.NumberFormat("fr-CA", {
-    style: "currency",
-    currency: "CAD",
-  }).format(price);
-}
-
-const statutLabels: Record<string, string> = {
-  en_attente: "En attente de paiement",
-  payee: "Payée",
-  en_production: "En production",
-  prete: "Prête à expédier",
-  expediee: "Expédiée",
-  livree: "Livrée",
-  annulee: "Annulée",
-};
 
 export async function GET(
   request: NextRequest,

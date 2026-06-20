@@ -15,7 +15,6 @@ import {
   X,
   Package,
   ChevronRight,
-  Settings,
   PauseCircle,
   PlayCircle,
 } from "lucide-react";
