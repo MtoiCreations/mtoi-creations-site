@@ -15,8 +15,9 @@
       "tailles": []
     },
     "photos": [
-      "/images/pochette-fidelle/rouge-carrote/photo-01.jpg",
-      "/images/pochette-fidelle/rouge-carrote/photo-02.jpg"
+      "/images/Produits/pochette-fidelle/rouge-carrote/Photo-01.jpg",
+      "/images/Produits/pochette-fidelle/rouge-carrote/Photo-02.jpg",
+      "/images/Produits/pochette-fidelle/rouge-carrote/Photo-03.jpg"
     ],
     "etiquettes": ["pochette", "fid'elle", "carroté", "rouge", "menstruelle", "hygiène"],
     "dimensions": {
@@ -60,8 +61,9 @@
       "tailles": []
     },
     "photos": [
-      "/images/pochette-fidelle/rouge-fleuri/photo-01.jpg",
-      "/images/pochette-fidelle/rouge-fleuri/photo-02.jpg"
+      "/images/Produits/pochette-fidelle/rouge-fleuri/Photo-01.jpg",
+      "/images/Produits/pochette-fidelle/rouge-fleuri/Photo-02.jpg",
+      "/images/Produits/pochette-fidelle/rouge-fleuri/Photo-03.jpg"
     ],
     "etiquettes": ["pochette", "fid'elle", "fleuri", "rouge", "menstruelle", "hygiène"],
     "dimensions": {
