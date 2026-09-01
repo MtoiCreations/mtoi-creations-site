@@ -53,7 +53,7 @@ export default async function Home() {
       </section>
 
       {/* Valeurs */}
-      <section className="bg-cream-light py-8 border-y border-cream-dark">
+      <section className="bg-sunset-soft py-8 border-y border-cream-dark">
         <div className="container-custom">
           <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-center">
             <div className="flex items-center gap-2">

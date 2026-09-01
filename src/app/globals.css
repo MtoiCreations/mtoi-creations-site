@@ -91,26 +91,26 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5F0EB;
+  background: #FFF3E9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D4A5A5;
+  background: #F0724F;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #7A3448;
+  background: #C43852;
 }
 
 /* Focus visible styles */
 :focus-visible {
-  outline: 2px solid #7A3448;
+  outline: 2px solid #C43852;
   outline-offset: 2px;
 }
 
 /* Selection styles */
 ::selection {
-  background: #D4A5A5;
-  color: #1A1A1A;
+  background: #FFC978;
+  color: #3B1526;
 }

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import { useCartStore } from "@/lib/store";
 import { categories } from "@/data/categories";
 import { ShoppingBag, Menu, X, Search, ChevronDown } from "lucide-react";
+import AnimatedLogo from "@/components/AnimatedLogo";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,26 +15,17 @@ export default function Header() {
   const itemCount = useCartStore((state) => state.getItemCount());
 
   return (
-    <header className="sticky top-0 z-50 bg-cream-light border-b border-cream-dark">
+    <header className="sticky top-0 z-50 bg-sunset shadow-medium">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-28 md:h-36">
+        <div className="flex items-center justify-between py-3 md:py-4">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <Image
-              src="/images/logo.png"
-              alt="MToi Créations"
-              width={300}
-              height={120}
-              className="h-24 md:h-32 w-auto"
-              priority
-            />
-          </Link>
+          <AnimatedLogo />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               href="/boutique"
-              className="font-display text-lg md:text-xl text-primary hover:text-secondary transition-colors"
+              className="font-display text-lg md:text-xl text-white hover:text-accent-light transition-colors"
             >
               Boutique
             </Link>
@@ -44,7 +35,7 @@ export default function Header() {
               <button
                 onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
                 onBlur={() => setTimeout(() => setIsCategoriesOpen(false), 200)}
-                className="flex items-center font-display text-lg md:text-xl text-primary hover:text-secondary transition-colors"
+                className="flex items-center font-display text-lg md:text-xl text-white hover:text-accent-light transition-colors"
               >
                 Catégories
                 <ChevronDown
@@ -81,7 +72,7 @@ export default function Header() {
 
             <Link
               href="/contact"
-              className="font-display text-lg md:text-xl text-primary hover:text-secondary transition-colors"
+              className="font-display text-lg md:text-xl text-white hover:text-accent-light transition-colors"
             >
               Contact
             </Link>
@@ -92,7 +83,7 @@ export default function Header() {
             {/* Search */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-2 text-primary hover:text-secondary transition-colors"
+              className="p-2 text-white hover:text-accent-light transition-colors"
               aria-label="Rechercher"
             >
               <Search className="h-5 w-5" />
@@ -101,12 +92,12 @@ export default function Header() {
             {/* Cart */}
             <Link
               href="/panier"
-              className="relative p-2 text-primary hover:text-secondary transition-colors"
+              className="relative p-2 text-white hover:text-accent-light transition-colors"
               aria-label="Panier"
             >
               <ShoppingBag className="h-5 w-5" />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-accent text-primary text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {itemCount}
                 </span>
               )}
@@ -115,7 +106,7 @@ export default function Header() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-primary"
+              className="md:hidden p-2 text-white"
               aria-label="Menu"
             >
               {isMenuOpen ? (

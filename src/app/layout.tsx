@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter, Josefin_Sans } from "next/font/google";
+import { Cormorant_Garamond, Inter, Josefin_Sans, Alex_Brush } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -21,6 +21,13 @@ const josefin = Josefin_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-display",
+  display: "swap",
+});
+
+const alexBrush = Alex_Brush({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-script",
   display: "swap",
 });
 
@@ -102,7 +109,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${cormorant.variable} ${inter.variable} ${josefin.variable}`}>
+    <html lang="fr" className={`${cormorant.variable} ${inter.variable} ${josefin.variable} ${alexBrush.variable}`}>
       <head>
         <script
           type="application/ld+json"

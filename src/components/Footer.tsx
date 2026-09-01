@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { categories } from "@/data/categories";
 
 export default function Footer() {
@@ -9,13 +8,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo et description */}
           <div className="md:col-span-2">
-            <Image
-              src="/images/logo-white.png"
-              alt="MToi Créations"
-              width={150}
-              height={60}
-              className="h-12 w-auto mb-4 invert"
-            />
+            <p className="font-script text-4xl text-white leading-none mb-4">
+              Mtoi Créations
+            </p>
             <p className="text-cream/80 max-w-md">
               Créations artisanales faites avec soin et passion. Des pièces
               uniques et durables pour accompagner votre quotidien.

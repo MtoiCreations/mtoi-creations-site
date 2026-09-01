@@ -10,34 +10,39 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#1A1A1A",
-          light: "#2D2D2D",
+          DEFAULT: "#3B1526",
+          light: "#55223A",
         },
         secondary: {
-          DEFAULT: "#7A3448",
-          light: "#9A4560",
-          dark: "#5E2838",
+          DEFAULT: "#D8415B",
+          light: "#E8546B",
+          dark: "#B22D45",
         },
         accent: {
-          DEFAULT: "#D4A5A5",
-          light: "#E8C4C4",
-          dark: "#B88888",
+          DEFAULT: "#F0A23D",
+          light: "#FFC978",
+          dark: "#C77F1F",
         },
         cream: {
-          DEFAULT: "#F5F0EB",
-          light: "#FDFBF9",
-          dark: "#E8E0D8",
+          DEFAULT: "#FFF3E9",
+          light: "#FFFBF7",
+          dark: "#FCE0C8",
         },
         text: {
-          primary: "#1A1A1A",
-          secondary: "#6B6B6B",
-          light: "#9B9B9B",
+          primary: "#3B1526",
+          secondary: "#7A5560",
+          light: "#B08D95",
         },
+      },
+      backgroundImage: {
+        sunset: "linear-gradient(135deg, #FFC978 0%, #F0724F 45%, #C43852 100%)",
+        "sunset-soft": "linear-gradient(135deg, #FFE8D1 0%, #FDD5C8 50%, #F5C2CE 100%)",
       },
       fontFamily: {
         serif: ["Cormorant Garamond", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
         display: ["Josefin Sans", "sans-serif"],
+        script: ["Alex Brush", "cursive"],
       },
       borderRadius: {
         card: "12px",
