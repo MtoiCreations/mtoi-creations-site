@@ -17,7 +17,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-fond border-b border-dashed border-encre/25">
       <div className="max-w-7xl mx-auto px-6 lg:px-16">
-        <div className="flex items-center justify-between py-4 md:py-6">
+        <div className="flex items-center justify-between py-6">
           {/* Logo */}
           <AnimatedLogo />
 

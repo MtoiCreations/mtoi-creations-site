@@ -9,7 +9,7 @@ export default function AnimatedLogo() {
         alt="MToi Créations"
         width={320}
         height={180}
-        className="h-16 md:h-20 w-auto"
+        className="h-[76.5px] md:h-28 w-auto"
         priority
       />
     </Link>
