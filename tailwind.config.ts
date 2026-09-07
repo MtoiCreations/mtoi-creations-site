@@ -33,6 +33,12 @@ const config: Config = {
           secondary: "#7A5560",
           light: "#B08D95",
         },
+        encre: "#2E1A24",
+        fond: "#F4EFF2",
+        surface: "#FBF9FA",
+        safran: "#E9A200",
+        framboise: "#A93F5B",
+        lichen: "#6E7F58",
       },
       backgroundImage: {
         sunset: "linear-gradient(135deg, #FFC978 0%, #F0724F 45%, #C43852 100%)",
@@ -43,6 +49,8 @@ const config: Config = {
         sans: ["Inter", "system-ui", "sans-serif"],
         display: ["Josefin Sans", "sans-serif"],
         script: ["Alex Brush", "cursive"],
+        titre: ["Bricolage Grotesque", "system-ui", "sans-serif"],
+        corps: ["Literata", "Georgia", "serif"],
       },
       borderRadius: {
         card: "12px",
