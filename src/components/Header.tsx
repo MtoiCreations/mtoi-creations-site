@@ -15,17 +15,17 @@ export default function Header() {
   const itemCount = useCartStore((state) => state.getItemCount());
 
   return (
-    <header className="sticky top-0 z-50 bg-sunset shadow-medium">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-3 md:py-4">
+    <header className="sticky top-0 z-50 bg-fond border-b border-dashed border-encre/25">
+      <div className="max-w-7xl mx-auto px-6 lg:px-16">
+        <div className="flex items-center justify-between py-4 md:py-6">
           {/* Logo */}
           <AnimatedLogo />
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-10">
             <Link
               href="/boutique"
-              className="font-display text-lg md:text-xl text-white hover:text-accent-light transition-colors"
+              className="font-display text-lg md:text-xl text-encre hover:text-framboise transition-colors"
             >
               Boutique
             </Link>
@@ -35,7 +35,7 @@ export default function Header() {
               <button
                 onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
                 onBlur={() => setTimeout(() => setIsCategoriesOpen(false), 200)}
-                className="flex items-center font-display text-lg md:text-xl text-white hover:text-accent-light transition-colors"
+                className="flex items-center font-display text-lg md:text-xl text-encre hover:text-framboise transition-colors"
               >
                 Catégories
                 <ChevronDown
@@ -59,7 +59,7 @@ export default function Header() {
                         <Link
                           key={sousCat.id}
                           href={`/boutique/${cat.slug}/${sousCat.slug}`}
-                          className="block px-6 py-1.5 text-text-secondary hover:bg-cream hover:text-secondary transition-colors text-sm"
+                          className="block px-6 py-2 text-text-secondary hover:bg-cream hover:text-secondary transition-colors text-sm"
                         >
                           {sousCat.nom}
                         </Link>
@@ -72,7 +72,7 @@ export default function Header() {
 
             <Link
               href="/contact"
-              className="font-display text-lg md:text-xl text-white hover:text-accent-light transition-colors"
+              className="font-display text-lg md:text-xl text-encre hover:text-framboise transition-colors"
             >
               Contact
             </Link>
@@ -83,7 +83,7 @@ export default function Header() {
             {/* Search */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-2 text-white hover:text-accent-light transition-colors"
+              className="p-2 text-encre hover:text-framboise transition-colors"
               aria-label="Rechercher"
             >
               <Search className="h-5 w-5" />
@@ -92,12 +92,12 @@ export default function Header() {
             {/* Cart */}
             <Link
               href="/panier"
-              className="relative p-2 text-white hover:text-accent-light transition-colors"
+              className="relative p-2 text-encre hover:text-framboise transition-colors"
               aria-label="Panier"
             >
               <ShoppingBag className="h-5 w-5" />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-accent text-primary text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-safran text-encre text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {itemCount}
                 </span>
               )}
@@ -106,7 +106,7 @@ export default function Header() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-white"
+              className="md:hidden p-2 text-encre"
               aria-label="Menu"
             >
               {isMenuOpen ? (
@@ -128,7 +128,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher un produit..."
-                className="w-full px-4 py-3 pr-12 border border-cream-dark rounded-button bg-white focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"
+                className="w-full px-4 py-4 pr-12 border border-cream-dark rounded-button bg-white focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"
               />
               <button
                 type="submit"
@@ -159,7 +159,7 @@ export default function Header() {
                 <div key={cat.id} className="pl-4">
                   <Link
                     href={`/boutique/${cat.slug}`}
-                    className="block py-1 text-text-secondary hover:text-secondary"
+                    className="block py-2 text-text-secondary hover:text-secondary"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {cat.nom}
@@ -168,7 +168,7 @@ export default function Header() {
                     <Link
                       key={sousCat.id}
                       href={`/boutique/${cat.slug}/${sousCat.slug}`}
-                      className="block py-1 pl-4 text-sm text-text-light hover:text-secondary"
+                      className="block py-2 pl-4 text-sm text-text-light hover:text-secondary"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {sousCat.nom}

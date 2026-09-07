@@ -3,7 +3,6 @@ import { Cormorant_Garamond, Inter, Josefin_Sans, Alex_Brush, Bricolage_Grotesqu
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import LogoIntroOverlay from "@/components/LogoIntroOverlay";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -135,7 +134,6 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
-        <LogoIntroOverlay />
       </body>
     </html>
   );

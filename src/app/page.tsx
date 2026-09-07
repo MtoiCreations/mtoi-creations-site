@@ -5,7 +5,6 @@ import { getProduits } from "@/lib/supabase";
 import ProductCard from "@/components/ProductCard";
 import CategoryCard from "@/components/CategoryCard";
 import Button from "@/components/Button";
-import HomeIntroTrigger from "@/components/HomeIntroTrigger";
 
 export const revalidate = 60;
 
@@ -14,8 +13,6 @@ export default async function Home() {
 
   return (
     <>
-      <HomeIntroTrigger />
-
       {/* Hero Section */}
       <section className="relative min-h-[80vh] flex items-center bg-cream">
         <div className="absolute inset-0 overflow-hidden">

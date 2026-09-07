@@ -16,24 +16,6 @@
   }
 }
 
-@keyframes mtoi-twinkle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.mtoi-sparkle {
-  animation-name: mtoi-twinkle;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
 @layer components {
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -109,26 +91,26 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FFF3E9;
+  background: theme('colors.fond');
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #F0724F;
+  background: theme('colors.lichen');
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C43852;
+  background: theme('colors.framboise');
 }
 
 /* Focus visible styles */
 :focus-visible {
-  outline: 2px solid #C43852;
+  outline: 2px solid theme('colors.framboise');
   outline-offset: 2px;
 }
 
 /* Selection styles */
 ::selection {
-  background: #FFC978;
-  color: #3B1526;
+  background: theme('colors.safran');
+  color: theme('colors.encre');
 }
