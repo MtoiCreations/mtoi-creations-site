@@ -39,10 +39,28 @@ latérale 24px mobile / 64px minimum sur ordinateur).
 valide.
 
 **Fichiers qui utilisent `.section-padding` :** mêmes que `.container-custom`
-ci-dessus, sauf `not-found.tsx`, `admin/commandes/page.tsx`,
-`confirmation/page.tsx` et `panier/page.tsx` (à revérifier au cas par cas
-lors de leur session respective — cette liste vient d'une recherche par
-fichier, pas d'un audit ligne par ligne de chaque usage).
+ci-dessus (sauf `src/app/page.tsx`, traité en Session B avec des classes
+`py-14 md:py-24` explicites plutôt que `.section-padding`), sauf aussi
+`not-found.tsx`, `admin/commandes/page.tsx`, `confirmation/page.tsx` et
+`panier/page.tsx` (à revérifier au cas par cas lors de leur session
+respective — cette liste vient d'une recherche par fichier, pas d'un audit
+ligne par ligne de chaque usage).
+
+## Composants partagés encore sur l'ancienne palette
+
+### `src/components/CategoryCard.tsx` et `src/components/ProductCard.tsx`
+Utilisent encore les jetons `cream`/`primary`/`secondary`/`text-*` (voir
+l'inventaire de couleurs). Non touchés en Session B car partagés avec
+d'autres pages (`boutique`, `produit/[id]`) hors du périmètre de cette
+session. Ils apparaissent donc actuellement avec l'ancienne palette
+(corail/crème) à l'intérieur des grilles "Nos catégories" et "Nos
+créations" de la page d'accueil, refaite en `encre`/`fond`/`surface`.
+
+**À traiter en Session C** : migrer ces deux composants vers
+`encre`/`fond`/`surface`/`safran`/`framboise`/`lichen`, en gardant à
+l'esprit qu'ils sont aussi utilisés sur `boutique/*` et `produit/[id]` —
+vérifier le rendu sur ces pages-là aussi, même si leur propre refonte
+viendra dans une session ultérieure.
 
 ## Comment traiter ceci
 
@@ -62,3 +80,9 @@ périmètre d'une session ciblée sur une seule page. À faire plutôt :
   header remplacé par un aplat `fond` + séparateur pointillé, 5 hex de
   `globals.css` remplacés par des jetons, focus clavier vérifié
   (`framboise`). Classes partagées ci-dessus repérées mais non touchées.
+- 2026-09-07 — Session B (page d'accueil) : héros recomposé en grille
+  asymétrique sur `surface`, un seul bouton `safran` + un lien `framboise`
+  souligné, polices `titre`/`corps` et échelle d'espacement appliquées,
+  3 séparateurs pointillés max, étiquettes en majuscules et animations de
+  fondu retirées. `CategoryCard.tsx`/`ProductCard.tsx` non touchés (voir
+  section ci-dessus) — reportés à la Session C.

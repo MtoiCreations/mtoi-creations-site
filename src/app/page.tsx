@@ -4,89 +4,98 @@ import { categories } from "@/data/categories";
 import { getProduits } from "@/lib/supabase";
 import ProductCard from "@/components/ProductCard";
 import CategoryCard from "@/components/CategoryCard";
-import Button from "@/components/Button";
 
 export const revalidate = 60;
+
+// Photo provisoire du héros — à remplacer par une photo dédiée quand elle sera prête.
+const HERO_IMAGE_SRC = "/images/hero-bg.png";
+
+const btnPrimary =
+  "inline-flex items-center justify-center rounded-[4px] bg-safran px-6 py-3 font-titre font-medium text-encre transition-colors hover:bg-safran/90";
+
+const linkSecondary =
+  "font-titre font-medium text-framboise underline underline-offset-4 transition-colors hover:text-framboise/80";
 
 export default async function Home() {
   const produitsTyped = await getProduits();
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center bg-cream">
-        <div className="absolute inset-0 overflow-hidden">
-          <Image
-            src="/images/hero-bg.png"
-            alt="Créations artisanales MToi"
-            fill
-            className="object-cover opacity-50"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/70 to-transparent" />
-        </div>
+      {/* Héros */}
+      <section className="bg-surface">
+        <div className="container-custom py-14 md:py-24">
+          <div className="md:grid md:grid-cols-12 md:gap-x-16 md:items-center">
+            <div className="text-center md:col-span-7 md:text-left">
+              <h1 className="mb-6 font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">
+                Fait avec soin et passion
+              </h1>
+              <p className="mx-auto mb-10 max-w-[65ch] font-corps text-[17px] leading-[1.65] text-encre/80 md:mx-0">
+                Des pièces uniques et durables pour accompagner votre quotidien.
+                Chaque création est pensée pour allier élégance, praticité et authenticité.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-6 md:justify-start">
+                <Link href="/boutique" className={btnPrimary}>
+                  Découvrir la boutique
+                </Link>
+                <Link href="/contact" className={linkSecondary}>
+                  Me contacter
+                </Link>
+              </div>
+            </div>
 
-        <div className="container-custom relative z-10">
-          <div className="max-w-2xl">
-            <p className="font-display text-secondary tracking-widest uppercase mb-4 animate-fade-in">
-              Créations artisanales
-            </p>
-            <h1 className="heading-1 text-primary mb-6 animate-slide-up">
-              Fait avec soin
-              <br />
-              <span className="text-secondary">et passion</span>
-            </h1>
-            <p className="body-large mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
-              Des pièces uniques et durables pour accompagner votre quotidien.
-              Chaque création est pensée pour allier élégance, praticité et authenticité.
-            </p>
-            <div className="flex flex-wrap gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
-              <Link href="/boutique">
-                <Button size="lg">Découvrir la boutique</Button>
-              </Link>
-              <Link href="/contact">
-                <Button variant="outline" size="lg">Me contacter</Button>
-              </Link>
+            <div className="mt-10 md:col-span-4 md:col-start-9 md:mt-0">
+              <div className="relative mx-auto aspect-[4/5] max-w-sm md:max-w-none">
+                <Image
+                  src={HERO_IMAGE_SRC}
+                  alt="Création artisanale MToi Créations"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Valeurs */}
-      <section className="bg-sunset-soft py-8 border-y border-cream-dark">
-        <div className="container-custom">
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-center">
+      <section className="border-t border-dashed border-encre/25 bg-fond">
+        <div className="container-custom py-6">
+          <div className="flex flex-wrap justify-center gap-8 text-center md:gap-16">
             <div className="flex items-center gap-2">
               <span className="text-2xl">✨</span>
-              <span className="font-display text-primary">Authenticité</span>
+              <span className="font-titre text-encre">Authenticité</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">💎</span>
-              <span className="font-display text-primary">Qualité</span>
+              <span className="font-titre text-encre">Qualité</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">🌿</span>
-              <span className="font-display text-primary">Simplicité</span>
+              <span className="font-titre text-encre">Simplicité</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">🇨🇦</span>
-              <span className="font-display text-primary">Fait au Québec</span>
+              <span className="font-titre text-encre">Fait au Québec</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Catégories */}
-      <section className="section-padding bg-cream-light">
-        <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="heading-2 text-primary mb-4">Nos catégories</h2>
-            <p className="body-large max-w-2xl mx-auto">
+      <section className="bg-surface">
+        <div className="container-custom py-14 md:py-24">
+          <div className="mb-10 max-w-[65ch] md:mb-16">
+            <h2 className="mb-4 font-titre text-[28px] font-semibold leading-[1.15] text-encre md:text-[36px]">
+              Nos catégories
+            </h2>
+            <p className="font-corps text-[17px] leading-[1.65] text-encre/80">
               Explorez nos créations artisanales, conçues avec amour pour répondre à vos besoins quotidiens.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
             {categories.map((categorie) => (
               <CategoryCard key={categorie.id} categorie={categorie} />
             ))}
@@ -95,21 +104,23 @@ export default async function Home() {
       </section>
 
       {/* Nouveautés / Produits en vedette */}
-      <section className="section-padding bg-white">
-        <div className="container-custom">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
-            <div>
-              <h2 className="heading-2 text-primary mb-4">Nos créations</h2>
-              <p className="body-large max-w-xl">
+      <section className="border-t border-dashed border-encre/25 bg-surface">
+        <div className="container-custom py-14 md:py-24">
+          <div className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-[65ch]">
+              <h2 className="mb-4 font-titre text-[28px] font-semibold leading-[1.15] text-encre md:text-[36px]">
+                Nos créations
+              </h2>
+              <p className="font-corps text-[17px] leading-[1.65] text-encre/80">
                 Découvrez nos dernières pièces, fabriquées avec soin dans notre atelier.
               </p>
             </div>
-            <Link href="/boutique" className="mt-4 md:mt-0">
-              <Button variant="outline">Voir tout</Button>
+            <Link href="/boutique" className={`${linkSecondary} whitespace-nowrap`}>
+              Voir tout
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {produitsTyped.slice(0, 6).map((produit) => (
               <ProductCard key={produit.id} produit={produit} />
             ))}
@@ -118,16 +129,13 @@ export default async function Home() {
       </section>
 
       {/* Section À propos */}
-      <section className="section-padding bg-cream">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="font-display text-secondary tracking-widest uppercase mb-4">
-              Notre histoire
-            </p>
-            <h2 className="heading-2 text-primary mb-6">
+      <section className="border-t border-dashed border-encre/25 bg-surface">
+        <div className="container-custom py-14 md:py-24">
+          <div className="max-w-[65ch]">
+            <h2 className="mb-6 font-titre text-[28px] font-semibold leading-[1.15] text-encre md:text-[36px]">
               Derrière chaque création, il y a une passion
             </h2>
-            <div className="space-y-4 text-text-secondary text-lg">
+            <div className="space-y-4 font-corps text-[17px] leading-[1.65] text-encre/80">
               <p>
                 MToi Créations est née d&apos;une passion pour la couture et du désir de créer
                 des pièces uniques qui accompagnent les femmes dans leur quotidien.
@@ -142,8 +150,8 @@ export default async function Home() {
               </p>
             </div>
             <div className="mt-8">
-              <Link href="/contact">
-                <Button variant="secondary">En savoir plus</Button>
+              <Link href="/contact" className={linkSecondary}>
+                En savoir plus
               </Link>
             </div>
           </div>
@@ -151,15 +159,15 @@ export default async function Home() {
       </section>
 
       {/* Témoignage / Citation */}
-      <section className="section-padding bg-secondary text-white text-center">
-        <div className="container-custom max-w-3xl">
-          <blockquote className="font-serif text-2xl md:text-3xl lg:text-4xl italic mb-6">
-            &ldquo;Une alliée du quotidien pour toutes celles qui veulent se sentir prêtes,
-            où qu&apos;elles soient.&rdquo;
-          </blockquote>
-          <p className="font-display text-accent tracking-widest uppercase">
-            MToi Créations
-          </p>
+      <section className="bg-encre">
+        <div className="container-custom py-14 md:py-24">
+          <div className="max-w-[65ch]">
+            <blockquote className="mb-6 font-corps text-[24px] italic leading-[1.3] text-fond">
+              &ldquo;Une alliée du quotidien pour toutes celles qui veulent se sentir prêtes,
+              où qu&apos;elles soient.&rdquo;
+            </blockquote>
+            <p className="font-titre font-medium text-safran">MToi Créations</p>
+          </div>
         </div>
       </section>
     </>
