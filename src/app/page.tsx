@@ -27,18 +27,22 @@ export default async function Home() {
           <div className="md:grid md:grid-cols-12 md:gap-x-16 md:items-center">
             <div className="text-center md:col-span-7 md:text-left">
               <h1 className="mb-6 font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">
-                Fait avec soin et passion
+                Fabriqué pour durer, pas pour être jeté.
               </h1>
-              <p className="mx-auto mb-10 max-w-[65ch] font-corps text-[17px] leading-[1.65] text-encre/80 md:mx-0">
-                Des pièces uniques et durables pour accompagner votre quotidien.
-                Chaque création est pensée pour allier élégance, praticité et authenticité.
+              <p className="mx-auto max-w-[65ch] font-corps text-[17px] leading-[1.65] text-encre/80 md:mx-0">
+                Lingettes démaquillantes, bandeaux, pochettes menstruelles.
+                Des essentiels du quotidien fabriqués à la main à Granby.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-6 md:justify-start">
+              <p className="mx-auto mt-10 max-w-[65ch] font-titre text-[24px] leading-[1.3] text-encre md:mx-0">
+                Remplace le jetable, une pièce à la fois.
+              </p>
+              <div className="mx-auto mt-6 h-0 w-16 border-t-2 border-dashed border-safran md:mx-0" />
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-6 md:justify-start">
                 <Link href="/boutique" className={btnPrimary}>
-                  Découvrir la boutique
+                  Voir les créations
                 </Link>
                 <Link href="/contact" className={linkSecondary}>
-                  Me contacter
+                  Une idée sur mesure
                 </Link>
               </div>
             </div>
@@ -88,10 +92,10 @@ export default async function Home() {
         <div className="container-custom py-14 md:py-24">
           <div className="mb-10 max-w-[65ch] md:mb-16">
             <h2 className="mb-4 font-titre text-[28px] font-semibold leading-[1.15] text-encre md:text-[36px]">
-              Nos catégories
+              Par besoin
             </h2>
             <p className="font-corps text-[17px] leading-[1.65] text-encre/80">
-              Explorez nos créations artisanales, conçues avec amour pour répondre à vos besoins quotidiens.
+              Trouve ce qu’il te faut, selon ce que tu veux remplacer.
             </p>
           </div>
 
@@ -109,10 +113,10 @@ export default async function Home() {
           <div className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
             <div className="max-w-[65ch]">
               <h2 className="mb-4 font-titre text-[28px] font-semibold leading-[1.15] text-encre md:text-[36px]">
-                Nos créations
+                Dernières pièces
               </h2>
               <p className="font-corps text-[17px] leading-[1.65] text-encre/80">
-                Découvrez nos dernières pièces, fabriquées avec soin dans notre atelier.
+                Cousues récemment chez moi. Les quantités sont limitées.
               </p>
             </div>
             <Link href="/boutique" className={`${linkSecondary} whitespace-nowrap`}>
@@ -133,20 +137,19 @@ export default async function Home() {
         <div className="container-custom py-14 md:py-24">
           <div className="max-w-[65ch]">
             <h2 className="mb-6 font-titre text-[28px] font-semibold leading-[1.15] text-encre md:text-[36px]">
-              Derrière chaque création, il y a une passion
+              Une couturière, une table, des pièces qui durent
             </h2>
             <div className="space-y-4 font-corps text-[17px] leading-[1.65] text-encre/80">
               <p>
-                MToi Créations est née d&apos;une passion pour la couture et du désir de créer
-                des pièces uniques qui accompagnent les femmes dans leur quotidien.
+                J’ai commencé MToi Créations parce que j’en avais assez de racheter les
+                mêmes choses jetables. Je couds des lingettes démaquillantes, des bandeaux
+                et des pochettes menstruelles qui remplacent le jetable dans le quotidien
+                des femmes.
               </p>
               <p>
-                Chaque produit est conçu et fabriqué avec soin dans mon atelier au Québec,
-                en utilisant des matériaux de qualité soigneusement sélectionnés.
-              </p>
-              <p>
-                Mon objectif : vous offrir des créations pratiques, élégantes et durables,
-                qui reflètent votre personnalité et répondent à vos besoins.
+                Tout est fabriqué chez moi, à Granby, avec des tissus que je choisis
+                moi-même. Si tu veux une pièce dans un tissu précis ou une taille
+                particulière, écris-moi.
               </p>
             </div>
             <div className="mt-8">
@@ -154,19 +157,6 @@ export default async function Home() {
                 En savoir plus
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Témoignage / Citation */}
-      <section className="bg-encre">
-        <div className="container-custom py-14 md:py-24">
-          <div className="max-w-[65ch]">
-            <blockquote className="mb-6 font-corps text-[24px] italic leading-[1.3] text-fond">
-              &ldquo;Une alliée du quotidien pour toutes celles qui veulent se sentir prêtes,
-              où qu&apos;elles soient.&rdquo;
-            </blockquote>
-            <p className="font-titre font-medium text-safran">MToi Créations</p>
           </div>
         </div>
       </section>

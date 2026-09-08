@@ -8,15 +8,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Logo et description */}
           <div className="md:col-span-2">
-            <p className="font-script text-4xl text-white leading-none mb-4">
-              Mtoi Créations
+            <p className="font-titre text-4xl text-white leading-none mb-4">
+              MToi Créations
             </p>
             <p className="text-cream/80 max-w-md">
-              Créations artisanales faites avec soin et passion. Des pièces
-              uniques et durables pour accompagner votre quotidien.
+              Essentiels lavables fabriqués à la main à Granby.
             </p>
             <p className="text-accent mt-4 font-display text-lg">
-              Authenticité • Qualité • Simplicité
+              Fabriqué à Granby • Lavable et réutilisable • Sur mesure possible
             </p>
           </div>
 
