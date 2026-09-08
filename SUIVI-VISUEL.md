@@ -4,6 +4,55 @@ Liste de ce qui reste à aligner sur `DIRECTION-VISUELLE.md`, à traiter dans la
 session dédiée à chaque page concernée plutôt qu'en modifiant des classes
 partagées en dehors du périmètre d'une session en cours.
 
+## État au 8 septembre 2026
+
+### Terminé
+- Jetons de couleur et polices dans `tailwind.config.ts`
+- Session A : `globals.css`, Header, Footer (structure seulement), retrait
+  du logo animé et de `LogoIntroOverlay`, retrait du store
+  `logoIntroStore`
+- Agrandissement du logo (112px desktop, 76,5px mobile)
+- Correction de l'orthographe Pochette Fid'Elle
+- Session B : page d'accueil, héros sans image de fond, nouvelle
+  composition asymétrique, bouton `safran` unique
+- Réécriture complète des textes de la page d'accueil et du footer,
+  passage au tutoiement
+- Retrait du bloc de citation auto-attribuée
+
+### À faire, par ordre de priorité
+
+1. **Session C — Catalogue**
+   Fichiers : `CategoryCard.tsx`, `ProductCard.tsx`
+   Objectif : appliquer la palette du devis, cadrage 4:5 des images,
+   grille asymétrique avec un produit vedette sur deux colonnes.
+   **C'est le prochain point de reprise.**
+
+2. **Session D — Page produit et tunnel de commande**
+
+3. **Session E — Pages admin**
+   Environ 260 occurrences. Remplacement mécanique, aucun jugement
+   esthétique requis.
+
+4. **Session F — Couleurs du footer**
+   Jetons `bg-primary`, `text-white`, `text-cream`, `text-accent`
+
+5. **Session G — Gabarits de courriels**
+   Environ 79 valeurs hex codées en dur dans `api/admin`,
+   `api/checkout`, `api/commandes`, `api/commandes/[id]`, `api/contact`
+
+### En attente, hors code
+- Photos de produits : format 4:5, fond `#F4EFF2`, une photo catalogue
+  et deux photos de contexte par produit. Téléversement par le panneau
+  `/admin`, qui gère Cloudinary. Compte Canva gratuit sans suppression
+  d'arrière-plan : utiliser Adobe Firefly ou photographier sur fond uni.
+- Tutoiement à propager sur les autres pages et dans les gabarits de
+  courriels.
+- Navigation à repenser : Boutique, Hygiène féminine et Soins et
+  Confort se chevauchent.
+- Alerte de sécurité RLS sur Supabase, non traitée.
+- Stockage des commandes dans `data/commandes.json`, éphémère sur
+  Netlify. À migrer vers Supabase.
+
 ## Classes partagées hors échelle d'espacement (`src/app/globals.css`)
 
 L'échelle autorisée par le devis est `8 · 16 · 24 · 40 · 64 · 96 · 160`. Deux
