@@ -60,19 +60,19 @@ export default async function SousCategoriePage({ params }: PageProps) {
   );
 
   return (
-    <div className="section-padding bg-cream-light min-h-screen">
+    <div className="min-h-screen bg-fond py-14 md:py-24">
       <div className="container-custom">
         {/* Fil d'Ariane */}
-        <nav className="mb-8 text-sm">
-          <ol className="flex items-center gap-2 text-text-secondary">
+        <nav className="mb-6 text-sm">
+          <ol className="flex items-center gap-2 text-encre/70">
             <li>
-              <Link href="/" className="hover:text-secondary transition-colors">
+              <Link href="/" className="hover:text-framboise transition-colors">
                 Accueil
               </Link>
             </li>
             <li>/</li>
             <li>
-              <Link href="/boutique" className="hover:text-secondary transition-colors">
+              <Link href="/boutique" className="hover:text-framboise transition-colors">
                 Boutique
               </Link>
             </li>
@@ -80,39 +80,39 @@ export default async function SousCategoriePage({ params }: PageProps) {
             <li>
               <Link
                 href={`/boutique/${categorie.slug}`}
-                className="hover:text-secondary transition-colors"
+                className="hover:text-framboise transition-colors"
               >
                 {categorie.nom}
               </Link>
             </li>
             <li>/</li>
-            <li className="text-primary font-medium">{sousCategorie.nom}</li>
+            <li className="font-medium text-encre">{sousCategorie.nom}</li>
           </ol>
         </nav>
 
         {/* En-tête */}
-        <div className="text-center mb-12">
-          <p className="font-display text-secondary tracking-widest uppercase mb-2">
-            {categorie.nom}
-          </p>
-          <h1 className="heading-1 text-primary mb-4">{sousCategorie.nom}</h1>
+        <div className="mb-10 max-w-[65ch] md:mb-16">
+          <p className="mb-2 font-titre text-encre/70">{categorie.nom}</p>
+          <h1 className="font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">
+            {sousCategorie.nom}
+          </h1>
         </div>
 
         {/* Grille de produits */}
         {produitsFiltres.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-            {produitsFiltres.map((produit) => (
-              <ProductCard key={produit.id} produit={produit} />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4">
+            {produitsFiltres.map((produit, index) => (
+              <ProductCard key={produit.id} produit={produit} vedette={index === 0} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16">
-            <p className="text-text-secondary text-lg mb-4">
+          <div className="py-16">
+            <p className="mb-4 font-corps text-[17px] text-encre/80">
               Aucun produit dans cette sous-catégorie pour le moment.
             </p>
             <Link
               href={`/boutique/${categorie.slug}`}
-              className="text-secondary hover:text-secondary-dark font-display"
+              className="font-titre font-medium text-framboise underline underline-offset-4 hover:text-framboise/80"
             >
               Voir toute la catégorie {categorie.nom}
             </Link>

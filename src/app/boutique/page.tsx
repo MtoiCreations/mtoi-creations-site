@@ -38,24 +38,26 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="section-padding bg-cream-light min-h-screen">
+    <div className="min-h-screen bg-fond py-14 md:py-24">
       <div className="container-custom">
         {/* En-tête */}
-        <div className="text-center mb-12">
-          <h1 className="heading-1 text-primary mb-4">Notre boutique</h1>
-          <p className="body-large max-w-2xl mx-auto">
+        <div className="mb-10 max-w-[65ch] md:mb-16">
+          <h1 className="mb-4 font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">
+            Notre boutique
+          </h1>
+          <p className="font-corps text-[17px] leading-[1.65] text-encre/80">
             Explorez nos créations artisanales, faites avec soin et passion.
           </p>
         </div>
 
         {/* Filtres par catégorie */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="mb-10 flex flex-wrap gap-4 md:mb-16">
           <Link
             href="/boutique"
-            className={`px-4 py-2 rounded-button font-display transition-all ${
+            className={`rounded-[4px] px-4 py-2 font-titre text-sm transition-colors ${
               !params.categorie
-                ? "bg-secondary text-white"
-                : "bg-white text-primary hover:bg-cream border border-cream-dark"
+                ? "bg-safran text-encre"
+                : "border border-lichen/30 bg-lichen/10 text-lichen hover:bg-lichen/20"
             }`}
           >
             Tous
@@ -64,7 +66,7 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
             <Link
               key={cat.id}
               href={`/boutique/${cat.slug}`}
-              className="px-4 py-2 rounded-button font-display bg-white text-primary hover:bg-cream border border-cream-dark transition-all"
+              className="rounded-[4px] border border-lichen/30 bg-lichen/10 px-4 py-2 font-titre text-sm text-lichen transition-colors hover:bg-lichen/20"
             >
               {cat.nom}
             </Link>
@@ -73,29 +75,28 @@ export default async function BoutiquePage({ searchParams }: PageProps) {
 
         {/* Résultats de recherche */}
         {params.recherche && (
-          <div className="mb-8 p-4 bg-white rounded-card">
-            <p className="text-text-secondary">
-              Résultats pour &ldquo;<span className="font-medium text-primary">{params.recherche}</span>&rdquo;
-              <span className="ml-2">({produitsFiltres.length} produit{produitsFiltres.length > 1 ? "s" : ""})</span>
-            </p>
-          </div>
+          <p className="mb-8 font-corps text-[17px] text-encre/80">
+            Résultats pour «{" "}
+            <span className="font-medium text-encre">{params.recherche}</span>{" "}
+            » ({produitsFiltres.length} produit{produitsFiltres.length > 1 ? "s" : ""})
+          </p>
         )}
 
         {/* Grille de produits */}
         {produitsFiltres.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-            {produitsFiltres.map((produit) => (
-              <ProductCard key={produit.id} produit={produit} />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4">
+            {produitsFiltres.map((produit, index) => (
+              <ProductCard key={produit.id} produit={produit} vedette={index === 0} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16">
-            <p className="text-text-secondary text-lg mb-4">
+          <div className="py-16">
+            <p className="mb-4 font-corps text-[17px] text-encre/80">
               Aucun produit trouvé.
             </p>
             <Link
               href="/boutique"
-              className="text-secondary hover:text-secondary-dark font-display"
+              className="font-titre font-medium text-framboise underline underline-offset-4 hover:text-framboise/80"
             >
               Voir tous les produits
             </Link>

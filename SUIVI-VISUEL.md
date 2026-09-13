@@ -21,6 +21,10 @@ partagées en dehors du périmètre d'une session en cours.
 - Session C : `CategoryCard.tsx` et `ProductCard.tsx` migrés vers la
   palette du devis, cadrage 4:5, grille asymétrique avec un produit
   vedette sur deux colonnes (page d'accueil)
+- Session H : `boutique/page.tsx`, `boutique/[categorie]/page.tsx`,
+  `boutique/[categorie]/[sousCategorie]/page.tsx` migrées vers la
+  palette et l'échelle du devis, produit vedette sur deux colonnes.
+  Page produit non touchée (hors périmètre de cette session).
 
 ### À faire, par ordre de priorité
 
@@ -32,18 +36,18 @@ partagées en dehors du périmètre d'une session en cours.
    esthétique requis.
 
 3. **Session F — Couleurs du footer**
-   Jetons `bg-primary`, `text-white`, `text-cream`, `text-accent`
+   Jetons `bg-primary`, `text-white`, `text-cream`, `text-accent`.
+   **Inclut aussi le logo du footer** : la Session H voulait remplacer
+   le texte "MToi Créations" par `public/images/logo.png`, mais ce
+   fichier est en noir pur sur fond transparent (vérifié par lecture de
+   pixels), illisible sur le fond sombre actuel du footer (`#3B1526`,
+   contraste ≈ 1,1:1). Aucune variante claire n'existe. À décider ici :
+   soit une variante claire du logo, soit un fond de footer plus clair,
+   soit garder le texte.
 
 4. **Session G — Gabarits de courriels**
    Environ 79 valeurs hex codées en dur dans `api/admin`,
    `api/checkout`, `api/commandes`, `api/commandes/[id]`, `api/contact`
-
-5. **Session H — `boutique/*`**
-   `boutique/page.tsx`, `boutique/[categorie]/page.tsx`,
-   `boutique/[categorie]/[sousCategorie]/page.tsx` : ces pages utilisent
-   déjà `CategoryCard`/`ProductCard` (migrés en Session C) mais leur
-   propre mise en page (titre centré, pastilles de filtre, fonds) reste
-   sur l'ancienne palette — à vérifier au passage lors de leur session.
 
 ### En attente, hors code
 - Photos de produits : format 4:5, fond `#F4EFF2`, une photo catalogue
@@ -93,12 +97,13 @@ latérale 24px mobile / 64px minimum sur ordinateur).
 valide.
 
 **Fichiers qui utilisent `.section-padding` :** mêmes que `.container-custom`
-ci-dessus (sauf `src/app/page.tsx`, traité en Session B avec des classes
-`py-14 md:py-24` explicites plutôt que `.section-padding`), sauf aussi
-`not-found.tsx`, `admin/commandes/page.tsx`, `confirmation/page.tsx` et
-`panier/page.tsx` (à revérifier au cas par cas lors de leur session
-respective — cette liste vient d'une recherche par fichier, pas d'un audit
-ligne par ligne de chaque usage).
+ci-dessus, sauf `src/app/page.tsx` (Session B) et les 3 pages `boutique/*`
+(Session H), qui utilisent désormais des classes `py-14 md:py-24`
+explicites plutôt que `.section-padding`. Sauf aussi `not-found.tsx`,
+`admin/commandes/page.tsx`, `confirmation/page.tsx` et `panier/page.tsx`
+(à revérifier au cas par cas lors de leur session respective — cette
+liste vient d'une recherche par fichier, pas d'un audit ligne par ligne
+de chaque usage).
 
 ## Composants partagés
 
@@ -142,3 +147,10 @@ périmètre d'une session ciblée sur une seule page. À faire plutôt :
   recolorés (`lichen`/`safran`/`encre`). Grille asymétrique ajoutée sur
   la page d'accueil via une prop `vedette` (premier produit sur 2
   colonnes). Vérifié sans régression sur `boutique` et `produit/[id]`.
+- 2026-09-13 — Session H (`boutique/*`) : les 3 pages migrées vers la
+  palette et l'échelle du devis (titres à gauche, `py-14 md:py-24`,
+  filtres `lichen`/`safran` à rayon 4px, étiquette de sous-catégorie
+  décapitalisée), produit vedette sur 2 colonnes. Vérifié en mobile
+  375px. Tentative de remplacement du texte du footer par le logo
+  reportée à la Session F : `logo.png` est en noir pur sur fond
+  transparent, illisible sur le fond sombre actuel du footer.
