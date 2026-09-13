@@ -70,6 +70,19 @@ partagées en dehors du périmètre d'une session en cours.
 - Alerte de sécurité RLS sur Supabase, non traitée.
 - Stockage des commandes dans `data/commandes.json`, éphémère sur
   Netlify. À migrer vers Supabase.
+- **Descriptions de produits** : les descriptions actuelles sont
+  génériques et interchangeables. Objectif : ajouter une phrase
+  personnelle à chaque produit, sans tout réécrire.
+
+  Structure visée :
+  - Une phrase sur le tissu ou son origine
+  - Deux lignes factuelles : matière, dimensions, entretien
+  - Une phrase sur la quantité disponible
+
+  Approche : commencer par les cinq meilleurs vendeurs, mesurer l'effet
+  avant d'étendre au reste du catalogue.
+
+  À faire depuis le panneau admin, aucune session de code requise.
 
 ## Classes partagées hors échelle d'espacement (`src/app/globals.css`)
 
