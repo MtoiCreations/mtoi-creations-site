@@ -8,6 +8,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const COMMANDES_FILE = path.join(process.cwd(), "data", "commandes.json");
 
+function checkAuth(request: NextRequest): boolean {
+  const authHeader = request.headers.get("authorization");
+  const password = authHeader?.replace("Bearer ", "");
+  return password === process.env.ADMIN_PASSWORD;
+}
+
 async function getCommandes() {
   try {
     const data = await fs.readFile(COMMANDES_FILE, "utf-8");
@@ -189,7 +195,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  if (!checkAuth(request)) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
   try {
     const commandes = await getCommandes();
     return NextResponse.json(commandes);

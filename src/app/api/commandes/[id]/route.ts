@@ -6,6 +6,12 @@ import path from "path";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const COMMANDES_FILE = path.join(process.cwd(), "data", "commandes.json");
 
+function checkAuth(request: NextRequest): boolean {
+  const authHeader = request.headers.get("authorization");
+  const password = authHeader?.replace("Bearer ", "");
+  return password === process.env.ADMIN_PASSWORD;
+}
+
 interface Commande {
   id: string;
   numeroCommande: string;
@@ -53,6 +59,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!checkAuth(request)) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
   const { id } = await params;
   const commandes = await getCommandes();
   const commande = commandes.find((c) => c.id === id);
@@ -68,6 +78,10 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!checkAuth(request)) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
     const body = await request.json();

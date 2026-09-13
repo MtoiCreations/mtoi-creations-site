@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
 import {
@@ -69,6 +70,7 @@ const transporteurs = [
 ];
 
 export default function CommandesAdminPage() {
+  const router = useRouter();
   const [commandes, setCommandes] = useState<Commande[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -76,12 +78,23 @@ export default function CommandesAdminPage() {
   const [filter, setFilter] = useState<string>("tous");
 
   useEffect(() => {
-    fetchCommandes();
-  }, []);
+    const token = sessionStorage.getItem("adminAuth");
+    if (!token) {
+      router.push("/admin");
+      return;
+    }
+    fetchCommandes(token);
+  }, [router]);
 
-  const fetchCommandes = async () => {
+  const fetchCommandes = async (token: string) => {
     try {
-      const response = await fetch("/api/commandes");
+      const response = await fetch("/api/commandes", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.status === 401) {
+        router.push("/admin");
+        return;
+      }
       const data = await response.json();
       setCommandes(data.sort((a: Commande, b: Commande) =>
         new Date(b.dateCreation).getTime() - new Date(a.dateCreation).getTime()
@@ -100,11 +113,20 @@ export default function CommandesAdminPage() {
     transporteur?: string,
     envoyerEmail: boolean = true
   ) => {
+    const token = sessionStorage.getItem("adminAuth");
+    if (!token) {
+      router.push("/admin");
+      return;
+    }
+
     setUpdating(id);
     try {
       const response = await fetch(`/api/commandes/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           statut: newStatut,
           numeroSuivi,
@@ -113,8 +135,13 @@ export default function CommandesAdminPage() {
         }),
       });
 
+      if (response.status === 401) {
+        router.push("/admin");
+        return;
+      }
+
       if (response.ok) {
-        await fetchCommandes();
+        await fetchCommandes(token);
       }
     } catch (error) {
       console.error("Erreur:", error);
