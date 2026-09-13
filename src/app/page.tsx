@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { categories } from "@/data/categories";
 import { getProduits } from "@/lib/supabase";
@@ -6,9 +5,6 @@ import ProductCard from "@/components/ProductCard";
 import CategoryCard from "@/components/CategoryCard";
 
 export const revalidate = 60;
-
-// Photo provisoire du héros — à remplacer par une photo dédiée quand elle sera prête.
-const HERO_IMAGE_SRC = "/images/hero-bg.png";
 
 const btnPrimary =
   "inline-flex items-center justify-center rounded-[4px] bg-safran px-6 py-3 font-titre font-medium text-encre transition-colors hover:bg-safran/90";
@@ -44,19 +40,6 @@ export default async function Home() {
                 <Link href="/contact" className={linkSecondary}>
                   Une idée sur mesure
                 </Link>
-              </div>
-            </div>
-
-            <div className="mt-10 md:col-span-4 md:col-start-9 md:mt-0">
-              <div className="relative mx-auto aspect-[4/5] max-w-sm md:max-w-none">
-                <Image
-                  src={HERO_IMAGE_SRC}
-                  alt="Création artisanale MToi Créations"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover"
-                  priority
-                />
               </div>
             </div>
           </div>
