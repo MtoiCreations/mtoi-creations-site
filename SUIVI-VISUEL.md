@@ -25,11 +25,20 @@ partagées en dehors du périmètre d'une session en cours.
   `boutique/[categorie]/[sousCategorie]/page.tsx` migrées vers la
   palette et l'échelle du devis, produit vedette sur deux colonnes.
   Page produit non touchée (hors périmètre de cette session).
+- Session D : page produit (`produit/[id]/ProduitClient.tsx`,
+  `ProductGallery.tsx`, `ProductDimensions.tsx`, `ProductReviews.tsx`)
+  migrée vers la palette et l'échelle du devis, galerie 4:5 sans
+  recadrage, un seul bouton principal (`safran`), disponibilité en
+  texte discret, tutoiement complet. Panier et tunnel de commande non
+  touchés (hors périmètre de cette session) — voir Session I.
 
 ### À faire, par ordre de priorité
 
-1. **Session D — Page produit et tunnel de commande**
-   **C'est le prochain point de reprise.**
+1. **Session I — Panier et tunnel de commande**
+   `panier/page.tsx`, `commande/page.tsx`, `confirmation/page.tsx`,
+   `CartItem.tsx`, `QuantitySelector.tsx` (partagé avec la page produit —
+   vérifier son rendu là aussi), `Button.tsx` (partagé partout — encore
+   sur l'ancienne palette). **C'est le prochain point de reprise.**
 
 2. **Session E — Pages admin**
    Environ 260 occurrences. Remplacement mécanique, aucun jugement
@@ -97,9 +106,10 @@ latérale 24px mobile / 64px minimum sur ordinateur).
 valide.
 
 **Fichiers qui utilisent `.section-padding` :** mêmes que `.container-custom`
-ci-dessus, sauf `src/app/page.tsx` (Session B) et les 3 pages `boutique/*`
-(Session H), qui utilisent désormais des classes `py-14 md:py-24`
-explicites plutôt que `.section-padding`. Sauf aussi `not-found.tsx`,
+ci-dessus, sauf `src/app/page.tsx` (Session B), les 3 pages `boutique/*`
+(Session H) et `produit/[id]/ProduitClient.tsx` (Session D), qui utilisent
+désormais des classes `py-14 md:py-24` explicites plutôt que
+`.section-padding`. Sauf aussi `not-found.tsx`,
 `admin/commandes/page.tsx`, `confirmation/page.tsx` et `panier/page.tsx`
 (à revérifier au cas par cas lors de leur session respective — cette
 liste vient d'une recherche par fichier, pas d'un audit ligne par ligne
@@ -116,6 +126,21 @@ d'accueil pour le premier produit de "Dernières pièces". Rendu vérifié
 sur `boutique` et `produit/[id]` (pages elles-mêmes non retouchées, voir
 Session H ci-dessus) : aucune régression, badges de statut migrés vers
 `lichen`/`safran`/`encre` selon l'état.
+
+### `src/components/ProductGallery.tsx`, `ProductDimensions.tsx`, `ProductReviews.tsx`
+**Migrés en Session D** — utilisés uniquement par la page produit, donc
+traités avec elle. Galerie en 4:5 avec `object-contain` (aucun
+recadrage), vignettes sans rayon, flèches/points recolorés. Étoiles des
+avis en `safran`, "Achat vérifié" en `lichen`.
+
+### `src/components/QuantitySelector.tsx` et `src/components/Button.tsx`
+**Non touchés** — partagés avec le panier (`CartItem.tsx` pour
+`QuantitySelector`, à peu près toutes les pages pour `Button`). La page
+produit n'utilise plus `Button.tsx` (remplacé par des classes locales
+`btnPrimary`/`btnSecondary`/lien `framboise` dans `ProduitClient.tsx`,
+même approche qu'aux Sessions B/C/H), mais `QuantitySelector` reste sur
+l'ancienne palette (`cream`/`primary`/`secondary`) et se voit donc tel
+quel sur la page produit en attendant la Session I.
 
 ## Comment traiter ceci
 
@@ -154,3 +179,14 @@ périmètre d'une session ciblée sur une seule page. À faire plutôt :
   375px. Tentative de remplacement du texte du footer par le logo
   reportée à la Session F : `logo.png` est en noir pur sur fond
   transparent, illisible sur le fond sombre actuel du footer.
+- 2026-09-13 — Session D (page produit) : `ProduitClient.tsx` recomposé
+  en grille asymétrique `lg:grid-cols-12` (galerie 7 colonnes,
+  informations 5), galerie migrée vers 4:5 sans recadrage, un seul
+  bouton principal `safran` ("Ajouter au panier"), "Commander
+  maintenant" en lien `framboise` souligné sous le bouton, sélecteurs
+  de variante en bordure `encre/25%`/actif `framboise`, disponibilité
+  en texte discret `encre/65%` sans icône ni pastille. Tutoiement
+  complet (message d'erreur, état "commandes suspendues", modal de
+  confirmation). Focus clavier `framboise` vérifié, aucun débordement
+  mobile 375px. Panier et tunnel de commande non touchés — reportés à
+  la Session I.

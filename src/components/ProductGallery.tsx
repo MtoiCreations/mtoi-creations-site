@@ -43,8 +43,8 @@ export default function ProductGallery({ photos, alt, nomProduit }: ProductGalle
 
   if (photos.length === 0) {
     return (
-      <div className="aspect-[3/4] bg-cream rounded-image flex items-center justify-center">
-        <p className="text-text-secondary">Aucune image disponible</p>
+      <div className="flex aspect-[4/5] items-center justify-center bg-fond">
+        <p className="font-corps text-encre/70">Aucune photo pour l’instant</p>
       </div>
     );
   }
@@ -53,7 +53,7 @@ export default function ProductGallery({ photos, alt, nomProduit }: ProductGalle
     <div className="space-y-4">
       {/* Image principale */}
       <div
-        className="relative aspect-[3/4] overflow-hidden rounded-image bg-cream"
+        className="relative aspect-[4/5] overflow-hidden bg-fond"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -62,8 +62,8 @@ export default function ProductGallery({ photos, alt, nomProduit }: ProductGalle
           src={photos[currentIndex]}
           alt={`${productName} - Photo ${currentIndex + 1}`}
           fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-contain"
+          sizes="(max-width: 1024px) 100vw, 58vw"
           priority
         />
 
@@ -72,32 +72,32 @@ export default function ProductGallery({ photos, alt, nomProduit }: ProductGalle
           <>
             <button
               onClick={goToPrevious}
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-soft transition-all"
+              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-[4px] bg-surface/90 p-2 shadow-soft transition-all hover:bg-surface"
               aria-label="Photo précédente"
             >
-              <ChevronLeft className="h-6 w-6 text-primary" />
+              <ChevronLeft className="h-6 w-6 text-encre" />
             </button>
             <button
               onClick={goToNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-soft transition-all"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-[4px] bg-surface/90 p-2 shadow-soft transition-all hover:bg-surface"
               aria-label="Photo suivante"
             >
-              <ChevronRight className="h-6 w-6 text-primary" />
+              <ChevronRight className="h-6 w-6 text-encre" />
             </button>
           </>
         )}
 
         {/* Indicateur de position */}
         {photos.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2">
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 space-x-2">
             {photos.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
+                className={`h-2 rounded-full transition-all ${
                   index === currentIndex
-                    ? "bg-secondary w-6"
-                    : "bg-white/80 hover:bg-white"
+                    ? "w-6 bg-framboise"
+                    : "w-2 bg-surface/80 hover:bg-surface"
                 }`}
                 aria-label={`Aller à la photo ${index + 1}`}
               />
@@ -113,9 +113,9 @@ export default function ProductGallery({ photos, alt, nomProduit }: ProductGalle
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all ${
+              className={`relative h-20 w-16 flex-shrink-0 overflow-hidden bg-fond transition-all ${
                 index === currentIndex
-                  ? "ring-2 ring-secondary ring-offset-2"
+                  ? "ring-2 ring-framboise ring-offset-2"
                   : "opacity-70 hover:opacity-100"
               }`}
             >
@@ -123,8 +123,8 @@ export default function ProductGallery({ photos, alt, nomProduit }: ProductGalle
                 src={photo}
                 alt={`${productName} - Vignette ${index + 1}`}
                 fill
-                className="object-cover"
-                sizes="80px"
+                className="object-contain"
+                sizes="64px"
               />
             </button>
           ))}

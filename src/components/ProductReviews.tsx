@@ -15,8 +15,8 @@ function StarRating({ note }: { note: number }) {
           key={star}
           className={`h-4 w-4 ${
             star <= note
-              ? "fill-amber-400 text-amber-400"
-              : "fill-gray-200 text-gray-200"
+              ? "fill-safran text-safran"
+              : "fill-encre/10 text-encre/10"
           }`}
         />
       ))}
@@ -39,12 +39,12 @@ export default function ProductReviews({ avis }: ProductReviewsProps) {
   const moyenneNote = avis.reduce((acc, a) => acc + a.note, 0) / avis.length;
 
   return (
-    <div className="mt-8 pt-8 border-t border-cream-dark">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-primary">Avis clients</h2>
+    <div className="mt-8 border-t border-encre/10 pt-8">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="font-titre text-xl text-encre">Avis clients</h2>
         <div className="flex items-center gap-2">
           <StarRating note={Math.round(moyenneNote)} />
-          <span className="text-sm text-text-secondary">
+          <span className="text-sm text-encre/70">
             ({avis.length} avis)
           </span>
         </div>
@@ -54,14 +54,14 @@ export default function ProductReviews({ avis }: ProductReviewsProps) {
         {avis.map((avisItem) => (
           <div
             key={avisItem.id}
-            className="p-4 bg-cream rounded-card"
+            className="border border-encre/10 bg-surface p-4"
           >
-            <div className="flex items-start justify-between mb-2">
+            <div className="mb-2 flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-primary">{avisItem.auteur}</span>
+                  <span className="font-medium text-encre">{avisItem.auteur}</span>
                   {avisItem.verifie && (
-                    <span className="inline-flex items-center gap-1 text-xs text-green-600">
+                    <span className="inline-flex items-center gap-1 text-xs text-lichen">
                       <CheckCircle className="h-3 w-3" />
                       Achat vérifié
                     </span>
@@ -69,11 +69,11 @@ export default function ProductReviews({ avis }: ProductReviewsProps) {
                 </div>
                 <StarRating note={avisItem.note} />
               </div>
-              <span className="text-xs text-text-light">
+              <span className="text-xs text-encre/50">
                 {formatDate(avisItem.date)}
               </span>
             </div>
-            <p className="text-text-secondary text-sm mt-2">
+            <p className="mt-2 font-corps text-sm text-encre/80">
               {avisItem.commentaire}
             </p>
           </div>

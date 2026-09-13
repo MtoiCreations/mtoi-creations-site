@@ -16,28 +16,28 @@ export default function ProductDimensions({ dimensions }: ProductDimensionsProps
   if (!hasDimensions) return null;
 
   return (
-    <div className="p-4 bg-cream rounded-card">
-      <div className="flex items-center gap-2 mb-3">
-        <Ruler className="h-5 w-5 text-secondary" />
-        <span className="font-display text-primary">Dimensions</span>
+    <div className="border border-encre/10 bg-surface p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <Ruler className="h-5 w-5 text-framboise" />
+        <span className="font-titre text-encre">Dimensions</span>
       </div>
       <div className="grid grid-cols-3 gap-4 text-center">
         {largeur && (
           <div>
-            <p className="text-2xl font-display text-secondary">{largeur}</p>
-            <p className="text-xs text-text-secondary">Largeur ({uniteLabel})</p>
+            <p className="font-titre text-2xl text-framboise">{largeur}</p>
+            <p className="text-xs text-encre/70">Largeur ({uniteLabel})</p>
           </div>
         )}
         {hauteur && (
           <div>
-            <p className="text-2xl font-display text-secondary">{hauteur}</p>
-            <p className="text-xs text-text-secondary">Hauteur ({uniteLabel})</p>
+            <p className="font-titre text-2xl text-framboise">{hauteur}</p>
+            <p className="text-xs text-encre/70">Hauteur ({uniteLabel})</p>
           </div>
         )}
         {profondeur && (
           <div>
-            <p className="text-2xl font-display text-secondary">{profondeur}</p>
-            <p className="text-xs text-text-secondary">Profondeur ({uniteLabel})</p>
+            <p className="font-titre text-2xl text-framboise">{profondeur}</p>
+            <p className="text-xs text-encre/70">Profondeur ({uniteLabel})</p>
           </div>
         )}
       </div>
