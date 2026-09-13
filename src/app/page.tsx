@@ -25,7 +25,7 @@ export default async function Home() {
               <h1 className="mb-6 font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">
                 Fabriqué pour durer, pas pour être jeté.
               </h1>
-              <p className="mx-auto max-w-[65ch] font-corps text-[17px] leading-[1.65] text-encre/80 md:mx-0">
+              <p className="mx-auto max-w-[65ch] font-corps text-[19px] leading-[1.6] text-encre/80 md:mx-0">
                 Lingettes démaquillantes, bandeaux, pochettes menstruelles.
                 Des essentiels du quotidien fabriqués à la main à Granby.
               </p>
