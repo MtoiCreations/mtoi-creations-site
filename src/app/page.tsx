@@ -32,7 +32,6 @@ export default async function Home() {
               <p className="mx-auto mt-10 max-w-[65ch] font-titre text-[24px] leading-[1.3] text-encre md:mx-0">
                 Remplace le jetable, une pièce à la fois.
               </p>
-              <div className="mx-auto mt-6 h-0 w-16 border-t-2 border-dashed border-safran md:mx-0" />
               <div className="mt-10 flex flex-wrap items-center justify-center gap-6 md:justify-start">
                 <Link href="/boutique" className={btnPrimary}>
                   Voir les créations
@@ -47,25 +46,14 @@ export default async function Home() {
       </section>
 
       {/* Valeurs */}
-      <section className="border-t border-dashed border-encre/25 bg-fond">
+      <section className="border-t border-dashed border-encre/25">
         <div className="container-custom py-6">
-          <div className="flex flex-wrap justify-center gap-8 text-center md:gap-16">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">✨</span>
-              <span className="font-titre text-encre">Authenticité</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">💎</span>
-              <span className="font-titre text-encre">Qualité</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🌿</span>
-              <span className="font-titre text-encre">Simplicité</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🇨🇦</span>
-              <span className="font-titre text-encre">Fait au Québec</span>
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-center">
+            <span className="font-titre text-[14px] text-encre/70">Fabriqué à Granby</span>
+            <span className="font-titre text-[14px] text-encre/70">·</span>
+            <span className="font-titre text-[14px] text-encre/70">Lavable et réutilisable</span>
+            <span className="font-titre text-[14px] text-encre/70">·</span>
+            <span className="font-titre text-[14px] text-encre/70">Sur mesure possible</span>
           </div>
         </div>
       </section>
