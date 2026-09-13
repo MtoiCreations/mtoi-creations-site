@@ -18,27 +18,32 @@ partagées en dehors du périmètre d'une session en cours.
 - Réécriture complète des textes de la page d'accueil et du footer,
   passage au tutoiement
 - Retrait du bloc de citation auto-attribuée
+- Session C : `CategoryCard.tsx` et `ProductCard.tsx` migrés vers la
+  palette du devis, cadrage 4:5, grille asymétrique avec un produit
+  vedette sur deux colonnes (page d'accueil)
 
 ### À faire, par ordre de priorité
 
-1. **Session C — Catalogue**
-   Fichiers : `CategoryCard.tsx`, `ProductCard.tsx`
-   Objectif : appliquer la palette du devis, cadrage 4:5 des images,
-   grille asymétrique avec un produit vedette sur deux colonnes.
+1. **Session D — Page produit et tunnel de commande**
    **C'est le prochain point de reprise.**
 
-2. **Session D — Page produit et tunnel de commande**
-
-3. **Session E — Pages admin**
+2. **Session E — Pages admin**
    Environ 260 occurrences. Remplacement mécanique, aucun jugement
    esthétique requis.
 
-4. **Session F — Couleurs du footer**
+3. **Session F — Couleurs du footer**
    Jetons `bg-primary`, `text-white`, `text-cream`, `text-accent`
 
-5. **Session G — Gabarits de courriels**
+4. **Session G — Gabarits de courriels**
    Environ 79 valeurs hex codées en dur dans `api/admin`,
    `api/checkout`, `api/commandes`, `api/commandes/[id]`, `api/contact`
+
+5. **Session H — `boutique/*`**
+   `boutique/page.tsx`, `boutique/[categorie]/page.tsx`,
+   `boutique/[categorie]/[sousCategorie]/page.tsx` : ces pages utilisent
+   déjà `CategoryCard`/`ProductCard` (migrés en Session C) mais leur
+   propre mise en page (titre centré, pastilles de filtre, fonds) reste
+   sur l'ancienne palette — à vérifier au passage lors de leur session.
 
 ### En attente, hors code
 - Photos de produits : format 4:5, fond `#F4EFF2`, une photo catalogue
@@ -95,21 +100,17 @@ ci-dessus (sauf `src/app/page.tsx`, traité en Session B avec des classes
 respective — cette liste vient d'une recherche par fichier, pas d'un audit
 ligne par ligne de chaque usage).
 
-## Composants partagés encore sur l'ancienne palette
+## Composants partagés
 
 ### `src/components/CategoryCard.tsx` et `src/components/ProductCard.tsx`
-Utilisent encore les jetons `cream`/`primary`/`secondary`/`text-*` (voir
-l'inventaire de couleurs). Non touchés en Session B car partagés avec
-d'autres pages (`boutique`, `produit/[id]`) hors du périmètre de cette
-session. Ils apparaissent donc actuellement avec l'ancienne palette
-(corail/crème) à l'intérieur des grilles "Nos catégories" et "Nos
-créations" de la page d'accueil, refaite en `encre`/`fond`/`surface`.
-
-**À traiter en Session C** : migrer ces deux composants vers
-`encre`/`fond`/`surface`/`safran`/`framboise`/`lichen`, en gardant à
-l'esprit qu'ils sont aussi utilisés sur `boutique/*` et `produit/[id]` —
-vérifier le rendu sur ces pages-là aussi, même si leur propre refonte
-viendra dans une session ultérieure.
+**Migrés en Session C** vers `encre`/`fond`/`safran`/`framboise`/`lichen`,
+polices `titre`/`corps`, cadrage 4:5, sans rayon de bordure, sans flèche
+`→`. `ProductCard` accepte maintenant une prop `vedette?: boolean` qui lui
+fait prendre `sm:col-span-2` dans une grille — utilisée sur la page
+d'accueil pour le premier produit de "Dernières pièces". Rendu vérifié
+sur `boutique` et `produit/[id]` (pages elles-mêmes non retouchées, voir
+Session H ci-dessus) : aucune régression, badges de statut migrés vers
+`lichen`/`safran`/`encre` selon l'état.
 
 ## Comment traiter ceci
 
@@ -135,3 +136,9 @@ périmètre d'une session ciblée sur une seule page. À faire plutôt :
   3 séparateurs pointillés max, étiquettes en majuscules et animations de
   fondu retirées. `CategoryCard.tsx`/`ProductCard.tsx` non touchés (voir
   section ci-dessus) — reportés à la Session C.
+- 2026-09-13 — Session C (catalogue) : `CategoryCard.tsx` et
+  `ProductCard.tsx` migrés vers la palette du devis, cadrage 4:5,
+  suppression du rayon de bordure et de la flèche `→`, badges de statut
+  recolorés (`lichen`/`safran`/`encre`). Grille asymétrique ajoutée sur
+  la page d'accueil via une prop `vedette` (premier produit sur 2
+  colonnes). Vérifié sans régression sur `boutique` et `produit/[id]`.

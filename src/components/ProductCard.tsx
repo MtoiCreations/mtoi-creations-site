@@ -4,26 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { Produit } from "@/types";
 import { formatPrice, getStatutBadge } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   produit: Produit;
+  vedette?: boolean;
 }
 
-export default function ProductCard({ produit }: ProductCardProps) {
+export default function ProductCard({ produit, vedette = false }: ProductCardProps) {
   const statut = getStatutBadge(produit.quantiteDisponible, produit.surCommande);
 
   const badgeColors = {
-    disponible: "bg-green-100 text-green-800",
-    surCommande: "bg-amber-100 text-amber-800",
-    epuise: "bg-gray-100 text-gray-500",
+    disponible: "bg-lichen text-fond",
+    surCommande: "bg-safran text-encre",
+    epuise: "bg-encre/10 text-encre/60",
   };
 
   return (
     <Link
       href={`/produit/${produit.id}`}
-      className="group block"
+      className={cn("group block", vedette && "sm:col-span-2")}
     >
-      <div className="relative aspect-[3/4] overflow-hidden rounded-image bg-cream">
+      <div className="relative aspect-[4/5] overflow-hidden bg-fond">
         <Image
           src={produit.photos[0] || "/images/placeholder.jpg"}
           alt={`${produit.nom} - ${produit.sousCategorie || produit.categorie} fait main au Québec par MToi Créations`}
@@ -42,24 +44,29 @@ export default function ProductCard({ produit }: ProductCardProps) {
         </div>
 
         {/* Overlay au hover */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+        <div className="absolute inset-0 bg-encre/0 transition-colors duration-300 group-hover:bg-encre/10" />
       </div>
 
       <div className="mt-4 space-y-1">
-        <h3 className="font-serif text-lg text-primary group-hover:text-secondary transition-colors">
+        <h3
+          className={cn(
+            "font-titre text-encre transition-colors group-hover:text-framboise",
+            vedette ? "text-2xl" : "text-lg"
+          )}
+        >
           {produit.nom}
         </h3>
 
         {produit.sousCategorie && (
-          <p className="text-sm text-text-secondary">{produit.sousCategorie}</p>
+          <p className="text-sm text-encre/70">{produit.sousCategorie}</p>
         )}
 
-        <p className="font-display text-xl text-secondary font-medium">
+        <p className="font-titre text-xl font-medium text-framboise">
           {formatPrice(produit.prix, produit.devise)}
         </p>
 
         {produit.options.couleurs.length > 1 && (
-          <p className="text-sm text-text-light">
+          <p className="text-sm text-encre/50">
             {produit.options.couleurs.length} couleurs disponibles
           </p>
         )}
