@@ -31,6 +31,14 @@ partagées en dehors du périmètre d'une session en cours.
   recadrage, un seul bouton principal (`safran`), disponibilité en
   texte discret, tutoiement complet. Panier et tunnel de commande non
   touchés (hors périmètre de cette session) — voir Session I.
+- Alerte de sécurité RLS Supabase (table `produits`) : réglée.
+  Écriture restreinte au seul rôle `service_role`, lecture publique
+  conservée pour `anon`, politique de lecture en double supprimée.
+- Bug d'affichage des produits dans `/admin` : la table `produits`
+  avait perdu son `GRANT` pour `service_role` (indépendant du RLS —
+  Postgres vérifie les privilèges de table avant les politiques).
+  Corrigé par `GRANT SELECT, INSERT, UPDATE, DELETE ON produits TO
+  service_role`.
 
 ### À faire, par ordre de priorité
 
@@ -67,9 +75,11 @@ partagées en dehors du périmètre d'une session en cours.
   courriels.
 - Navigation à repenser : Boutique, Hygiène féminine et Soins et
   Confort se chevauchent.
-- Alerte de sécurité RLS sur Supabase, non traitée.
 - Stockage des commandes dans `data/commandes.json`, éphémère sur
-  Netlify. À migrer vers Supabase.
+  Netlify. À migrer vers Supabase — rappel : activer le RLS fermé par
+  défaut sur cette future table (aucun accès tant qu'une politique
+  explicite n'est pas créée), à l'inverse de ce qui vient d'être
+  corrigé sur `produits`.
 - **Descriptions de produits** : les descriptions actuelles sont
   génériques et interchangeables. Objectif : ajouter une phrase
   personnelle à chaque produit, sans tout réécrire.
