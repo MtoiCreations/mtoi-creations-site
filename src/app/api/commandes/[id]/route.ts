@@ -1,59 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { promises as fs } from "fs";
-import path from "path";
+import { getCommandeById, mettreAJourStatut } from "@/lib/commandes";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const COMMANDES_FILE = path.join(process.cwd(), "data", "commandes.json");
 
 function checkAuth(request: NextRequest): boolean {
   const authHeader = request.headers.get("authorization");
   const password = authHeader?.replace("Bearer ", "");
   return password === process.env.ADMIN_PASSWORD;
 }
-
-interface Commande {
-  id: string;
-  numeroCommande: string;
-  dateCreation: string;
-  client: {
-    prenom?: string;
-    nom: string;
-    email: string;
-    telephone?: string;
-    adresse: {
-      ligne1: string;
-      ligne2?: string;
-      ville: string;
-      province: string;
-      codePostal: string;
-    };
-  };
-  articles: Array<{
-    produit: { nom: string; prix: number };
-    quantite: number;
-  }>;
-  total: number;
-  statut: string;
-  numeroSuivi?: string;
-  transporteur?: string;
-}
-
-async function getCommandes(): Promise<Commande[]> {
-  try {
-    const data = await fs.readFile(COMMANDES_FILE, "utf-8");
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function saveCommandes(commandes: Commande[]) {
-  const dir = path.dirname(COMMANDES_FILE);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(COMMANDES_FILE, JSON.stringify(commandes, null, 2));
-}
-
 
 export async function GET(
   request: NextRequest,
@@ -63,15 +18,19 @@ export async function GET(
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const { id } = await params;
-  const commandes = await getCommandes();
-  const commande = commandes.find((c) => c.id === id);
+  try {
+    const { id } = await params;
+    const commande = await getCommandeById(id);
 
-  if (!commande) {
-    return NextResponse.json({ error: "Commande non trouvée" }, { status: 404 });
+    if (!commande) {
+      return NextResponse.json({ error: "Commande non trouvée" }, { status: 404 });
+    }
+
+    return NextResponse.json(commande);
+  } catch (error) {
+    console.error("Erreur récupération commande:", error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
-
-  return NextResponse.json(commande);
 }
 
 export async function PATCH(
@@ -87,22 +46,18 @@ export async function PATCH(
     const body = await request.json();
     const { statut, numeroSuivi, transporteur, envoyerEmail } = body;
 
-    const commandes = await getCommandes();
-    const index = commandes.findIndex((c) => c.id === id);
+    const existante = await getCommandeById(id);
 
-    if (index === -1) {
+    if (!existante) {
       return NextResponse.json({ error: "Commande non trouvée" }, { status: 404 });
     }
 
-    const commande = commandes[index];
-    const ancienStatut = commande.statut;
+    const ancienStatut = existante.statut;
 
-    if (statut) commande.statut = statut;
-    if (numeroSuivi !== undefined) commande.numeroSuivi = numeroSuivi;
-    if (transporteur !== undefined) commande.transporteur = transporteur;
-
-    commandes[index] = commande;
-    await saveCommandes(commandes);
+    const commande = await mettreAJourStatut(id, statut || existante.statut, {
+      numeroSuivi,
+      transporteur,
+    });
 
     if (envoyerEmail && process.env.RESEND_API_KEY && statut !== ancienStatut) {
       let emailSubject = "";
