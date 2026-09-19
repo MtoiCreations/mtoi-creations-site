@@ -44,7 +44,7 @@ const literata = Literata({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mtoicreations.ca"),
+  metadataBase: new URL("https://mtoicreations.com"),
   title: {
     default: "MToi Créations | Créations artisanales",
     template: "%s | MToi Créations",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_CA",
-    url: "https://mtoicreations.ca",
+    url: "https://mtoicreations.com",
     siteName: "MToi Créations",
     title: "MToi Créations | Créations artisanales",
     description:
@@ -96,8 +96,8 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "MToi Créations",
-  url: "https://mtoicreations.ca",
-  logo: "https://mtoicreations.ca/images/logo.png",
+  url: "https://mtoicreations.com",
+  logo: "https://mtoicreations.com/images/logo.png",
   description: "Créations artisanales faites avec soin et passion. Pochettes, accessoires d'hygiène féminine et soins personnalisés. Fait main au Québec.",
   address: {
     "@type": "PostalAddress",

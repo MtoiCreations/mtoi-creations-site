@@ -28,8 +28,7 @@ RESEND_API_KEY=re_votre_cle_api
 EMAIL_FROM=MToi Créations <noreply@votredomaine.com>
 
 # URL du site
-NEXT_PUBLIC_INTERAC_EMAIL=votre-email@example.com
-NEXT_PUBLIC_SITE_URL=https://mtoicreations.ca
+NEXT_PUBLIC_SITE_URL=https://mtoicreations.com
 ```
 
 ## Développement

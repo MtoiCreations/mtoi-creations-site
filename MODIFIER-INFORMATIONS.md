@@ -283,7 +283,7 @@ site/src/components/Footer.tsx
 
 Chercher et modifier :
 ```typescript
-href="mailto:contact@mtoicreations.ca"
+href="mailto:contact@mtoicreations.com"
 ```
 
 **2. Page contact**
@@ -293,7 +293,7 @@ site/src/app/contact/page.tsx
 
 Chercher et modifier :
 ```typescript
-href="mailto:contact@mtoicreations.ca"
+href="mailto:contact@mtoicreations.com"
 ```
 
 **3. Variables d'environnement** (pour les emails automatiques)

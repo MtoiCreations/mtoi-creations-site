@@ -3,7 +3,7 @@ import { getProduits } from "@/lib/supabase";
 import { categories } from "@/data/categories";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://mtoicreations.ca";
+  const baseUrl = "https://mtoicreations.com";
   const produits = await getProduits();
 
   const staticPages: MetadataRoute.Sitemap = [
