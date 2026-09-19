@@ -69,29 +69,44 @@ export interface CartItem {
   accessoiresSelectionnes?: { accessoire: Accessoire; variante: AccessoireVariante }[];
 }
 
+export type StatutCommande =
+  | "en_attente"
+  | "payee"
+  | "en_production"
+  | "prete"
+  | "expediee"
+  | "livree"
+  | "annulee";
+
+export interface ClientCommande {
+  prenom?: string;
+  nom: string;
+  email: string;
+  telephone?: string;
+  adresse: {
+    ligne1: string;
+    ligne2?: string;
+    ville: string;
+    province: string;
+    codePostal: string;
+  };
+}
+
 export interface Commande {
   id: string;
   numeroCommande: string;
   dateCreation: string;
-  client: {
-    nom: string;
-    email: string;
-    telephone?: string;
-    adresse: {
-      ligne1: string;
-      ligne2?: string;
-      ville: string;
-      province: string;
-      codePostal: string;
-    };
-  };
+  dateModification?: string;
+  statut: StatutCommande;
+  client: ClientCommande;
   articles: CartItem[];
   sousTotal: number;
   fraisLivraison: number;
   total: number;
   note?: string;
-  statut: "en_attente" | "payee" | "expediee" | "annulee";
-  dateModification?: string;
+  paiementStripe?: boolean;
+  numeroSuivi?: string;
+  transporteur?: string;
 }
 
 export interface Categorie {
