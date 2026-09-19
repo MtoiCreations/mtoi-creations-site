@@ -4,6 +4,51 @@ Liste de ce qui reste à aligner sur `DIRECTION-VISUELLE.md`, à traiter dans la
 session dédiée à chaque page concernée plutôt qu'en modifiant des classes
 partagées en dehors du périmètre d'une session en cours.
 
+## Suivi technique — migration Supabase et infrastructure
+
+Distinct du suivi de refonte visuelle ci-dessous : ceci concerne la migration
+du stockage des commandes vers Supabase et la configuration des
+courriels/domaine, pas `DIRECTION-VISUELLE.md`.
+
+### Fait le 19 septembre 2026
+- Migration Supabase des commandes, étape 3 (2 routes sur 4) :
+  `/api/commandes` (GET+POST) et `/api/commandes/[id]` (GET+PATCH)
+  utilisent maintenant `src/lib/commandes.ts` au lieu de
+  `data/commandes.json`. Logique d'envoi des courriels non touchée.
+  Restent sur le fichier : `/api/checkout` et `/api/admin`.
+- Domaine `mtoicreations.com` vérifié dans Resend.
+- Adresses courriel unifiées dans les 5 gabarits (`api/admin`,
+  `api/checkout`, `api/commandes`, `api/commandes/[id]`,
+  `api/contact`) : expéditeur `commandes@mtoicreations.com`,
+  destinataires `mtoicreations@hotmail.com` (vraie boîte de
+  réception) via une nouvelle variable `ORDERS_NOTIFICATION_EMAIL`,
+  qui remplace `INTERAC_EMAIL`.
+- Domaine `.ca` → `.com` corrigé partout (9 occurrences codées en
+  dur) : `layout.tsx` (metadataBase, openGraph, données structurées),
+  `sitemap.ts`, `robots.ts`, `MODIFIER-INFORMATIONS.md`, `README.md`.
+  Le `.ca` n'a jamais été possédé — seul `.com` est enregistré.
+- Variable orpheline `NEXT_PUBLIC_INTERAC_EMAIL` retirée du README
+  (jamais lue par le code, vérifié par recherche dans tout le projet).
+
+### À faire, hors code (variables d'environnement Netlify)
+- `EMAIL_FROM` → `MToi Créations <commandes@mtoicreations.com>`
+- Créer `ORDERS_NOTIFICATION_EMAIL` → `mtoicreations@hotmail.com`
+- Supprimer `INTERAC_EMAIL`
+- `NEXT_PUBLIC_SITE_URL` → `https://mtoicreations.com` (contrôle entre
+  autres l'URL de redirection Stripe après paiement)
+
+### Prochain point de reprise
+**Stripe est cassé en production** — confirmé : « Une erreur est
+survenue » au clic sur Payer. C'est le seul mode de paiement
+réellement branché à l'interface cliente (le parcours Interac existe
+dans le code mais n'est appelé par aucune page). Cause encore
+inconnue : en attente des journaux de fonctions Netlify pour
+`/api/checkout` pour savoir s'il s'agit d'une clé Stripe invalide/
+absente, d'une `NEXT_PUBLIC_SITE_URL` invalide pour l'URL de retour,
+ou autre chose. Une fois la cause confirmée et corrigée, il restera à
+migrer `/api/checkout` et `/api/admin` vers Supabase pour terminer la
+migration des commandes.
+
 ## État au 8 septembre 2026
 
 ### Terminé
