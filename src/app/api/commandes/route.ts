@@ -1,32 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { v4 as uuidv4 } from "uuid";
-import { promises as fs } from "fs";
-import path from "path";
+import { creerCommande, getCommandes } from "@/lib/commandes";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-const COMMANDES_FILE = path.join(process.cwd(), "data", "commandes.json");
 
 function checkAuth(request: NextRequest): boolean {
   const authHeader = request.headers.get("authorization");
   const password = authHeader?.replace("Bearer ", "");
   return password === process.env.ADMIN_PASSWORD;
-}
-
-async function getCommandes() {
-  try {
-    const data = await fs.readFile(COMMANDES_FILE, "utf-8");
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function saveCommandes(commandes: unknown[]) {
-  const dir = path.dirname(COMMANDES_FILE);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(COMMANDES_FILE, JSON.stringify(commandes, null, 2));
 }
 
 function formatPrice(price: number): string {
@@ -40,22 +21,15 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const commande = {
-      id: uuidv4(),
+    const commande = await creerCommande({
       numeroCommande: body.numeroCommande,
-      dateCreation: new Date().toISOString(),
       client: body.client,
       articles: body.articles,
       sousTotal: body.sousTotal,
       fraisLivraison: body.fraisLivraison,
       total: body.total,
       note: body.note,
-      statut: "en_attente",
-    };
-
-    const commandes = await getCommandes();
-    commandes.push(commande);
-    await saveCommandes(commandes);
+    });
 
     const interacEmail = process.env.INTERAC_EMAIL || "paiement@mtoicreations.ca";
 
