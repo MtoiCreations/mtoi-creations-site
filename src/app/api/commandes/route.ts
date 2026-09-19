@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       note: body.note,
     });
 
-    const interacEmail = process.env.INTERAC_EMAIL || "paiement@mtoicreations.ca";
+    const interacEmail = process.env.ORDERS_NOTIFICATION_EMAIL || "mtoicreations@hotmail.com";
 
     const articlesHtml = commande.articles
       .map(
@@ -145,15 +145,15 @@ export async function POST(request: NextRequest) {
 
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.ca>",
+        from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
         to: commande.client.email,
         subject: `Commande ${commande.numeroCommande} - Instructions de paiement`,
         html: emailHtml,
       });
 
       await resend.emails.send({
-        from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.ca>",
-        to: process.env.INTERAC_EMAIL || "admin@mtoicreations.ca",
+        from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
+        to: process.env.ORDERS_NOTIFICATION_EMAIL || "mtoicreations@hotmail.com",
         subject: `Nouvelle commande ${commande.numeroCommande}`,
         html: `<p>Nouvelle commande reçue !</p><p>Numéro : ${commande.numeroCommande}</p><p>Client : ${commande.client.nom} (${commande.client.email})</p><p>Total : ${formatPrice(commande.total)}</p>`,
       });

@@ -286,15 +286,15 @@ export async function POST(request: NextRequest) {
 
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.com>",
+        from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
         to: clientInfo.email,
         subject: `Confirmation de commande ${numeroCommande}`,
         html: emailHtml,
       });
 
       await resend.emails.send({
-        from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.com>",
-        to: process.env.INTERAC_EMAIL || "admin@mtoicreations.com",
+        from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
+        to: process.env.ORDERS_NOTIFICATION_EMAIL || "mtoicreations@hotmail.com",
         subject: `Nouvelle commande payée ${numeroCommande}`,
         html: `<p>Nouvelle commande payée par carte !</p>
                <p>Numéro : ${numeroCommande}</p>

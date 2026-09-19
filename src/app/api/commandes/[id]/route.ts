@@ -125,7 +125,7 @@ export async function PATCH(
         `;
 
         await resend.emails.send({
-          from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.com>",
+          from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
           to: commande.client.email,
           subject: emailSubject,
           html: emailHtml,

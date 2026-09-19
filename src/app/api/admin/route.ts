@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
       if (nouveauStatut === "payee" && process.env.RESEND_API_KEY) {
         await resend.emails.send({
-          from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.ca>",
+          from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
           to: commande.client.email,
           subject: `Paiement reçu - Commande ${commande.numeroCommande}`,
           html: `
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
 
       if (nouveauStatut === "annulee" && process.env.RESEND_API_KEY) {
         await resend.emails.send({
-          from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.ca>",
+          from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
           to: commande.client.email,
           subject: `Commande annulée - ${commande.numeroCommande}`,
           html: `

@@ -50,15 +50,15 @@ export async function POST(request: NextRequest) {
 
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.ca>",
-        to: process.env.INTERAC_EMAIL || "contact@mtoicreations.ca",
+        from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
+        to: process.env.ORDERS_NOTIFICATION_EMAIL || "mtoicreations@hotmail.com",
         replyTo: email,
         subject: `[Contact] ${sujets[sujet] || sujet} - ${nom}`,
         html: emailHtml,
       });
 
       await resend.emails.send({
-        from: process.env.EMAIL_FROM || "MToi Créations <noreply@mtoicreations.ca>",
+        from: process.env.EMAIL_FROM || "MToi Créations <commandes@mtoicreations.com>",
         to: email,
         subject: "Nous avons bien reçu votre message - MToi Créations",
         html: `
