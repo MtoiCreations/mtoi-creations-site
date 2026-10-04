@@ -138,6 +138,21 @@ migration des commandes.
   avant d'étendre au reste du catalogue.
 
   À faire depuis le panneau admin, aucune session de code requise.
+- **Panier périmé** : le panier est conservé dans `localStorage` avec une
+  copie complète du produit, prix inclus, sans date d'expiration. Une
+  cliente qui revient après plusieurs semaines verra l'ancien prix et
+  recevra un refus 409 à la caisse. Pistes : ajouter une date
+  d'expiration au panier, ou resynchroniser les prix à l'ouverture de la
+  page panier.
+- **Webhook Stripe** : à faire après le recalcul des prix. Plan déjà
+  rédigé. Inclut la décrémentation du stock au passage à `payee`.
+- **Remboursements et litiges** : `charge.refunded` n'est pas traité.
+  Annulation manuelle pour l'instant.
+- **Bouton « Marquer payée » dans l'admin** : s'affiche sur toute commande
+  `en_attente` sans distinguer Stripe d'Interac. Risque de marquer payée
+  une commande non réglée.
+- **Migration de `/api/admin` vers Supabase** : lit encore
+  `data/commandes.json`.
 
 ## Classes partagées hors échelle d'espacement (`src/app/globals.css`)
 

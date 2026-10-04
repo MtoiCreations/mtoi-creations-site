@@ -4,14 +4,16 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store";
+import type { ChangementPanier } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import Button from "@/components/Button";
 import { ArrowLeft, Loader2, CreditCard, Lock } from "lucide-react";
 
 export default function CommandePage() {
   const router = useRouter();
-  const { items, getTotal } = useCartStore();
+  const { items, getTotal, appliquerChangements } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [messagesPanier, setMessagesPanier] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isClient, setIsClient] = useState(false);
 
@@ -96,7 +98,21 @@ export default function CommandePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: items,
+          // Identifiants et choix seulement : le serveur recalcule prix et livraison.
+          // prixAffiche et totalAffiche servent à détecter un changement de prix.
+          items: items.map((item) => ({
+            produitId: item.produit.id,
+            quantite: item.quantite,
+            couleur: item.couleurSelectionnee,
+            taille: item.tailleSelectionnee,
+            varianteId: item.varianteSelectionnee?.id,
+            accessoires: (item.accessoiresSelectionnes || []).map((a) => ({
+              accessoireId: a.accessoire.id,
+              varianteId: a.variante.id,
+            })),
+            prixAffiche: item.produit.prix,
+          })),
+          totalAffiche: total,
           clientInfo: {
             prenom: formData.prenom,
             nom: formData.nom,
@@ -107,10 +123,25 @@ export default function CommandePage() {
             codePostal: formData.codePostal.toUpperCase(),
             province: formData.province,
           },
-          livraison: fraisLivraison,
           note: formData.note,
         }),
       });
+
+      // Le panier ne correspond plus au catalogue : rien n'a été facturé, la cliente confirme.
+      if (response.status === 409) {
+        const data: { changements?: ChangementPanier[] } = await response.json();
+        const changements = data.changements || [];
+        appliquerChangements(changements);
+        const messages = changements.map((c) => c.message);
+        if (useCartStore.getState().items.length === 0) {
+          // La page redirige vers le panier vide : le message passe par une alerte.
+          alert(messages.join("\n"));
+        } else {
+          setMessagesPanier(messages);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        return;
+      }
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -156,6 +187,17 @@ export default function CommandePage() {
         </Link>
 
         <h1 className="heading-2 text-primary mb-8">Finaliser la commande</h1>
+
+        {messagesPanier.length > 0 && (
+          <div role="alert" className="mb-8 rounded-card border border-amber-300 bg-amber-50 p-4 text-amber-900">
+            <p className="font-medium">Ton panier a été mis à jour. Vérifie-le, puis confirme ta commande.</p>
+            <ul className="mt-2 list-disc pl-5 text-sm">
+              {messagesPanier.map((message, i) => (
+                <li key={i}>{message}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

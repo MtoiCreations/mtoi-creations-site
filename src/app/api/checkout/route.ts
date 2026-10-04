@@ -1,41 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { creerCommande } from '@/lib/commandes';
-import { CartItem as CartItemCommande } from '@/types';
+import {
+  lireProduitsPourCommande,
+  accepteCommandesSurMesure,
+  CatalogueIndisponibleError,
+  ProduitPourCommande,
+} from '@/lib/catalogue';
+import { enCents, fraisLivraisonCents, QUANTITE_MAX, LIGNES_PANIER_MAX } from '@/lib/tarifs';
+import { CartItem as CartItemCommande, ChangementPanier } from '@/types';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-interface CartItem {
-  produit: {
-    id: string;
-    nom: string;
-    prix: number;
-    photos: string[];
-  };
+// Ce que le navigateur envoie : des identifiants et des choix, jamais de montants
+// qui feraient foi. `prixAffiche` et `totalAffiche` servent uniquement à détecter
+// qu'un prix a changé depuis l'ajout au panier.
+interface LigneRequete {
+  produitId: string;
   quantite: number;
   couleur?: string;
   taille?: string;
-  variante?: {
-    nom: string;
-  };
+  varianteId?: string;
+  accessoires: { accessoireId: string; varianteId: string }[];
+  prixAffiche: number;
 }
 
-interface CheckoutRequest {
-  items: CartItem[];
-  clientInfo: {
-    prenom: string;
-    nom: string;
-    email: string;
-    telephone: string;
-    adresse: string;
-    ville: string;
-    codePostal: string;
-    province: string;
-  };
-  livraison: number;
-  note?: string;
+interface ClientInfo {
+  prenom: string;
+  nom: string;
+  email: string;
+  telephone: string;
+  adresse: string;
+  ville: string;
+  codePostal: string;
+  province: string;
 }
+
+// Ligne telle que recalculée par le serveur d'après le catalogue.
+interface LigneValidee {
+  produit: { id: string; nom: string; prix: number; photo?: string };
+  quantite: number;
+  couleur?: string;
+  taille?: string;
+  variante?: { id: string; nom: string };
+  accessoires: { accessoire: { id: string; nom: string }; variante: { id: string; nom: string } }[];
+}
+
+type Changement = ChangementPanier;
+
+const ID_VALIDE = /^[A-Za-z0-9_.-]{1,100}$/;
+const EMAIL_VALIDE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function generateOrderNumber(): string {
   const date = new Date();
@@ -53,21 +68,242 @@ function formatPrice(price: number): string {
   }).format(price);
 }
 
+function texte(valeur: unknown, max: number): string | undefined {
+  if (typeof valeur !== 'string') return undefined;
+  const nettoye = valeur.trim();
+  return nettoye.length > 0 && nettoye.length <= max ? nettoye : undefined;
+}
+
+function lireLignes(valeur: unknown): LigneRequete[] | null {
+  if (!Array.isArray(valeur) || valeur.length === 0 || valeur.length > LIGNES_PANIER_MAX) return null;
+
+  const lignes: LigneRequete[] = [];
+  for (const brut of valeur) {
+    if (!brut || typeof brut !== 'object') return null;
+    const l = brut as Record<string, unknown>;
+
+    if (typeof l.produitId !== 'string' || !ID_VALIDE.test(l.produitId)) return null;
+    if (!Number.isInteger(l.quantite) || (l.quantite as number) < 1 || (l.quantite as number) > QUANTITE_MAX) return null;
+    if (typeof l.prixAffiche !== 'number' || !Number.isFinite(l.prixAffiche)) return null;
+    if (l.varianteId !== undefined && l.varianteId !== null && (typeof l.varianteId !== 'string' || !ID_VALIDE.test(l.varianteId))) return null;
+
+    const accessoires: LigneRequete['accessoires'] = [];
+    if (l.accessoires !== undefined && l.accessoires !== null) {
+      if (!Array.isArray(l.accessoires) || l.accessoires.length > 20) return null;
+      for (const a of l.accessoires) {
+        if (!a || typeof a !== 'object') return null;
+        const { accessoireId, varianteId } = a as Record<string, unknown>;
+        if (typeof accessoireId !== 'string' || !ID_VALIDE.test(accessoireId)) return null;
+        if (typeof varianteId !== 'string' || !ID_VALIDE.test(varianteId)) return null;
+        accessoires.push({ accessoireId, varianteId });
+      }
+    }
+
+    lignes.push({
+      produitId: l.produitId,
+      quantite: l.quantite as number,
+      couleur: texte(l.couleur, 100),
+      taille: texte(l.taille, 100),
+      varianteId: (l.varianteId as string | undefined) || undefined,
+      accessoires,
+      prixAffiche: l.prixAffiche,
+    });
+  }
+  return lignes;
+}
+
+function lireClient(valeur: unknown): ClientInfo | null {
+  if (!valeur || typeof valeur !== 'object') return null;
+  const c = valeur as Record<string, unknown>;
+
+  const prenom = texte(c.prenom, 100);
+  const nom = texte(c.nom, 100);
+  const email = texte(c.email, 200);
+  const adresse = texte(c.adresse, 300);
+  const ville = texte(c.ville, 100);
+  const codePostal = texte(c.codePostal, 10);
+  const province = texte(c.province, 5);
+  if (!prenom || !nom || !email || !EMAIL_VALIDE.test(email) || !adresse || !ville || !codePostal || !province) {
+    return null;
+  }
+  return { prenom, nom, email, telephone: texte(c.telephone, 30) || '', adresse, ville, codePostal, province };
+}
+
+// Confronte chaque ligne au catalogue. Retourne les lignes recalculées et la liste
+// des écarts : s'il y en a, rien n'est facturé et la cliente doit confirmer.
+async function recalculer(
+  lignes: LigneRequete[],
+  catalogue: Map<string, ProduitPourCommande>
+): Promise<{ validees: LigneValidee[]; changements: Changement[] }> {
+  const changements: Changement[] = [];
+  const dejaSignale = new Set<string>();
+  const signaler = (c: Changement) => {
+    const cle = `${c.type}:${c.produitId}`;
+    if (dejaSignale.has(cle)) return;
+    dejaSignale.add(cle);
+    changements.push(c);
+  };
+
+  const validees: LigneValidee[] = [];
+  const quantiteParProduit = new Map<string, number>();
+
+  for (const ligne of lignes) {
+    const p = catalogue.get(ligne.produitId);
+    if (!p || p.prixCents <= 0) {
+      signaler({
+        produitId: ligne.produitId,
+        type: 'indisponible',
+        message: "Un article de ton panier n'est plus offert.",
+      });
+      continue;
+    }
+
+    // Prix : on facture le prix du catalogue, on signale tout écart.
+    if (enCents(ligne.prixAffiche) !== p.prixCents) {
+      signaler({
+        produitId: p.id,
+        type: 'prix',
+        nouveauPrix: p.prixCents / 100,
+        message: `Le prix de « ${p.nom} » est passé de ${formatPrice(ligne.prixAffiche)} à ${formatPrice(p.prixCents / 100)}.`,
+      });
+    }
+
+    // Options choisies : elles doivent exister pour ce produit.
+    let optionValide = true;
+
+    if (p.couleurs.length > 0 ? !ligne.couleur || !p.couleurs.includes(ligne.couleur) : !!ligne.couleur) optionValide = false;
+    if (p.tailles.length > 0 ? !ligne.taille || !p.tailles.includes(ligne.taille) : !!ligne.taille) optionValide = false;
+
+    const variante = ligne.varianteId ? p.variantes.find((v) => v.id === ligne.varianteId) : undefined;
+    if (p.variantes.length > 0 ? !variante : !!ligne.varianteId) optionValide = false;
+
+    const accessoires: LigneValidee['accessoires'] = [];
+    const accessoiresVus = new Set<string>();
+    for (const choix of ligne.accessoires) {
+      const accessoire = p.accessoires.find((a) => a.id === choix.accessoireId);
+      const varianteAccessoire = accessoire?.variantes.find((v) => v.id === choix.varianteId);
+      if (!accessoire || !varianteAccessoire || accessoiresVus.has(accessoire.id)) {
+        optionValide = false;
+        continue;
+      }
+      accessoiresVus.add(accessoire.id);
+      accessoires.push({
+        accessoire: { id: accessoire.id, nom: accessoire.nom },
+        variante: { id: varianteAccessoire.id, nom: varianteAccessoire.nom },
+      });
+    }
+    if (p.accessoires.some((a) => a.obligatoire && !accessoiresVus.has(a.id))) optionValide = false;
+
+    if (!optionValide) {
+      signaler({
+        produitId: p.id,
+        type: 'option_invalide',
+        message: `Une option choisie pour « ${p.nom} » n'est plus offerte. Ajoute de nouveau l'article à ton panier.`,
+      });
+      continue;
+    }
+
+    quantiteParProduit.set(p.id, (quantiteParProduit.get(p.id) || 0) + ligne.quantite);
+
+    validees.push({
+      produit: { id: p.id, nom: p.nom, prix: p.prixCents / 100, photo: p.photo },
+      quantite: ligne.quantite,
+      couleur: ligne.couleur,
+      taille: ligne.taille,
+      variante,
+      accessoires,
+    });
+  }
+
+  // Stock : la quantité de toutes les lignes d'un même produit est additionnée.
+  let surMesureAccepte: boolean | undefined;
+  for (const [produitId, quantite] of Array.from(quantiteParProduit.entries())) {
+    const p = catalogue.get(produitId)!;
+
+    if (!p.surCommande) {
+      if (p.quantiteDisponible <= 0) {
+        signaler({ produitId, type: 'epuise', message: `« ${p.nom} » n'est plus en stock.` });
+      } else if (quantite > p.quantiteDisponible) {
+        signaler({
+          produitId,
+          type: 'stock_insuffisant',
+          quantiteMax: p.quantiteDisponible,
+          message: `Il ne reste que ${p.quantiteDisponible} exemplaire${p.quantiteDisponible > 1 ? 's' : ''} de « ${p.nom} ».`,
+        });
+      }
+    } else if (p.quantiteDisponible <= 0) {
+      // Produit offert uniquement sur commande : le réglage global peut le fermer.
+      if (surMesureAccepte === undefined) surMesureAccepte = await accepteCommandesSurMesure();
+      if (!surMesureAccepte) {
+        signaler({
+          produitId,
+          type: 'sur_mesure_ferme',
+          message: `Les commandes sur mesure sont fermées pour le moment : « ${p.nom} » n'est pas offert.`,
+        });
+      }
+    }
+  }
+
+  return { validees, changements };
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body: CheckoutRequest = await request.json();
-    const { items, clientInfo, livraison, note } = body;
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Requête invalide' }, { status: 400 });
+    }
 
-    if (!items || items.length === 0) {
+    const corps = (body && typeof body === 'object' ? body : {}) as Record<string, unknown>;
+
+    if (Array.isArray(corps.items) && corps.items.length === 0) {
+      return NextResponse.json({ error: 'Le panier est vide' }, { status: 400 });
+    }
+
+    const lignes = lireLignes(corps.items);
+    const clientInfo = lireClient(corps.clientInfo);
+    const note = corps.note === undefined || corps.note === null || corps.note === '' ? '' : texte(corps.note, 1000);
+    const totalAffiche = corps.totalAffiche;
+
+    if (!lignes || !clientInfo || note === undefined || typeof totalAffiche !== 'number' || !Number.isFinite(totalAffiche)) {
+      return NextResponse.json({ error: 'Requête invalide' }, { status: 400 });
+    }
+
+    // Tout ce qui suit repose sur le catalogue Supabase, pas sur le navigateur.
+    const catalogue = await lireProduitsPourCommande(Array.from(new Set(lignes.map((l) => l.produitId))));
+    const { validees: items, changements } = await recalculer(lignes, catalogue);
+
+    const sousTotalCents = items.reduce((acc, item) => acc + enCents(item.produit.prix) * item.quantite, 0);
+    const livraisonCents = fraisLivraisonCents(sousTotalCents);
+    const totalCents = sousTotalCents + livraisonCents;
+
+    // Aucun écart de ligne, mais un total différent (ex. seuil de livraison gratuite franchi).
+    if (changements.length === 0 && enCents(totalAffiche) !== totalCents) {
+      changements.push({
+        produitId: '',
+        type: 'total',
+        message: `Le total de ta commande a changé : il est maintenant de ${formatPrice(totalCents / 100)}.`,
+      });
+    }
+
+    if (changements.length > 0) {
       return NextResponse.json(
-        { error: 'Le panier est vide' },
-        { status: 400 }
+        {
+          code: 'PANIER_MODIFIE',
+          error: 'Ton panier a changé depuis ton dernier passage. Vérifie-le avant de continuer.',
+          changements,
+        },
+        { status: 409 }
       );
     }
 
+    const sousTotal = sousTotalCents / 100;
+    const livraison = livraisonCents / 100;
+    const total = totalCents / 100;
+
     const numeroCommande = generateOrderNumber();
-    const sousTotal = items.reduce((acc, item) => acc + item.produit.prix * item.quantite, 0);
-    const total = sousTotal + livraison;
 
     const commande = await creerCommande({
       numeroCommande,
@@ -84,12 +320,21 @@ export async function POST(request: NextRequest) {
           codePostal: clientInfo.codePostal,
         },
       },
-      // Forme réduite propre à cette route (stockée telle quelle dans la colonne JSONB).
+      // Mêmes noms de champs que CartItem (couleurSelectionnee, varianteSelectionnee…),
+      // avec un instantané réduit du produit au prix facturé.
       articles: items.map(item => ({
-        produit: item.produit,
+        produit: {
+          id: item.produit.id,
+          nom: item.produit.nom,
+          prix: item.produit.prix,
+          devise: 'CAD',
+          photos: item.produit.photo ? [item.produit.photo] : [],
+        },
         quantite: item.quantite,
-        couleur: item.couleur,
-        variante: item.variante,
+        couleurSelectionnee: item.couleur,
+        tailleSelectionnee: item.taille,
+        varianteSelectionnee: item.variante,
+        accessoiresSelectionnes: item.accessoires.length > 0 ? item.accessoires : undefined,
       })) as unknown as CartItemCommande[],
       sousTotal,
       fraisLivraison: livraison,
@@ -100,15 +345,15 @@ export async function POST(request: NextRequest) {
     });
 
     const lineItems = items.map((item) => {
-      let description = '';
+      const parties: string[] = [];
       if (item.variante?.nom) {
-        description = item.variante.nom;
+        parties.push(item.variante.nom);
       } else if (item.couleur) {
-        description = item.couleur;
+        parties.push(item.couleur);
       }
-      if (item.taille) {
-        description += description ? ` - ${item.taille}` : item.taille;
-      }
+      if (item.taille) parties.push(item.taille);
+      for (const a of item.accessoires) parties.push(`${a.accessoire.nom} : ${a.variante.nom}`);
+      const description = parties.join(' - ');
 
       return {
         price_data: {
@@ -116,15 +361,15 @@ export async function POST(request: NextRequest) {
           product_data: {
             name: item.produit.nom,
             description: description || undefined,
-            images: item.produit.photos.length > 0 ? [item.produit.photos[0]] : undefined,
+            images: item.produit.photo && item.produit.photo.startsWith('http') ? [item.produit.photo] : undefined,
           },
-          unit_amount: Math.round(item.produit.prix * 100),
+          unit_amount: enCents(item.produit.prix),
         },
         quantity: item.quantite,
       };
     });
 
-    if (livraison > 0) {
+    if (livraisonCents > 0) {
       lineItems.push({
         price_data: {
           currency: 'cad',
@@ -133,7 +378,7 @@ export async function POST(request: NextRequest) {
             description: undefined,
             images: undefined,
           },
-          unit_amount: Math.round(livraison * 100),
+          unit_amount: livraisonCents,
         },
         quantity: 1,
       });
@@ -161,6 +406,8 @@ export async function POST(request: NextRequest) {
               ${item.produit.nom}
               ${item.variante?.nom ? `<br><small style="color: #6B6B6B;">${item.variante.nom}</small>` : ""}
               ${item.couleur ? `<br><small style="color: #6B6B6B;">Couleur: ${item.couleur}</small>` : ""}
+              ${item.taille ? `<br><small style="color: #6B6B6B;">Taille: ${item.taille}</small>` : ""}
+              ${item.accessoires.map((a) => `<br><small style="color: #6B6B6B;">${a.accessoire.nom}: ${a.variante.nom}</small>`).join("")}
             </td>
             <td style="padding: 12px; border-bottom: 1px solid #E8E0D8; text-align: center;">${item.quantite}</td>
             <td style="padding: 12px; border-bottom: 1px solid #E8E0D8; text-align: right;">${formatPrice(item.produit.prix * item.quantite)}</td>
@@ -284,6 +531,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
   } catch (error) {
+    if (error instanceof CatalogueIndisponibleError) {
+      console.error('Catalogue indisponible:', error);
+      return NextResponse.json(
+        { error: 'Le catalogue est momentanément indisponible. Réessaie dans quelques instants.' },
+        { status: 503 }
+      );
+    }
     console.error('Erreur Stripe:', error);
     return NextResponse.json(
       { error: 'Erreur lors de la création de la session de paiement' },

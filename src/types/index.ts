@@ -69,6 +69,22 @@ export interface CartItem {
   accessoiresSelectionnes?: { accessoire: Accessoire; variante: AccessoireVariante }[];
 }
 
+// Écart relevé par /api/checkout entre le panier affiché et le catalogue (réponse 409).
+export interface ChangementPanier {
+  produitId: string;
+  type:
+    | "prix"
+    | "indisponible"
+    | "epuise"
+    | "stock_insuffisant"
+    | "sur_mesure_ferme"
+    | "option_invalide"
+    | "total";
+  message: string;
+  nouveauPrix?: number;
+  quantiteMax?: number;
+}
+
 export type StatutCommande =
   | "en_attente"
   | "payee"

@@ -38,6 +38,12 @@ interface Commande {
   articles: Array<{
     produit: { nom: string; prix: number };
     quantite: number;
+    // Forme actuelle (identique à CartItem)
+    couleurSelectionnee?: string;
+    tailleSelectionnee?: string;
+    varianteSelectionnee?: { nom: string };
+    accessoiresSelectionnes?: Array<{ accessoire: { nom: string }; variante: { nom: string } }>;
+    // Forme des anciennes commandes Stripe, créées avant l'unification des noms
     couleur?: string;
     variante?: { nom: string };
   }>;
@@ -308,11 +314,16 @@ export default function CommandesAdminPage() {
                             >
                               <span>
                                 {item.produit.nom} × {item.quantite}
-                                {(item.couleur || item.variante?.nom) && (
-                                  <span className="text-text-light ml-2">
-                                    ({item.variante?.nom || item.couleur})
-                                  </span>
-                                )}
+                                {(() => {
+                                  const choix = [
+                                    item.varianteSelectionnee?.nom || item.variante?.nom || item.couleurSelectionnee || item.couleur,
+                                    item.tailleSelectionnee,
+                                    ...(item.accessoiresSelectionnes || []).map((a) => `${a.accessoire.nom} : ${a.variante.nom}`),
+                                  ].filter(Boolean);
+                                  return choix.length > 0 ? (
+                                    <span className="text-text-light ml-2">({choix.join(", ")})</span>
+                                  ) : null;
+                                })()}
                               </span>
                               <span className="font-medium">
                                 {formatPrice(item.produit.prix * item.quantite)}
