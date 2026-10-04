@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
+function checkAuth(request: NextRequest): boolean {
+  const authHeader = request.headers.get("authorization");
+  const password = authHeader?.replace("Bearer ", "");
+  return password === process.env.ADMIN_PASSWORD;
+}
+
 interface Settings {
   accepteCommandesSurMesure: boolean;
   messageIndisponible?: string;
@@ -59,6 +65,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  if (!checkAuth(request)) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const currentSettings = await getSettings();

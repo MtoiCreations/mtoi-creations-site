@@ -155,11 +155,17 @@ export default function AdminPage() {
   };
 
   const toggleCommandesSurMesure = async () => {
+    const auth = sessionStorage.getItem("adminAuth");
+    if (!auth) return;
+
     setSavingSettings(true);
     try {
       const response = await fetch("/api/settings", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth}`,
+        },
         body: JSON.stringify({ accepteCommandesSurMesure: !accepteCommandesSurMesure }),
       });
       if (response.ok) {
