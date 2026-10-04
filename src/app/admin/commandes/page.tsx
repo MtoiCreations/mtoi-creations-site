@@ -169,24 +169,24 @@ export default function CommandesAdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream-light flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+      <div className="min-h-screen bg-fond font-corps flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-framboise" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream-light">
+    <div className="min-h-screen bg-fond font-corps">
       <div className="container-custom py-8">
         <Link
           href="/admin"
-          className="inline-flex items-center text-text-secondary hover:text-secondary transition-colors mb-6"
+          className="inline-flex items-center text-encre/70 hover:text-framboise transition-colors mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour à l&apos;admin
         </Link>
 
-        <h1 className="heading-2 text-primary mb-8">Gestion des commandes</h1>
+        <h1 className="font-titre heading-2 text-encre mb-8">Gestion des commandes</h1>
 
         {/* Filtres rapides */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -194,8 +194,8 @@ export default function CommandesAdminPage() {
             onClick={() => setFilter("tous")}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === "tous"
-                ? "bg-secondary text-white"
-                : "bg-white text-text-secondary hover:bg-cream"
+                ? "bg-framboise text-fond"
+                : "bg-surface text-encre/70 hover:bg-fond"
             }`}
           >
             Toutes ({commandes.length})
@@ -206,8 +206,8 @@ export default function CommandesAdminPage() {
               onClick={() => setFilter(s.value)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 filter === s.value
-                  ? "bg-secondary text-white"
-                  : "bg-white text-text-secondary hover:bg-cream"
+                  ? "bg-framboise text-fond"
+                  : "bg-surface text-encre/70 hover:bg-fond"
               }`}
             >
               {s.label} ({countByStatut(s.value)})
@@ -218,9 +218,9 @@ export default function CommandesAdminPage() {
         {/* Liste des commandes */}
         <div className="space-y-4">
           {filteredCommandes.length === 0 ? (
-            <div className="bg-white rounded-card p-8 text-center">
-              <Package className="h-12 w-12 text-text-light mx-auto mb-4" />
-              <p className="text-text-secondary">Aucune commande trouvée</p>
+            <div className="bg-surface rounded-card p-8 text-center">
+              <Package className="h-12 w-12 text-encre/65 mx-auto mb-4" />
+              <p className="text-encre/70">Aucune commande trouvée</p>
             </div>
           ) : (
             filteredCommandes.map((commande) => {
@@ -231,11 +231,11 @@ export default function CommandesAdminPage() {
               return (
                 <div
                   key={commande.id}
-                  className="bg-white rounded-card shadow-soft overflow-hidden"
+                  className="bg-surface rounded-card shadow-soft overflow-hidden"
                 >
                   {/* En-tête de commande */}
                   <div
-                    className="p-4 cursor-pointer hover:bg-cream/50 transition-colors"
+                    className="p-4 cursor-pointer hover:bg-fond/50 transition-colors"
                     onClick={() => setExpandedId(isExpanded ? null : commande.id)}
                   >
                     <div className="flex items-center justify-between">
@@ -244,23 +244,23 @@ export default function CommandesAdminPage() {
                           <StatutIcon className="h-5 w-5" />
                         </div>
                         <div>
-                          <p className="font-mono font-bold text-primary">
+                          <p className="font-mono font-bold text-encre">
                             {commande.numeroCommande}
                           </p>
-                          <p className="text-sm text-text-secondary">
+                          <p className="text-sm text-encre/70">
                             {commande.client.prenom} {commande.client.nom} •{" "}
                             {new Date(commande.dateCreation).toLocaleDateString("fr-CA")}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="font-display text-lg text-secondary font-semibold">
+                        <span className="font-titre text-lg text-framboise font-semibold">
                           {formatPrice(commande.total)}
                         </span>
                         {isExpanded ? (
-                          <ChevronUp className="h-5 w-5 text-text-secondary" />
+                          <ChevronUp className="h-5 w-5 text-encre/70" />
                         ) : (
-                          <ChevronDown className="h-5 w-5 text-text-secondary" />
+                          <ChevronDown className="h-5 w-5 text-encre/70" />
                         )}
                       </div>
                     </div>
@@ -268,12 +268,12 @@ export default function CommandesAdminPage() {
 
                   {/* Détails (expandable) */}
                   {isExpanded && (
-                    <div className="border-t border-cream-dark p-4 space-y-6">
+                    <div className="border-t border-encre/10 p-4 space-y-6">
                       {/* Infos client */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <h3 className="font-medium text-primary mb-2">Client</h3>
-                          <p className="text-sm text-text-secondary">
+                          <h3 className="font-titre font-medium text-encre mb-2">Client</h3>
+                          <p className="text-sm text-encre/70">
                             {commande.client.prenom} {commande.client.nom}
                             <br />
                             {commande.client.email}
@@ -286,8 +286,8 @@ export default function CommandesAdminPage() {
                           </p>
                         </div>
                         <div>
-                          <h3 className="font-medium text-primary mb-2">Livraison</h3>
-                          <p className="text-sm text-text-secondary">
+                          <h3 className="font-titre font-medium text-encre mb-2">Livraison</h3>
+                          <p className="text-sm text-encre/70">
                             {commande.client.adresse.ligne1}
                             {commande.client.adresse.ligne2 && (
                               <>
@@ -305,8 +305,8 @@ export default function CommandesAdminPage() {
 
                       {/* Articles */}
                       <div>
-                        <h3 className="font-medium text-primary mb-2">Articles</h3>
-                        <div className="bg-cream rounded-lg p-3 space-y-2">
+                        <h3 className="font-titre font-medium text-encre mb-2">Articles</h3>
+                        <div className="bg-fond rounded-lg p-3 space-y-2">
                           {commande.articles.map((item, idx) => (
                             <div
                               key={idx}
@@ -321,7 +321,7 @@ export default function CommandesAdminPage() {
                                     ...(item.accessoiresSelectionnes || []).map((a) => `${a.accessoire.nom} : ${a.variante.nom}`),
                                   ].filter(Boolean);
                                   return choix.length > 0 ? (
-                                    <span className="text-text-light ml-2">({choix.join(", ")})</span>
+                                    <span className="text-encre/65 ml-2">({choix.join(", ")})</span>
                                   ) : null;
                                 })()}
                               </span>
@@ -330,9 +330,9 @@ export default function CommandesAdminPage() {
                               </span>
                             </div>
                           ))}
-                          <div className="border-t border-cream-dark pt-2 flex justify-between font-medium">
+                          <div className="border-t border-encre/10 pt-2 flex justify-between font-medium">
                             <span>Total</span>
-                            <span className="text-secondary">
+                            <span className="text-framboise">
                               {formatPrice(commande.total)}
                             </span>
                           </div>
@@ -342,16 +342,16 @@ export default function CommandesAdminPage() {
                       {/* Note */}
                       {commande.note && (
                         <div>
-                          <h3 className="font-medium text-primary mb-2">Note du client</h3>
-                          <p className="text-sm text-text-secondary bg-amber-50 p-3 rounded-lg">
+                          <h3 className="font-titre font-medium text-encre mb-2">Note du client</h3>
+                          <p className="text-sm text-encre/70 bg-amber-50 p-3 rounded-lg">
                             {commande.note}
                           </p>
                         </div>
                       )}
 
                       {/* Gestion du statut */}
-                      <div className="border-t border-cream-dark pt-4">
-                        <h3 className="font-medium text-primary mb-3">
+                      <div className="border-t border-encre/10 pt-4">
+                        <h3 className="font-titre font-medium text-encre mb-3">
                           Mettre à jour le statut
                         </h3>
                         <CommandeStatutForm
@@ -409,7 +409,7 @@ function CommandeStatutForm({
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
               newStatut === s.value
                 ? s.color + " ring-2 ring-offset-2 ring-current"
-                : "bg-cream text-text-secondary hover:bg-cream-dark"
+                : "bg-fond text-encre/70 hover:bg-encre/10"
             }`}
           >
             <s.icon className="h-4 w-4" />
@@ -419,15 +419,15 @@ function CommandeStatutForm({
       </div>
 
       {showExpeditionFields && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-cream rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-fond rounded-lg">
           <div>
-            <label className="block text-sm font-medium text-primary mb-1">
+            <label className="block text-sm font-medium text-encre mb-1">
               Transporteur
             </label>
             <select
               value={transporteur}
               onChange={(e) => setTransporteur(e.target.value)}
-              className="w-full px-3 py-2 border border-cream-dark rounded-button bg-white"
+              className="w-full px-3 py-2 border border-encre/25 rounded-button bg-surface"
             >
               <option value="">Sélectionner...</option>
               {transporteurs.map((t) => (
@@ -438,7 +438,7 @@ function CommandeStatutForm({
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-primary mb-1">
+            <label className="block text-sm font-medium text-encre mb-1">
               Numéro de suivi
             </label>
             <input
@@ -446,22 +446,22 @@ function CommandeStatutForm({
               value={numeroSuivi}
               onChange={(e) => setNumeroSuivi(e.target.value)}
               placeholder="Ex: 1234567890"
-              className="w-full px-3 py-2 border border-cream-dark rounded-button"
+              className="w-full px-3 py-2 border border-encre/25 rounded-button"
             />
           </div>
         </div>
       )}
 
       {hasChanges && (
-        <div className="flex items-center justify-between p-4 bg-secondary/5 rounded-lg">
+        <div className="flex items-center justify-between p-4 bg-framboise/5 rounded-lg">
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
               checked={envoyerEmail}
               onChange={(e) => setEnvoyerEmail(e.target.checked)}
-              className="rounded border-cream-dark"
+              className="rounded border-encre/25"
             />
-            <Mail className="h-4 w-4 text-text-secondary" />
+            <Mail className="h-4 w-4 text-encre/70" />
             Envoyer un email au client
           </label>
 
@@ -470,7 +470,7 @@ function CommandeStatutForm({
               onUpdate(commande.id, newStatut, numeroSuivi, transporteur, envoyerEmail)
             }
             disabled={updating}
-            className="px-4 py-2 bg-secondary text-white rounded-button font-medium hover:bg-secondary-dark transition-colors disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 bg-safran text-encre rounded-button font-medium hover:bg-safran/90 transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             {updating ? (
               <>

@@ -121,6 +121,49 @@ variables Netlify de la liste ci-dessus sont à jour.
   Postgres vérifie les privilèges de table avant les politiques).
   Corrigé par `GRANT SELECT, INSERT, UPDATE, DELETE ON produits TO
   service_role`.
+- Session E : pages admin (`admin/page.tsx`, `admin/commandes/page.tsx`,
+  `admin/produits/page.tsx`, `admin/produits/nouveau/page.tsx`,
+  `admin/produits/[id]/page.tsx`, `admin/produits/[id]/variantes/page.tsx`)
+  migrées vers les jetons du devis. Correspondances : `text-primary` →
+  `text-encre` ; `text-text-secondary` → `text-encre/70` ;
+  `text-text-light` → `text-encre/65` (le contraste de `/60` passait
+  sous 4,5:1) ; `text-secondary` → `text-framboise` ; `bg-white` →
+  `bg-surface` ; `bg-cream` et `bg-cream-light` → `bg-fond` ;
+  `bg-cream-dark` → `bg-encre/10` ; `border-cream-dark` →
+  `border-encre/25` (contour complet, champs) ou `border-encre/10`
+  (séparateur haut/bas) ; `ring-secondary` → `ring-framboise` ; boutons
+  d'action `bg-secondary text-white` → `bg-safran text-encre` ; filtres et
+  cartes sélectionnés → `bg-framboise text-fond` ; voile des modales
+  `bg-black/50` → `bg-encre/50` ; `font-serif` et `font-display` →
+  `font-titre`, titres sans police explicite → `font-titre`, racine de
+  chaque page → `font-corps`. Vérifié visuellement : connexion, tableau de
+  bord, fenêtre de détail, liste et détail des commandes, liste, édition et
+  création de produits, variantes et accessoires.
+
+### Cas ambigus laissés tels quels (Session E)
+Notés plutôt que décidés, à trancher avant de les traiter :
+- **Couleurs d'état, hors des six valeurs du devis** (49 occurrences) :
+  vert (payée, succès, interrupteur), rouge (erreurs, suppression), ambre
+  (en attente, note du client), bleu (expédiée), violet et indigo
+  (production, prête), gris (annulée). Pas de correspondance mécanique :
+  il faut choisir quelle couleur du devis porte chaque statut.
+- **Rayons et ombres** (98 et 27 occurrences) : `rounded-card` (12 px),
+  `rounded-button` (8 px), `rounded-xl`, `rounded-lg`, `rounded-full`,
+  `shadow-soft`, `shadow-sm`, `shadow-md`. Le devis demande 4 px pour les
+  boutons, aucun rayon pour les photos, et déconseille la même ombre sous
+  chaque carte. Changer ceci modifie l'apparence, donc non fait.
+- **Échelle d'espacement** : 121 valeurs hors de `8 · 16 · 24 · 40 · 64 ·
+  96 · 160` (`p-1`, `p-3`, `gap-3`, `mb-3`, `py-1.5`, `p-8`, `py-12`…),
+  contre 220 sur l'échelle. Laissées pour ne pas modifier la mise en page
+  dense de l'admin, comme déjà fait pour les pastilles des pages publiques.
+- **`Button.tsx` (composant partagé)** : encore sur l'ancienne palette,
+  donc le bouton « Connexion » et les trois boutons de la fenêtre de détail
+  de `/admin` restent rose tant que la Session I n'est pas faite.
+- **En-tête et pied de page publics** : les pages admin sont rendues
+  dans le gabarit public (`layout.tsx`) ; décider si l'admin doit les
+  masquer.
+- **Échelle typographique** : les tailles (`text-sm`, `text-lg`, `text-xl`,
+  `text-2xl`) n'ont pas été ramenées à l'échelle 14 / 17 / 24 / 36 / 56.
 
 ### À faire, par ordre de priorité
 
@@ -130,11 +173,7 @@ variables Netlify de la liste ci-dessus sont à jour.
    vérifier son rendu là aussi), `Button.tsx` (partagé partout — encore
    sur l'ancienne palette). **C'est le prochain point de reprise.**
 
-2. **Session E — Pages admin**
-   Environ 260 occurrences. Remplacement mécanique, aucun jugement
-   esthétique requis.
-
-3. **Session F — Couleurs du footer**
+2. **Session F — Couleurs du footer**
    Jetons `bg-primary`, `text-white`, `text-cream`, `text-accent`.
    **Inclut aussi le logo du footer** : la Session H voulait remplacer
    le texte "MToi Créations" par `public/images/logo.png`, mais ce
@@ -144,7 +183,7 @@ variables Netlify de la liste ci-dessus sont à jour.
    soit une variante claire du logo, soit un fond de footer plus clair,
    soit garder le texte.
 
-4. **Session G — Gabarits de courriels**
+3. **Session G — Gabarits de courriels**
    Environ 79 valeurs hex codées en dur dans `api/admin`,
    `api/checkout`, `api/commandes`, `api/commandes/[id]`, `api/contact`
 

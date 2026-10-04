@@ -331,34 +331,34 @@ export default function VariantesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream-light flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-secondary" />
+      <div className="min-h-screen bg-fond font-corps flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-framboise" />
       </div>
     );
   }
 
   if (!produit) {
     return (
-      <div className="min-h-screen bg-cream-light flex items-center justify-center">
+      <div className="min-h-screen bg-fond font-corps flex items-center justify-center">
         <p>Produit non trouvé</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream-light">
+    <div className="min-h-screen bg-fond font-corps">
       {/* Header */}
-      <header className="bg-white border-b border-cream-dark sticky top-0 z-40">
+      <header className="bg-surface border-b border-encre/10 sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link
             href={`/admin/produits/${produitId}`}
-            className="p-2 -ml-2 text-text-secondary hover:text-primary transition-colors"
+            className="p-2 -ml-2 text-encre/70 hover:text-encre transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="flex-1">
-            <h1 className="font-serif text-xl text-primary">Variantes</h1>
-            <p className="text-sm text-text-secondary">{produit.nom}</p>
+            <h1 className="font-titre text-xl text-encre">Variantes</h1>
+            <p className="text-sm text-encre/70">{produit.nom}</p>
           </div>
         </div>
       </header>
@@ -372,12 +372,12 @@ export default function VariantesPage() {
         )}
 
         {/* Section Variantes du produit */}
-        <section className="bg-white rounded-xl p-4 shadow-sm">
-          <h2 className="font-serif text-lg text-primary mb-4 flex items-center gap-2">
-            <GripVertical className="w-5 h-5 text-text-light" />
+        <section className="bg-surface rounded-xl p-4 shadow-sm">
+          <h2 className="font-titre text-lg text-encre mb-4 flex items-center gap-2">
+            <GripVertical className="w-5 h-5 text-encre/65" />
             Variantes de couleur
           </h2>
-          <p className="text-sm text-text-secondary mb-4">
+          <p className="text-sm text-encre/70 mb-4">
             Ajoutez les différentes couleurs/motifs disponibles pour ce produit.
           </p>
 
@@ -386,9 +386,9 @@ export default function VariantesPage() {
             {variantes.map((v) => (
               <div
                 key={v.id}
-                className="flex items-center gap-3 p-3 bg-cream rounded-lg"
+                className="flex items-center gap-3 p-3 bg-fond rounded-lg"
               >
-                <div className="w-16 h-16 rounded-lg overflow-hidden bg-white flex-shrink-0">
+                <div className="w-16 h-16 rounded-lg overflow-hidden bg-surface flex-shrink-0">
                   <img
                     src={v.photo}
                     alt={v.nom}
@@ -396,11 +396,11 @@ export default function VariantesPage() {
                   />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-primary">{v.nom}</p>
+                  <p className="font-medium text-encre">{v.nom}</p>
                 </div>
                 <button
                   onClick={() => handleDeleteVariante(v.id)}
-                  className="p-2 text-text-light hover:text-red-500 transition-colors"
+                  className="p-2 text-encre/65 hover:text-red-500 transition-colors"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -409,20 +409,20 @@ export default function VariantesPage() {
           </div>
 
           {/* Formulaire nouvelle variante */}
-          <div className="border-t border-cream-dark pt-4">
-            <p className="text-sm font-medium text-primary mb-3">Ajouter une variante</p>
+          <div className="border-t border-encre/10 pt-4">
+            <p className="text-sm font-medium text-encre mb-3">Ajouter une variante</p>
             <div className="flex gap-3">
               {/* Upload photo */}
               <div
                 onClick={() => !uploading && fileInputRef.current?.click()}
                 className={`w-20 h-20 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer transition-colors flex-shrink-0 ${
                   newVariantePhoto
-                    ? "border-secondary"
-                    : "border-cream-dark hover:border-secondary"
+                    ? "border-framboise"
+                    : "border-encre/25 hover:border-framboise"
                 }`}
               >
                 {uploading ? (
-                  <Loader2 className="w-6 h-6 animate-spin text-text-light" />
+                  <Loader2 className="w-6 h-6 animate-spin text-encre/65" />
                 ) : newVariantePhoto ? (
                   <img
                     src={newVariantePhoto}
@@ -430,7 +430,7 @@ export default function VariantesPage() {
                     className="w-full h-full object-cover rounded-lg"
                   />
                 ) : (
-                  <ImageIcon className="w-6 h-6 text-text-light" />
+                  <ImageIcon className="w-6 h-6 text-encre/65" />
                 )}
               </div>
               <input
@@ -448,12 +448,12 @@ export default function VariantesPage() {
                   value={newVarianteNom}
                   onChange={(e) => setNewVarianteNom(e.target.value)}
                   placeholder="Nom (ex: Rouge carroté)"
-                  className="flex-1 px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                  className="flex-1 px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise"
                 />
                 <button
                   onClick={handleAddVariante}
                   disabled={!newVarianteNom.trim() || !newVariantePhoto || saving}
-                  className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-safran text-encre rounded-lg hover:bg-safran/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
                 </button>
@@ -463,12 +463,12 @@ export default function VariantesPage() {
         </section>
 
         {/* Section Accessoires */}
-        <section className="bg-white rounded-xl p-4 shadow-sm">
-          <h2 className="font-serif text-lg text-primary mb-4 flex items-center gap-2">
-            <Package className="w-5 h-5 text-text-light" />
+        <section className="bg-surface rounded-xl p-4 shadow-sm">
+          <h2 className="font-titre text-lg text-encre mb-4 flex items-center gap-2">
+            <Package className="w-5 h-5 text-encre/65" />
             Accessoires inclus
           </h2>
-          <p className="text-sm text-text-secondary mb-4">
+          <p className="text-sm text-encre/70 mb-4">
             Ajoutez des accessoires qui accompagnent ce produit (ex: pochette imperméable).
           </p>
 
@@ -477,19 +477,19 @@ export default function VariantesPage() {
             {accessoires.map((acc) => (
               <div
                 key={acc.id}
-                className="border border-cream-dark rounded-lg overflow-hidden"
+                className="border border-encre/25 rounded-lg overflow-hidden"
               >
                 {/* Header accessoire */}
-                <div className="flex items-center gap-3 p-3 bg-cream">
+                <div className="flex items-center gap-3 p-3 bg-fond">
                   <div className="flex-1">
-                    <p className="font-medium text-primary">{acc.nom}</p>
-                    <p className="text-xs text-text-light">
+                    <p className="font-medium text-encre">{acc.nom}</p>
+                    <p className="text-xs text-encre/65">
                       {acc.variantes.length} variante{acc.variantes.length > 1 ? "s" : ""}
                     </p>
                   </div>
                   <button
                     onClick={() => handleDeleteAccessoire(acc.id)}
-                    className="p-2 text-text-light hover:text-red-500 transition-colors"
+                    className="p-2 text-encre/65 hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
@@ -500,9 +500,9 @@ export default function VariantesPage() {
                   {acc.variantes.map((v) => (
                     <div
                       key={v.id}
-                      className="flex items-center gap-3 p-2 bg-cream-light rounded-lg"
+                      className="flex items-center gap-3 p-2 bg-fond rounded-lg"
                     >
-                      <div className="w-12 h-12 rounded overflow-hidden bg-white flex-shrink-0">
+                      <div className="w-12 h-12 rounded overflow-hidden bg-surface flex-shrink-0">
                         <img
                           src={v.photo}
                           alt={v.nom}
@@ -512,7 +512,7 @@ export default function VariantesPage() {
                       <p className="flex-1 text-sm">{v.nom}</p>
                       <button
                         onClick={() => handleDeleteAccVariante(acc.id, v.id)}
-                        className="p-1 text-text-light hover:text-red-500"
+                        className="p-1 text-encre/65 hover:text-red-500"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -525,7 +525,7 @@ export default function VariantesPage() {
                       <div
                         onClick={() => !uploading && accFileInputRef.current?.click()}
                         className={`w-12 h-12 border-2 border-dashed rounded flex items-center justify-center cursor-pointer flex-shrink-0 ${
-                          newAccVarPhoto ? "border-secondary" : "border-cream-dark"
+                          newAccVarPhoto ? "border-framboise" : "border-encre/25"
                         }`}
                       >
                         {uploading ? (
@@ -537,7 +537,7 @@ export default function VariantesPage() {
                             className="w-full h-full object-cover rounded"
                           />
                         ) : (
-                          <ImageIcon className="w-4 h-4 text-text-light" />
+                          <ImageIcon className="w-4 h-4 text-encre/65" />
                         )}
                       </div>
                       <input
@@ -545,12 +545,12 @@ export default function VariantesPage() {
                         value={newAccVarNom}
                         onChange={(e) => setNewAccVarNom(e.target.value)}
                         placeholder="Nom (ex: Chat)"
-                        className="flex-1 px-2 py-1 text-sm border border-cream-dark rounded focus:outline-none focus:ring-1 focus:ring-secondary"
+                        className="flex-1 px-2 py-1 text-sm border border-encre/25 rounded focus:outline-none focus:ring-1 focus:ring-framboise"
                       />
                       <button
                         onClick={() => handleAddAccVariante(acc.id)}
                         disabled={!newAccVarNom.trim() || !newAccVarPhoto || saving}
-                        className="px-3 py-1 bg-secondary text-white text-sm rounded hover:bg-secondary/90 disabled:opacity-50"
+                        className="px-3 py-1 bg-safran text-encre text-sm rounded hover:bg-safran/90 disabled:opacity-50"
                       >
                         OK
                       </button>
@@ -560,7 +560,7 @@ export default function VariantesPage() {
                           setNewAccVarNom("");
                           setNewAccVarPhoto("");
                         }}
-                        className="px-2 py-1 text-text-light hover:text-primary"
+                        className="px-2 py-1 text-encre/65 hover:text-encre"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -568,7 +568,7 @@ export default function VariantesPage() {
                   ) : (
                     <button
                       onClick={() => setActiveAccId(acc.id)}
-                      className="flex items-center gap-1 text-sm text-secondary hover:text-secondary/80 mt-2"
+                      className="flex items-center gap-1 text-sm text-framboise hover:text-framboise/80 mt-2"
                     >
                       <Plus className="w-4 h-4" />
                       Ajouter une variante
@@ -589,18 +589,18 @@ export default function VariantesPage() {
 
           {/* Ajouter un accessoire */}
           {showAccForm ? (
-            <div className="flex gap-2 border-t border-cream-dark pt-4">
+            <div className="flex gap-2 border-t border-encre/10 pt-4">
               <input
                 type="text"
                 value={newAccNom}
                 onChange={(e) => setNewAccNom(e.target.value)}
                 placeholder="Nom de l'accessoire (ex: Pochette imperméable)"
-                className="flex-1 px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                className="flex-1 px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise"
               />
               <button
                 onClick={handleAddAccessoire}
                 disabled={!newAccNom.trim() || saving}
-                className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 disabled:opacity-50"
+                className="px-4 py-2 bg-safran text-encre rounded-lg hover:bg-safran/90 disabled:opacity-50"
               >
                 {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ajouter"}
               </button>
@@ -609,7 +609,7 @@ export default function VariantesPage() {
                   setShowAccForm(false);
                   setNewAccNom("");
                 }}
-                className="px-3 py-2 text-text-light hover:text-primary"
+                className="px-3 py-2 text-encre/65 hover:text-encre"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -617,7 +617,7 @@ export default function VariantesPage() {
           ) : (
             <button
               onClick={() => setShowAccForm(true)}
-              className="flex items-center gap-2 text-secondary hover:text-secondary/80 border-t border-cream-dark pt-4 w-full justify-center"
+              className="flex items-center gap-2 text-framboise hover:text-framboise/80 border-t border-encre/10 pt-4 w-full justify-center"
             >
               <Plus className="w-5 h-5" />
               Ajouter un accessoire

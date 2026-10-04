@@ -168,17 +168,17 @@ export default function NouveauProduitPage() {
   };
 
   return (
-    <div className="min-h-screen bg-cream-light">
+    <div className="min-h-screen bg-fond font-corps">
       {/* Header */}
-      <header className="bg-white border-b border-cream-dark sticky top-0 z-40">
+      <header className="bg-surface border-b border-encre/10 sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link
             href="/admin/produits"
-            className="p-2 -ml-2 text-text-secondary hover:text-primary transition-colors"
+            className="p-2 -ml-2 text-encre/70 hover:text-encre transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="font-serif text-xl text-primary flex-1">
+          <h1 className="font-titre text-xl text-encre flex-1">
             Nouveau produit
           </h1>
         </div>
@@ -188,8 +188,8 @@ export default function NouveauProduitPage() {
       <main className="max-w-2xl mx-auto px-4 py-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Photos */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <label className="block text-sm font-medium text-primary mb-3">
+          <div className="bg-surface rounded-xl p-4 shadow-sm">
+            <label className="block text-sm font-medium text-encre mb-3">
               Photos
             </label>
 
@@ -197,7 +197,7 @@ export default function NouveauProduitPage() {
               {form.photos.map((photo, index) => (
                 <div
                   key={index}
-                  className="relative aspect-square bg-cream rounded-lg overflow-hidden group"
+                  className="relative aspect-square bg-fond rounded-lg overflow-hidden group"
                 >
                   <img
                     src={photo}
@@ -211,7 +211,7 @@ export default function NouveauProduitPage() {
                   >
                     <X className="w-4 h-4" />
                   </button>
-                  <div className="absolute top-1 left-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center text-xs">
+                  <div className="absolute top-1 left-1 w-6 h-6 bg-encre/50 text-fond rounded-full flex items-center justify-center text-xs">
                     {index + 1}
                   </div>
                 </div>
@@ -222,7 +222,7 @@ export default function NouveauProduitPage() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="aspect-square border-2 border-dashed border-cream-dark rounded-lg flex flex-col items-center justify-center text-text-light hover:border-secondary hover:text-secondary transition-colors disabled:opacity-50"
+                className="aspect-square border-2 border-dashed border-encre/25 rounded-lg flex flex-col items-center justify-center text-encre/65 hover:border-framboise hover:text-framboise transition-colors disabled:opacity-50"
               >
                 {uploading ? (
                   <Loader2 className="w-6 h-6 animate-spin" />
@@ -244,15 +244,15 @@ export default function NouveauProduitPage() {
               className="hidden"
             />
 
-            <p className="text-xs text-text-light">
+            <p className="text-xs text-encre/65">
               Vous pouvez sélectionner plusieurs photos à la fois
             </p>
           </div>
 
           {/* Infos de base */}
-          <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
+          <div className="bg-surface rounded-xl p-4 shadow-sm space-y-4">
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block text-sm font-medium text-encre mb-1">
                 Nom du produit *
               </label>
               <input
@@ -260,12 +260,12 @@ export default function NouveauProduitPage() {
                 value={form.nom}
                 onChange={(e) => setForm({ ...form, nom: e.target.value })}
                 placeholder="Ex: Pochette Fid'Elle - Rouge"
-                className="w-full px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                className="w-full px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block text-sm font-medium text-encre mb-1">
                 Description
               </label>
               <textarea
@@ -275,13 +275,13 @@ export default function NouveauProduitPage() {
                 }
                 rows={5}
                 placeholder="Décrivez votre produit..."
-                className="w-full px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary resize-none"
+                className="w-full px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise resize-none"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-primary mb-1">
+                <label className="block text-sm font-medium text-encre mb-1">
                   Prix ($) *
                 </label>
                 <input
@@ -291,12 +291,12 @@ export default function NouveauProduitPage() {
                   value={form.prix}
                   onChange={(e) => setForm({ ...form, prix: e.target.value })}
                   placeholder="0.00"
-                  className="w-full px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                  className="w-full px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-primary mb-1">
+                <label className="block text-sm font-medium text-encre mb-1">
                   Quantité en stock
                 </label>
                 <input
@@ -306,16 +306,16 @@ export default function NouveauProduitPage() {
                   onChange={(e) =>
                     setForm({ ...form, quantiteDisponible: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                  className="w-full px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise"
                 />
               </div>
             </div>
           </div>
 
           {/* Catégorie */}
-          <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
+          <div className="bg-surface rounded-xl p-4 shadow-sm space-y-4">
             <div>
-              <label className="block text-sm font-medium text-primary mb-1">
+              <label className="block text-sm font-medium text-encre mb-1">
                 Catégorie *
               </label>
               <select
@@ -323,7 +323,7 @@ export default function NouveauProduitPage() {
                 onChange={(e) =>
                   setForm({ ...form, categorie: e.target.value, sousCategorie: "" })
                 }
-                className="w-full px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary bg-white"
+                className="w-full px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise bg-surface"
               >
                 <option value="">Sélectionner...</option>
                 {categories.map((cat) => (
@@ -336,7 +336,7 @@ export default function NouveauProduitPage() {
 
             {sousCategories.length > 0 && (
               <div>
-                <label className="block text-sm font-medium text-primary mb-1">
+                <label className="block text-sm font-medium text-encre mb-1">
                   Sous-catégorie
                 </label>
                 <select
@@ -344,7 +344,7 @@ export default function NouveauProduitPage() {
                   onChange={(e) =>
                     setForm({ ...form, sousCategorie: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary bg-white"
+                  className="w-full px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise bg-surface"
                 >
                   <option value="">Sélectionner...</option>
                   {sousCategories.map((sc) => (
@@ -358,7 +358,7 @@ export default function NouveauProduitPage() {
           </div>
 
           {/* Options */}
-          <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
+          <div className="bg-surface rounded-xl p-4 shadow-sm space-y-4">
             <div>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
@@ -367,9 +367,9 @@ export default function NouveauProduitPage() {
                   onChange={(e) =>
                     setForm({ ...form, surCommande: e.target.checked })
                   }
-                  className="w-5 h-5 rounded border-cream-dark text-secondary focus:ring-secondary"
+                  className="w-5 h-5 rounded border-encre/25 text-framboise focus:ring-framboise"
                 />
-                <span className="text-sm font-medium text-primary">
+                <span className="text-sm font-medium text-encre">
                   Disponible sur commande
                 </span>
               </label>
@@ -377,7 +377,7 @@ export default function NouveauProduitPage() {
 
             {form.surCommande && (
               <div>
-                <label className="block text-sm font-medium text-primary mb-1">
+                <label className="block text-sm font-medium text-encre mb-1">
                   Délai de fabrication
                 </label>
                 <input
@@ -387,15 +387,15 @@ export default function NouveauProduitPage() {
                     setForm({ ...form, delaisFabrication: e.target.value })
                   }
                   placeholder="Ex: 5 à 7 jours ouvrables"
-                  className="w-full px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+                  className="w-full px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise"
                 />
               </div>
             )}
           </div>
 
           {/* Couleurs */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <label className="block text-sm font-medium text-primary mb-3">
+          <div className="bg-surface rounded-xl p-4 shadow-sm">
+            <label className="block text-sm font-medium text-encre mb-3">
               Couleurs disponibles
             </label>
 
@@ -403,13 +403,13 @@ export default function NouveauProduitPage() {
               {form.couleurs.map((couleur, index) => (
                 <span
                   key={index}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-cream rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-fond rounded-full text-sm"
                 >
                   {couleur}
                   <button
                     type="button"
                     onClick={() => removeCouleur(index)}
-                    className="text-text-light hover:text-red-500"
+                    className="text-encre/65 hover:text-red-500"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -424,12 +424,12 @@ export default function NouveauProduitPage() {
                 onChange={(e) => setNewCouleur(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCouleur())}
                 placeholder="Ajouter une couleur..."
-                className="flex-1 px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-sm"
+                className="flex-1 px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise text-sm"
               />
               <button
                 type="button"
                 onClick={addCouleur}
-                className="px-3 py-2 bg-cream text-primary rounded-lg hover:bg-cream-dark transition-colors"
+                className="px-3 py-2 bg-fond text-encre rounded-lg hover:bg-encre/10 transition-colors"
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -437,8 +437,8 @@ export default function NouveauProduitPage() {
           </div>
 
           {/* Étiquettes */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <label className="block text-sm font-medium text-primary mb-3">
+          <div className="bg-surface rounded-xl p-4 shadow-sm">
+            <label className="block text-sm font-medium text-encre mb-3">
               Étiquettes (pour la recherche)
             </label>
 
@@ -446,7 +446,7 @@ export default function NouveauProduitPage() {
               {form.etiquettes.map((etiquette, index) => (
                 <span
                   key={index}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-framboise/10 text-framboise rounded-full text-sm"
                 >
                   {etiquette}
                   <button
@@ -469,12 +469,12 @@ export default function NouveauProduitPage() {
                   e.key === "Enter" && (e.preventDefault(), addEtiquette())
                 }
                 placeholder="Ajouter une étiquette..."
-                className="flex-1 px-3 py-2 border border-cream-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-sm"
+                className="flex-1 px-3 py-2 border border-encre/25 rounded-lg focus:outline-none focus:ring-2 focus:ring-framboise text-sm"
               />
               <button
                 type="button"
                 onClick={addEtiquette}
-                className="px-3 py-2 bg-cream text-primary rounded-lg hover:bg-cream-dark transition-colors"
+                className="px-3 py-2 bg-fond text-encre rounded-lg hover:bg-encre/10 transition-colors"
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -492,7 +492,7 @@ export default function NouveauProduitPage() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-secondary text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-secondary/90 transition-colors disabled:opacity-50"
+            className="w-full bg-safran text-encre py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-safran/90 transition-colors disabled:opacity-50"
           >
             {saving ? (
               <Loader2 className="w-5 h-5 animate-spin" />
