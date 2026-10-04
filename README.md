@@ -14,8 +14,8 @@ npm install
 1. Modifier le fichier `.env.local` avec vos valeurs :
 
 ```env
-# Email pour recevoir les virements Interac
-INTERAC_EMAIL=votre-email@example.com
+# Adresse qui reçoit les notifications de commande et de contact
+ORDERS_NOTIFICATION_EMAIL=votre-email@example.com
 
 # Mot de passe pour la page admin (/admin)
 ADMIN_PASSWORD=votre-mot-de-passe-secret
@@ -48,7 +48,7 @@ Le site sera accessible sur http://localhost:3000
 - `/produit/[id]` - Page produit
 - `/panier` - Panier
 - `/commande` - Formulaire de commande
-- `/confirmation` - Instructions de paiement Interac
+- `/confirmation` - Confirmation après un paiement par carte (Stripe)
 - `/contact` - Formulaire de contact
 - `/admin` - Administration (protégé par mot de passe)
 

@@ -303,7 +303,7 @@ site/.env.local
 
 Modifier :
 ```
-INTERAC_EMAIL=votre-email@example.com
+ORDERS_NOTIFICATION_EMAIL=votre-email@example.com
 ```
 
 ---
@@ -411,7 +411,7 @@ git push
 | Modifier l'email de contact | `src/components/Footer.tsx` et `src/app/contact/page.tsx` |
 | Modifier la page d'accueil | `src/app/page.tsx` |
 | Modifier le pied de page | `src/components/Footer.tsx` |
-| Modifier l'email Interac | `.env.local` |
+| Modifier l'adresse qui reçoit les notifications de commande | `.env.local` (`ORDERS_NOTIFICATION_EMAIL`) |
 | Modifier le mot de passe admin | `.env.local` |
 
 ---

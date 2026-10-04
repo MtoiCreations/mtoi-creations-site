@@ -37,17 +37,46 @@ courriels/domaine, pas `DIRECTION-VISUELLE.md`.
 - `NEXT_PUBLIC_SITE_URL` → `https://mtoicreations.com` (contrôle entre
   autres l'URL de redirection Stripe après paiement)
 
+### Fait depuis le 19 septembre
+- **Stripe fonctionne de nouveau en production** : la page de paiement
+  s'affiche. Le 500 venait de `/api/checkout`, qui écrivait la commande
+  dans `data/commandes.json` (système de fichiers en lecture seule sur
+  Netlify) avant même d'appeler Stripe.
+- `/api/checkout` écrit maintenant dans Supabase (`creerCommande`).
+- **Recalcul des prix côté serveur** dans `/api/checkout` : prix,
+  livraison et total viennent du catalogue Supabase (sans repli sur
+  `produits.json`), jamais du navigateur. Quantités (1 à 99), stock,
+  options choisies et réglage « commandes sur mesure » validés ; tout
+  écart donne un 409 sans commande ni session Stripe, et la page de
+  commande resynchronise le panier. Règles tarifaires dans
+  `src/lib/tarifs.ts`.
+- Bogue de nommage corrigé : la couleur, la taille, la variante et les
+  accessoires choisis sont enregistrés (commande, courriel, description
+  Stripe).
+- `POST /api/commandes` supprimé (non authentifié, plus appelé par le
+  site). `GET` et `PATCH` conservés pour l'admin.
+- `POST /api/settings` exige maintenant le mot de passe admin ; la page
+  `/admin` envoie le jeton.
+- `INTERAC_EMAIL` remplacé par `ORDERS_NOTIFICATION_EMAIL` dans le
+  README et `MODIFIER-INFORMATIONS.md`.
+
 ### Prochain point de reprise
-**Stripe est cassé en production** — confirmé : « Une erreur est
-survenue » au clic sur Payer. C'est le seul mode de paiement
-réellement branché à l'interface cliente (le parcours Interac existe
-dans le code mais n'est appelé par aucune page). Cause encore
-inconnue : en attente des journaux de fonctions Netlify pour
-`/api/checkout` pour savoir s'il s'agit d'une clé Stripe invalide/
-absente, d'une `NEXT_PUBLIC_SITE_URL` invalide pour l'URL de retour,
-ou autre chose. Une fois la cause confirmée et corrigée, il restera à
-migrer `/api/checkout` et `/api/admin` vers Supabase pour terminer la
-migration des commandes.
+**Webhook Stripe** (plan rédigé, à confirmer avant de coder). Problème
+actuel : `/api/checkout` enregistre la commande avec le statut `payee` et
+envoie les courriels *avant* que la cliente paie ; fermer la page Stripe
+sans payer laisse donc une fausse commande « payée ». Le webhook doit :
+créer la commande en `en_attente`, la passer à `payee` sur
+`checkout.session.completed`, envoyer les courriels à ce moment,
+décrémenter le stock, et annuler sur `checkout.session.expired`. Ordre de
+déploiement sûr : webhook et `STRIPE_WEBHOOK_SECRET` d'abord, puis le
+changement de `/api/checkout`.
+
+Ensuite : migrer `/api/admin` vers Supabase (dernière route sur
+`data/commandes.json`), puis les sessions visuelles I, E, F et G.
+
+Hors code (Supabase et Netlify) : supprimer dans la table `commandes` les
+fausses commandes `payee` créées pendant les essais, et confirmer que les
+variables Netlify de la liste ci-dessus sont à jour.
 
 ## État au 8 septembre 2026
 
