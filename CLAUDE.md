@@ -104,16 +104,26 @@ choices (`produitId`, `quantite`, `couleur`, `taille`, `varianteId`, `accessoire
 
 ### Admin auth
 
-There's no session/cookie auth. Every admin API route (`/api/admin/*`, including
-`/api/admin/produits`, `/api/admin/upload`, `/api/admin/variantes`, etc., plus
-`/api/commandes` and `/api/commandes/[id]`) independently checks a bearer token against
-`ADMIN_PASSWORD`. Known gap: `POST /api/settings` (the custom-orders toggle) has no check:
+There's no session/cookie auth and no `middleware.ts`, so protection is per route. Every admin
+API route (`/api/admin/*`, including `/api/admin/produits`, `/api/admin/upload`,
+`/api/admin/variantes`, etc., plus `/api/commandes`, `/api/commandes/[id]` and
+`POST /api/settings`) calls the single helper `verifierAdmin(request)` from
+`src/lib/adminAuth.ts` and returns 401 when it is false:
 ```ts
-const password = request.headers.get("authorization")?.replace("Bearer ", "");
-if (password !== process.env.ADMIN_PASSWORD) { /* 401 */ }
+import { verifierAdmin } from "@/lib/adminAuth";
+
+if (!verifierAdmin(request)) {
+  return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+}
 ```
-The `/admin` page stores the password client-side after login and attaches it to every
-subsequent request. New admin routes must replicate this check themselves.
+The helper compares the `Authorization: Bearer <password>` header to `ADMIN_PASSWORD` and
+**denies access when `ADMIN_PASSWORD` is unset or empty**. Never re-implement the comparison
+inline. The `/admin` page stores the password client-side (`sessionStorage("adminAuth")`) after
+login and attaches it to every request, including the `POST /api/settings` toggle.
+
+Routes that are intentionally public: `GET /api/produits`, `GET /api/settings`,
+`POST /api/checkout`, `POST /api/contact`. Any new route must either call `verifierAdmin` or be
+added to that list on purpose.
 
 ### Images
 

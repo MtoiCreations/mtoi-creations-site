@@ -59,6 +59,14 @@ courriels/domaine, pas `DIRECTION-VISUELLE.md`.
   `/admin` envoie le jeton.
 - `INTERAC_EMAIL` remplacé par `ORDERS_NOTIFICATION_EMAIL` dans le
   README et `MODIFIER-INFORMATIONS.md`.
+- **Authentification admin centralisée** : la fonction `verifierAdmin()`
+  de `src/lib/adminAuth.ts` remplace les copies du contrôle dans les 9
+  routes protégées. Elle refuse l'accès si `ADMIN_PASSWORD` est absent ou
+  vide (avant, une requête sans en-tête était comparée à `undefined` et
+  acceptée si la variable n'était pas définie). Inventaire des routes
+  fait : aucune route d'écriture n'est sans protection ; les routes
+  publiques voulues sont `GET /api/produits`, `GET /api/settings`,
+  `POST /api/checkout` et `POST /api/contact`.
 
 ### Prochain point de reprise
 **Webhook Stripe** (plan rédigé, à confirmer avant de coder). Problème
@@ -187,6 +195,22 @@ variables Netlify de la liste ci-dessus sont à jour.
   `api/admin`, `api/contact`). À échapper (`&`, `<`, `>`, `"`, `'`) avant
   l'insertion, pour qu'un texte saisi ne puisse pas injecter du HTML dans
   un courriel envoyé depuis le domaine.
+- **Comparaison du mot de passe admin** : `verifierAdmin()` compare avec
+  `===` (pas en temps constant) et rien ne limite le nombre d'essais sur
+  les routes admin. Faible risque avec un mot de passe long. Pistes :
+  `crypto.timingSafeEqual` et une limitation de tentatives par adresse IP.
+- **Abus possible de `POST /api/contact`** : le formulaire envoie une
+  confirmation à l'adresse saisie, sans limitation de fréquence ni
+  vérification. Quelqu'un peut s'en servir pour inonder une adresse
+  tierce depuis le domaine `mtoicreations.com` (risque pour la réputation
+  d'envoi dans Resend). Pistes : limitation de fréquence, champ piège
+  (honeypot) ou CAPTCHA, et retirer le courriel de confirmation envoyé au
+  tiers.
+- **Pas de limitation de fréquence sur `POST /api/checkout`** : chaque
+  appel valide crée une commande en base, une session Stripe et envoie
+  des courriels à l'adresse saisie. À traiter avec le webhook (les
+  commandes `en_attente` abandonnées s'accumulent déjà) : limitation par
+  adresse IP et nettoyage des commandes expirées.
 - **Erreurs d'hydratation dans `Header.tsx`** : la console signale une
   différence entre le HTML serveur et le rendu client (un `span` dans un
   `a`, via le logo). Non investiguée ; sans lien avec les commandes. À
