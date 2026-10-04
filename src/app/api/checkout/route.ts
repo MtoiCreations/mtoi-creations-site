@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { v4 as uuidv4 } from 'uuid';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { creerCommande } from '@/lib/commandes';
+import { CartItem as CartItemCommande } from '@/types';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const COMMANDES_FILE = path.join(process.cwd(), "data", "commandes.json");
 
 interface CartItem {
   produit: {
@@ -37,21 +35,6 @@ interface CheckoutRequest {
   };
   livraison: number;
   note?: string;
-}
-
-async function getCommandes() {
-  try {
-    const data = await fs.readFile(COMMANDES_FILE, "utf-8");
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function saveCommandes(commandes: unknown[]) {
-  const dir = path.dirname(COMMANDES_FILE);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(COMMANDES_FILE, JSON.stringify(commandes, null, 2));
 }
 
 function generateOrderNumber(): string {
@@ -86,10 +69,8 @@ export async function POST(request: NextRequest) {
     const sousTotal = items.reduce((acc, item) => acc + item.produit.prix * item.quantite, 0);
     const total = sousTotal + livraison;
 
-    const commande = {
-      id: uuidv4(),
+    const commande = await creerCommande({
       numeroCommande,
-      dateCreation: new Date().toISOString(),
       client: {
         prenom: clientInfo.prenom,
         nom: clientInfo.nom,
@@ -103,23 +84,20 @@ export async function POST(request: NextRequest) {
           codePostal: clientInfo.codePostal,
         },
       },
+      // Forme réduite propre à cette route (stockée telle quelle dans la colonne JSONB).
       articles: items.map(item => ({
         produit: item.produit,
         quantite: item.quantite,
         couleur: item.couleur,
         variante: item.variante,
-      })),
+      })) as unknown as CartItemCommande[],
       sousTotal,
       fraisLivraison: livraison,
       total,
       note: note || "",
       statut: "payee",
       paiementStripe: true,
-    };
-
-    const commandes = await getCommandes();
-    commandes.push(commande);
-    await saveCommandes(commandes);
+    });
 
     const lineItems = items.map((item) => {
       let description = '';
