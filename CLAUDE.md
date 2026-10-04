@@ -121,6 +121,13 @@ The helper compares the `Authorization: Bearer <password>` header to `ADMIN_PASS
 inline. The `/admin` page stores the password client-side (`sessionStorage("adminAuth")`) after
 login and attaches it to every request, including the `POST /api/settings` toggle.
 
+Admin pages use their own layout: `src/app/admin/layout.tsx` renders `AdminShell` (section
+navigation, "Voir la boutique" link, logout; shown only once logged in). The public header and
+footer are hidden under `/admin` by `PublicChrome` in the root `src/app/layout.tsx`. Page roots
+under `/admin` use `flex-1` (the shell provides the full-height flex column and the body font).
+A login or logout inside a page must call `signalerChangementAuthAdmin()` from
+`src/lib/adminSession.ts` so the shell updates without a reload.
+
 Routes that are intentionally public: `GET /api/produits`, `GET /api/settings`,
 `POST /api/checkout`, `POST /api/contact`. Any new route must either call `verifierAdmin` or be
 added to that list on purpose.

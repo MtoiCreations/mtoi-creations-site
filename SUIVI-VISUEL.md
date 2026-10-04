@@ -140,6 +140,18 @@ variables Netlify de la liste ci-dessus sont à jour.
   bord, fenêtre de détail, liste et détail des commandes, liste, édition et
   création de produits, variantes et accessoires.
 
+- Gabarit propre aux pages admin (cas ambigu n° 5 de la Session E, réglé) :
+  l'en-tête et le pied de page publics ne s'affichent plus sur `/admin` ni
+  sous `/admin/*` (`PublicChrome` dans `layout.tsx`). Le nouveau
+  `src/app/admin/layout.tsx` (via `AdminShell`) affiche une barre avec les
+  sections Tableau de bord, Commandes et Produits, un lien « Voir la
+  boutique » et le bouton de déconnexion, uniquement une fois connecté ;
+  l'écran de connexion reste seul. Le bouton de déconnexion et le titre
+  « Administration » de la page `/admin` ont été retirés au profit de la
+  barre. Vérifié sur toutes les pages admin, sur mobile, et les pages
+  publiques sont inchangées. Sur téléphone, la barre s'étale sur trois
+  lignes : utilisable, à resserrer si ça gêne.
+
 ### Cas ambigus laissés tels quels (Session E)
 Notés plutôt que décidés, à trancher avant de les traiter :
 - **Couleurs d'état, hors des six valeurs du devis** (49 occurrences) :
@@ -159,9 +171,6 @@ Notés plutôt que décidés, à trancher avant de les traiter :
 - **`Button.tsx` (composant partagé)** : encore sur l'ancienne palette,
   donc le bouton « Connexion » et les trois boutons de la fenêtre de détail
   de `/admin` restent rose tant que la Session I n'est pas faite.
-- **En-tête et pied de page publics** : les pages admin sont rendues
-  dans le gabarit public (`layout.tsx`) ; décider si l'admin doit les
-  masquer.
 - **Échelle typographique** : les tailles (`text-sm`, `text-lg`, `text-xl`,
   `text-2xl`) n'ont pas été ramenées à l'échelle 14 / 17 / 24 / 36 / 56.
 
