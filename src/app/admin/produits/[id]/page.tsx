@@ -221,14 +221,14 @@ export default function EditProduitPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-fond font-corps flex items-center justify-center">
+      <div className="flex-1 bg-fond flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-framboise" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-fond font-corps">
+    <div className="flex-1 bg-fond">
       {/* Header */}
       <header className="bg-surface border-b border-encre/10 sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">

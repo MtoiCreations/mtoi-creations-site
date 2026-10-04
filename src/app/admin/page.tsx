@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { formatPrice } from "@/lib/utils";
 import Button from "@/components/Button";
+import { signalerChangementAuthAdmin } from "@/lib/adminSession";
 import {
   Lock,
-  LogOut,
   Clock,
   CheckCircle,
   XCircle,
@@ -78,6 +78,7 @@ export default function AdminPage() {
       if (response.ok) {
         setIsAuthenticated(true);
         sessionStorage.setItem("adminAuth", password);
+        signalerChangementAuthAdmin();
         loadCommandes(password);
         loadSettings();
       } else {
@@ -133,13 +134,6 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Erreur mise à jour statut:", error);
     }
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem("adminAuth");
-    setIsAuthenticated(false);
-    setPassword("");
-    setCommandes([]);
   };
 
   const loadSettings = async () => {
@@ -202,7 +196,7 @@ export default function AdminPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-fond font-corps flex items-center justify-center p-4">
+      <div className="flex-1 bg-fond flex items-center justify-center p-4">
         <div className="bg-surface rounded-card p-8 shadow-soft max-w-md w-full">
           <div className="text-center mb-8">
             <Lock className="h-12 w-12 text-framboise mx-auto mb-4" />
@@ -235,22 +229,10 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-fond font-corps">
-      {/* Header */}
-      <header className="bg-surface border-b border-encre/10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="font-titre text-2xl text-encre">Administration</h1>
-          <button
-            onClick={handleLogout}
-            className="flex items-center text-encre/70 hover:text-framboise transition-colors"
-          >
-            <LogOut className="h-5 w-5 mr-2" />
-            Déconnexion
-          </button>
-        </div>
-      </header>
-
+    <div className="flex-1 bg-fond">
       <main className="max-w-7xl mx-auto px-4 py-8">
+        <h1 className="font-titre text-2xl text-encre mb-8">Tableau de bord</h1>
+
         {/* Paramètres boutique */}
         <div className="bg-surface rounded-card p-4 shadow-soft mb-8">
           <div className="flex items-center justify-between">

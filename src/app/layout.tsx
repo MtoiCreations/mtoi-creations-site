@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter, Josefin_Sans, Alex_Brush, Bricolage_Grotesqu
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PublicChrome from "@/components/PublicChrome";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -130,9 +131,13 @@ export default function RootLayout({
       </head>
       <body className="font-sans bg-cream-light text-primary antialiased">
         <div className="flex flex-col min-h-screen">
-          <Header />
+          <PublicChrome>
+            <Header />
+          </PublicChrome>
           <main className="flex-1">{children}</main>
-          <Footer />
+          <PublicChrome>
+            <Footer />
+          </PublicChrome>
         </div>
       </body>
     </html>

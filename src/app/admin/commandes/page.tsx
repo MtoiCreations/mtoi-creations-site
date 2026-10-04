@@ -169,14 +169,14 @@ export default function CommandesAdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-fond font-corps flex items-center justify-center">
+      <div className="flex-1 bg-fond flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-framboise" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-fond font-corps">
+    <div className="flex-1 bg-fond">
       <div className="container-custom py-8">
         <Link
           href="/admin"
