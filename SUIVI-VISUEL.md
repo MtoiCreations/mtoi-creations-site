@@ -120,11 +120,10 @@ migration des commandes.
   courriels.
 - Navigation à repenser : Boutique, Hygiène féminine et Soins et
   Confort se chevauchent.
-- Stockage des commandes dans `data/commandes.json`, éphémère sur
-  Netlify. À migrer vers Supabase — rappel : activer le RLS fermé par
-  défaut sur cette future table (aucun accès tant qu'une politique
-  explicite n'est pas créée), à l'inverse de ce qui vient d'être
-  corrigé sur `produits`.
+- Stockage des commandes : migré vers Supabase (table `commandes`, RLS
+  fermé, accès par `src/lib/commandes.ts`) pour `/api/commandes`,
+  `/api/commandes/[id]` et `/api/checkout`. Seule `/api/admin` lit encore
+  `data/commandes.json` (voir « Migration de `/api/admin` » plus bas).
 - **Descriptions de produits** : les descriptions actuelles sont
   génériques et interchangeables. Objectif : ajouter une phrase
   personnelle à chaque produit, sans tout réécrire.
@@ -153,6 +152,16 @@ migration des commandes.
   une commande non réglée.
 - **Migration de `/api/admin` vers Supabase** : lit encore
   `data/commandes.json`.
+- **Échappement HTML des données client dans les gabarits de courriels** :
+  le prénom, le nom, l'adresse et la note de la cliente sont insérés tels
+  quels dans le HTML des courriels (`api/checkout`, `api/commandes/[id]`,
+  `api/admin`, `api/contact`). À échapper (`&`, `<`, `>`, `"`, `'`) avant
+  l'insertion, pour qu'un texte saisi ne puisse pas injecter du HTML dans
+  un courriel envoyé depuis le domaine.
+- **Erreurs d'hydratation dans `Header.tsx`** : la console signale une
+  différence entre le HTML serveur et le rendu client (un `span` dans un
+  `a`, via le logo). Non investiguée ; sans lien avec les commandes. À
+  corriger lors de la session F (pied de page et logo) ou avant.
 
 ## Classes partagées hors échelle d'espacement (`src/app/globals.css`)
 

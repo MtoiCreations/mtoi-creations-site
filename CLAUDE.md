@@ -18,9 +18,16 @@ Local dev requires a `.env.local` (gitignored). Without `NEXT_PUBLIC_SUPABASE_UR
 `NEXT_PUBLIC_SUPABASE_ANON_KEY` set, the site still runs but falls back to the static
 sample data in `src/data/produits.json` (see below) — useful for UI work but does not
 reflect real inventory. Other env vars used across the app: `SUPABASE_SERVICE_ROLE_KEY`,
-`ADMIN_PASSWORD`, `RESEND_API_KEY`, `EMAIL_FROM`, `INTERAC_EMAIL`, `NEXT_PUBLIC_SITE_URL`,
-`STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `CLOUDINARY_CLOUD_NAME`,
-`CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`.
+`ADMIN_PASSWORD`, `RESEND_API_KEY`, `EMAIL_FROM` (sender, `commandes@mtoicreations.com`),
+`ORDERS_NOTIFICATION_EMAIL` (where the owner's order notifications go, defaults to
+`mtoicreations@hotmail.com`), `NEXT_PUBLIC_SITE_URL` (`https://mtoicreations.com`; also builds
+Stripe's return URLs), `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (only read by
+an unused helper), `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`.
+The site's only domain is `mtoicreations.com` (never `.ca`).
+
+`new Stripe(...)` (`src/lib/stripe.ts`) and `new Resend(...)` (module level in several
+routes) throw at module load when their key is missing, before any `try/catch` in a handler
+runs, so a missing key breaks the whole route rather than just the email or payment step.
 
 ## Direction visuelle
 
@@ -52,26 +59,55 @@ There are effectively two parallel ways to manage products: editing `produits.js
 `/admin` panel backed by Supabase. Keep both paths' data shape in sync when changing the
 `Produit` type in `src/types/index.ts`.
 
-### Orders: two payment flows, one storage mechanism
+### Orders: Stripe Checkout, stored in Supabase
 
-- `/api/checkout` — Stripe Checkout (card payment). Creates the order record already marked
-  `statut: "payee"`, creates a Stripe session, emails confirmation to the customer + owner.
-- `/api/commandes` (POST) — manual Interac e-transfer flow. Creates the order as
-  `statut: "en_attente"` and emails payment instructions instead of charging anything.
+Card payment through Stripe Checkout is the only payment flow wired to the UI. The manual
+Interac flow (`POST /api/commandes`) was removed.
 
-Both write to `data/commandes.json` via direct `fs` read/write (see the repeated
-`getCommandes`/`saveCommandes` helpers in `src/app/api/checkout/route.ts`,
-`src/app/api/commandes/route.ts`, and `src/app/api/admin/route.ts`). This file is **not** a
-database — on Netlify's serverless functions this filesystem is ephemeral, so treat order
-persistence there as unreliable, unlike the product catalog which was already migrated to
-Supabase. Keep this in mind before assuming an order written in one request will be visible
-to a later one in production.
+- **Storage**: the `commandes` table in Supabase (RLS enabled and closed; only
+  `service_role` has a GRANT). All access goes through `src/lib/commandes.ts`
+  (`getCommandes`, `getCommandeById`, `creerCommande`, `mettreAJourStatut`), which uses
+  `supabaseAdmin` and maps snake_case columns to the camelCase `Commande` type. `client` and
+  `articles` are JSONB. Statuts: `en_attente`, `payee`, `en_production`, `prete`, `expediee`,
+  `livree`, `annulee`.
+- `/api/checkout` — creates the order, then a Stripe session (`metadata.commande_id`), then
+  sends the customer and owner emails. **Known gap**: it still writes `statut: "payee"` and
+  emails *before* the customer pays. The planned fix is a Stripe webhook
+  (`checkout.session.completed` → `en_attente` to `payee`, send the emails there, decrement
+  stock); until then, abandoned payments leave a fake "payee" order.
+- `/api/commandes` (GET) and `/api/commandes/[id]` (GET, PATCH) serve the admin UI and require
+  the admin bearer token.
+- `/api/admin/route.ts` is the **last route still reading `data/commandes.json` through
+  `fs`**, which is read-only/ephemeral on Netlify. Treat it as unmigrated.
+
+### Prices are computed server-side
+
+`/api/checkout` never trusts an amount from the browser. The client sends only identifiers and
+choices (`produitId`, `quantite`, `couleur`, `taille`, `varianteId`, `accessoires`) plus
+`prixAffiche`/`totalAffiche`, used solely to detect a price change.
+
+- `src/lib/catalogue.ts` reads the products from Supabase for the order, **with no fallback to
+  `produits.json`** (an unreachable catalogue gives a 503, not a sale at stale prices).
+- `src/lib/tarifs.ts` holds the shipping rule (free from 75 $, otherwise 10 $) and the
+  quantity limits; all arithmetic is in integer cents. The shipping rule is still duplicated
+  in `panier/page.tsx` and `commande/page.tsx` for display only.
+- Any gap (price changed, stock too low, product withdrawn, invalid option, wrong total,
+  custom orders closed) returns **409** `{ code: "PANIER_MODIFIE", changements: [...] }`
+  without creating an order or a Stripe session. The checkout page applies the changes with
+  `useCartStore().appliquerChangements` and shows them for the customer to confirm.
+- Stock is validated (quantities of every line of the same product are summed) but **never
+  decremented**; that is planned for the webhook.
+- Order `articles` are stored with the `CartItem` field names (`couleurSelectionnee`,
+  `tailleSelectionnee`, `varianteSelectionnee`, `accessoiresSelectionnes`) and a reduced
+  product snapshot at the billed price. Orders created before this change use `couleur` /
+  `variante`; the admin orders page reads both shapes.
 
 ### Admin auth
 
 There's no session/cookie auth. Every admin API route (`/api/admin/*`, including
-`/api/admin/produits`, `/api/admin/upload`, `/api/admin/variantes`, etc.) independently checks
-a bearer token against `ADMIN_PASSWORD`:
+`/api/admin/produits`, `/api/admin/upload`, `/api/admin/variantes`, etc., plus
+`/api/commandes` and `/api/commandes/[id]`) independently checks a bearer token against
+`ADMIN_PASSWORD`. Known gap: `POST /api/settings` (the custom-orders toggle) has no check:
 ```ts
 const password = request.headers.get("authorization")?.replace("Bearer ", "");
 if (password !== process.env.ADMIN_PASSWORD) { /* 401 */ }
@@ -91,15 +127,23 @@ requires updating that allowlist. Static/manual product photos instead live unde
 
 - `src/lib/store.ts` — `useCartStore`, persisted to `localStorage` (cart survives reloads;
   no-ops out on the server via a `noopStorage` shim).
-- `src/lib/logoIntroStore.ts` — drives the header logo's intro animation as a small state
-  machine (`idle → toCenter → giant → toOrigin → dissolving`), not persisted. Triggered by
-  `HomeIntroTrigger` (first homepage visit per session, via `sessionStorage`) or by clicking
-  the header logo (`AnimatedLogo`); rendered by `LogoIntroOverlay`, mounted once in
-  `src/app/layout.tsx` so it survives client-side navigation.
+  It also exposes `appliquerChangements`, which resyncs the cart with the discrepancies
+  returned by `/api/checkout` (409). The cart stores a full copy of each product, price
+  included, with no expiry, so a returning customer can hold stale prices.
+- The header logo is `src/components/AnimatedLogo.tsx` (used by `Header.tsx`); there is no
+  intro-animation store anymore.
 
 ### Design tokens
 
-Colors, gradients (`bg-sunset`, `bg-sunset-soft`), and the script font (`font-script`, Alex
-Brush) are defined centrally in `tailwind.config.ts`; components consistently reference the
-semantic tokens (`primary`, `secondary`, `accent`, `cream`, `text-*`) rather than raw hex
-values, so a palette change there cascades sitewide.
+`tailwind.config.ts` holds two generations of tokens, both still in use while the redesign
+(`SUIVI-VISUEL.md`) is in progress:
+
+- **Current** (`DIRECTION-VISUELLE.md`): colors `encre`, `fond`, `surface`, `safran`,
+  `framboise`, `lichen`; fonts `font-titre` (Bricolage Grotesque) and `font-corps` (Literata).
+  Use these for any new or reworked page.
+- **Legacy**, still referenced by pages not yet migrated (cart, checkout, confirmation, admin,
+  footer, email templates): `primary`, `secondary`, `accent`, `cream`, `text-*`, the
+  `bg-sunset` gradients, and the `serif` / `sans` / `display` / `script` fonts.
+
+`SUIVI-VISUEL.md` lists what remains to migrate, session by session, and also tracks the
+technical work (Supabase orders, email/domain, Stripe).
