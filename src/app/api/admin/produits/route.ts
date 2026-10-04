@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin as supabase } from "@/lib/supabase";
-
-function checkAuth(request: NextRequest): boolean {
-  const authHeader = request.headers.get("authorization");
-  const password = authHeader?.replace("Bearer ", "");
-  return password === process.env.ADMIN_PASSWORD;
-}
+import { verifierAdmin } from "@/lib/adminAuth";
 
 export async function GET(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -28,7 +23,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -82,7 +77,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -127,7 +122,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 

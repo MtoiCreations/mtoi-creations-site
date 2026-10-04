@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { promises as fs } from "fs";
 import path from "path";
+import { verifierAdmin } from "@/lib/adminAuth";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -31,10 +32,7 @@ function formatPrice(price: number): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("authorization");
-    const password = authHeader?.replace("Bearer ", "");
-
-    if (password !== process.env.ADMIN_PASSWORD) {
+    if (!verifierAdmin(request)) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 

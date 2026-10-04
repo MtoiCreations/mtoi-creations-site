@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin as supabase } from "@/lib/supabase";
-
-function checkAuth(request: NextRequest): boolean {
-  const authHeader = request.headers.get("authorization");
-  const password = authHeader?.replace("Bearer ", "");
-  return password === process.env.ADMIN_PASSWORD;
-}
+import { verifierAdmin } from "@/lib/adminAuth";
 
 // GET - Récupérer les accessoires d'un produit avec leurs variantes
 export async function GET(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -60,7 +55,7 @@ export async function GET(request: NextRequest) {
 
 // POST - Créer un accessoire
 export async function POST(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -92,7 +87,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - Modifier un accessoire
 export async function PUT(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -123,7 +118,7 @@ export async function PUT(request: NextRequest) {
 
 // DELETE - Supprimer un accessoire (les variantes seront supprimées en cascade)
 export async function DELETE(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 

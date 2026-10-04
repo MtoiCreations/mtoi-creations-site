@@ -1,20 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getCommandeById, mettreAJourStatut } from "@/lib/commandes";
+import { verifierAdmin } from "@/lib/adminAuth";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-function checkAuth(request: NextRequest): boolean {
-  const authHeader = request.headers.get("authorization");
-  const password = authHeader?.replace("Bearer ", "");
-  return password === process.env.ADMIN_PASSWORD;
-}
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -37,7 +32,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 

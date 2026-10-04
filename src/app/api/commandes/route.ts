@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCommandes } from "@/lib/commandes";
-
-function checkAuth(request: NextRequest): boolean {
-  const authHeader = request.headers.get("authorization");
-  const password = authHeader?.replace("Bearer ", "");
-  return password === process.env.ADMIN_PASSWORD;
-}
+import { verifierAdmin } from "@/lib/adminAuth";
 
 export async function GET(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 

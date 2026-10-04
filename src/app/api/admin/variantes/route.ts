@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin as supabase } from "@/lib/supabase";
-
-function checkAuth(request: NextRequest): boolean {
-  const authHeader = request.headers.get("authorization");
-  const password = authHeader?.replace("Bearer ", "");
-  return password === process.env.ADMIN_PASSWORD;
-}
+import { verifierAdmin } from "@/lib/adminAuth";
 
 // GET - Récupérer les variantes d'un produit
 export async function GET(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -38,7 +33,7 @@ export async function GET(request: NextRequest) {
 
 // POST - Créer une variante
 export async function POST(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -76,7 +71,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - Modifier une variante
 export async function PUT(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -106,7 +101,7 @@ export async function PUT(request: NextRequest) {
 
 // DELETE - Supprimer une variante
 export async function DELETE(request: NextRequest) {
-  if (!checkAuth(request)) {
+  if (!verifierAdmin(request)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
