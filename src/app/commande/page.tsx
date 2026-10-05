@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCartStore } from "@/lib/store";
 import type { ChangementPanier } from "@/types";
 import { formatPrice } from "@/lib/utils";
+import { enCents, fraisLivraisonCents } from "@/lib/tarifs";
 import Button from "@/components/Button";
 import { ArrowLeft, Loader2, CreditCard, Lock } from "lucide-react";
 
@@ -34,8 +35,14 @@ export default function CommandePage() {
     note: "",
   });
 
+  // Champs : fond surface, bordure encre à 25 %, état actif framboise. Le fond bleuté
+  // de l'autoremplissage du navigateur est neutralisé.
+  const champ =
+    "w-full rounded-[4px] border bg-surface px-4 py-3 text-encre placeholder:text-encre/50 focus:border-framboise focus:outline-none focus:ring-1 focus:ring-framboise [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_theme(colors.surface)] [&:-webkit-autofill]:[-webkit-text-fill-color:theme(colors.encre)]";
+  const bordureChamp = (erreur?: string) => (erreur ? "border-red-500" : "border-encre/25");
+
   const sousTotal = getTotal();
-  const fraisLivraison = sousTotal >= 75 ? 0 : 10;
+  const fraisLivraison = fraisLivraisonCents(enCents(sousTotal)) / 100;
   const total = sousTotal + fraisLivraison;
 
   const provinces = [
@@ -155,7 +162,7 @@ export default function CommandePage() {
       }
     } catch (error) {
       console.error("Erreur:", error);
-      alert("Une erreur est survenue. Veuillez réessayer.");
+      alert("Une erreur est survenue. Réessaie dans un instant.");
     } finally {
       setIsLoading(false);
     }
@@ -169,28 +176,28 @@ export default function CommandePage() {
 
   if (!isClient || items.length === 0) {
     return (
-      <div className="section-padding bg-cream-light min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+      <div className="flex min-h-screen items-center justify-center bg-fond py-14 font-corps md:py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-framboise" />
       </div>
     );
   }
 
   return (
-    <div className="section-padding bg-cream-light min-h-screen">
-      <div className="container-custom">
+    <div className="min-h-screen bg-fond py-14 font-corps md:py-24">
+      <div className="mx-auto max-w-7xl px-6 lg:px-16">
         <Link
           href="/panier"
-          className="inline-flex items-center text-text-secondary hover:text-secondary transition-colors mb-8"
+          className="mb-10 inline-flex items-center text-encre/70 transition-colors hover:text-framboise"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour au panier
         </Link>
 
-        <h1 className="heading-2 text-primary mb-8">Finaliser la commande</h1>
+        <h1 className="mb-10 font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">Finaliser la commande</h1>
 
         {messagesPanier.length > 0 && (
-          <div role="alert" className="mb-8 rounded-card border border-amber-300 bg-amber-50 p-4 text-amber-900">
-            <p className="font-medium">Ton panier a été mis à jour. Vérifie-le, puis confirme ta commande.</p>
+          <div role="alert" className="mb-10 border border-safran/30 bg-safran/10 p-4 text-encre">
+            <p className="font-medium text-encre">Ton panier a été mis à jour. Vérifie-le, puis confirme ta commande.</p>
             <ul className="mt-2 list-disc pl-5 text-sm">
               {messagesPanier.map((message, i) => (
                 <li key={i}>{message}</li>
@@ -200,16 +207,16 @@ export default function CommandePage() {
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-x-16">
             {/* Formulaire */}
             <div className="lg:col-span-2 space-y-6">
               {/* Informations de contact */}
-              <div className="bg-white rounded-card p-6 shadow-soft">
-                <h2 className="font-serif text-xl text-primary mb-6">Informations de contact</h2>
+              <div className="border border-encre/10 bg-surface p-6">
+                <h2 className="mb-6 font-titre text-xl text-encre">Informations de contact</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Prénom *
                     </label>
                     <input
@@ -217,15 +224,13 @@ export default function CommandePage() {
                       name="prenom"
                       value={formData.prenom}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                        errors.prenom ? "border-red-500" : "border-cream-dark"
-                      }`}
+                      className={`${champ} ${bordureChamp(errors.prenom)}`}
                     />
-                    {errors.prenom && <p className="mt-1 text-sm text-red-500">{errors.prenom}</p>}
+                    {errors.prenom && <p className="mt-2 text-sm text-red-500">{errors.prenom}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Nom *
                     </label>
                     <input
@@ -233,15 +238,13 @@ export default function CommandePage() {
                       name="nom"
                       value={formData.nom}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                        errors.nom ? "border-red-500" : "border-cream-dark"
-                      }`}
+                      className={`${champ} ${bordureChamp(errors.nom)}`}
                     />
-                    {errors.nom && <p className="mt-1 text-sm text-red-500">{errors.nom}</p>}
+                    {errors.nom && <p className="mt-2 text-sm text-red-500">{errors.nom}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Email *
                     </label>
                     <input
@@ -249,15 +252,13 @@ export default function CommandePage() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                        errors.email ? "border-red-500" : "border-cream-dark"
-                      }`}
+                      className={`${champ} ${bordureChamp(errors.email)}`}
                     />
-                    {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+                    {errors.email && <p className="mt-2 text-sm text-red-500">{errors.email}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Téléphone
                     </label>
                     <input
@@ -265,19 +266,19 @@ export default function CommandePage() {
                       name="telephone"
                       value={formData.telephone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-cream-dark rounded-button focus:outline-none focus:ring-2 focus:ring-secondary"
+                      className={`${champ} border-encre/25`}
                     />
                   </div>
                 </div>
               </div>
 
               {/* Adresse de livraison */}
-              <div className="bg-white rounded-card p-6 shadow-soft">
-                <h2 className="font-serif text-xl text-primary mb-6">Adresse de livraison</h2>
+              <div className="border border-encre/10 bg-surface p-6">
+                <h2 className="mb-6 font-titre text-xl text-encre">Adresse de livraison</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Adresse *
                     </label>
                     <input
@@ -286,17 +287,15 @@ export default function CommandePage() {
                       value={formData.adresseLigne1}
                       onChange={handleChange}
                       placeholder="Numéro et rue"
-                      className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                        errors.adresseLigne1 ? "border-red-500" : "border-cream-dark"
-                      }`}
+                      className={`${champ} ${bordureChamp(errors.adresseLigne1)}`}
                     />
                     {errors.adresseLigne1 && (
-                      <p className="mt-1 text-sm text-red-500">{errors.adresseLigne1}</p>
+                      <p className="mt-2 text-sm text-red-500">{errors.adresseLigne1}</p>
                     )}
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Appartement, suite, etc.
                     </label>
                     <input
@@ -304,12 +303,12 @@ export default function CommandePage() {
                       name="adresseLigne2"
                       value={formData.adresseLigne2}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-cream-dark rounded-button focus:outline-none focus:ring-2 focus:ring-secondary"
+                      className={`${champ} border-encre/25`}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Ville *
                     </label>
                     <input
@@ -317,22 +316,20 @@ export default function CommandePage() {
                       name="ville"
                       value={formData.ville}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                        errors.ville ? "border-red-500" : "border-cream-dark"
-                      }`}
+                      className={`${champ} ${bordureChamp(errors.ville)}`}
                     />
-                    {errors.ville && <p className="mt-1 text-sm text-red-500">{errors.ville}</p>}
+                    {errors.ville && <p className="mt-2 text-sm text-red-500">{errors.ville}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Province *
                     </label>
                     <select
                       name="province"
                       value={formData.province}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-cream-dark rounded-button focus:outline-none focus:ring-2 focus:ring-secondary bg-white"
+                      className={`${champ} border-encre/25`}
                     >
                       {provinces.map((prov) => (
                         <option key={prov.code} value={prov.code}>
@@ -343,7 +340,7 @@ export default function CommandePage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
+                    <label className="mb-2 block font-titre text-sm text-encre">
                       Code postal *
                     </label>
                     <input
@@ -352,75 +349,73 @@ export default function CommandePage() {
                       value={formData.codePostal}
                       onChange={handleChange}
                       placeholder="A1A 1A1"
-                      className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                        errors.codePostal ? "border-red-500" : "border-cream-dark"
-                      }`}
+                      className={`${champ} ${bordureChamp(errors.codePostal)}`}
                     />
                     {errors.codePostal && (
-                      <p className="mt-1 text-sm text-red-500">{errors.codePostal}</p>
+                      <p className="mt-2 text-sm text-red-500">{errors.codePostal}</p>
                     )}
                   </div>
                 </div>
               </div>
 
               {/* Note */}
-              <div className="bg-white rounded-card p-6 shadow-soft">
-                <h2 className="font-serif text-xl text-primary mb-6">Note (optionnel)</h2>
+              <div className="border border-encre/10 bg-surface p-6">
+                <h2 className="mb-6 font-titre text-xl text-encre">Note (optionnel)</h2>
                 <textarea
                   name="note"
                   value={formData.note}
                   onChange={handleChange}
                   rows={4}
                   placeholder="Instructions spéciales, personnalisation, etc."
-                  className="w-full px-4 py-3 border border-cream-dark rounded-button focus:outline-none focus:ring-2 focus:ring-secondary resize-none"
+                  className={`${champ} border-encre/25 resize-none`}
                 />
               </div>
             </div>
 
             {/* Récapitulatif */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-card p-6 shadow-soft sticky top-24">
-                <h2 className="font-serif text-xl text-primary mb-6">Votre commande</h2>
+              <div className="border border-encre/10 bg-surface p-6 lg:sticky lg:top-24">
+                <h2 className="mb-6 font-titre text-xl text-encre">Ta commande</h2>
 
                 {/* Articles */}
-                <div className="space-y-3 mb-6">
+                <div className="mb-6 space-y-2">
                   {items.map((item, index) => (
                     <div key={index} className="flex justify-between text-sm">
-                      <span className="text-text-secondary">
+                      <span className="text-encre/70">
                         {item.produit.nom} × {item.quantite}
                       </span>
-                      <span className="font-medium">
+                      <span className="font-medium text-encre">
                         {formatPrice(item.produit.prix * item.quantite)}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="space-y-3 pt-4 border-t border-cream-dark text-sm">
+                <div className="space-y-2 pt-4 border-t border-encre/10 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-text-secondary">Sous-total</span>
-                    <span className="font-medium">{formatPrice(sousTotal)}</span>
+                    <span className="text-encre/70">Sous-total</span>
+                    <span className="font-medium text-encre">{formatPrice(sousTotal)}</span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-text-secondary">Livraison</span>
-                    <span className="font-medium">
+                    <span className="text-encre/70">Livraison</span>
+                    <span className="font-medium text-encre">
                       {fraisLivraison === 0 ? (
-                        <span className="text-green-600">Gratuite</span>
+                        <span className="text-lichen">Gratuite</span>
                       ) : (
                         formatPrice(fraisLivraison)
                       )}
                     </span>
                   </div>
 
-                  <div className="pt-4 border-t border-cream-dark flex justify-between items-center">
-                    <span className="font-display text-lg text-primary">Total</span>
-                    <span className="font-display text-2xl text-secondary font-semibold">
+                  <div className="pt-4 border-t border-encre/10 flex justify-between items-center">
+                    <span className="font-titre text-lg text-encre">Total</span>
+                    <span className="font-titre text-2xl font-semibold text-framboise">
                       {formatPrice(total)}
                     </span>
                   </div>
 
-                  <p className="text-xs text-text-light text-center pt-2">
+                  <p className="text-xs text-encre/65 text-center pt-2">
                     Taxes non applicables — petit fournisseur
                   </p>
                 </div>
@@ -441,7 +436,7 @@ export default function CommandePage() {
                   </Button>
                 </div>
 
-                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-text-light">
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-encre/65">
                   <Lock className="h-3 w-3" />
                   <span>Paiement sécurisé par Stripe</span>
                 </div>

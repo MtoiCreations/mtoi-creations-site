@@ -30,24 +30,26 @@ export default function QuantitySelector({
   };
 
   return (
-    <div className="flex items-center border border-cream-dark rounded-button">
+    <div className="flex items-center rounded-[4px] border border-encre/25 bg-surface">
       <button
+        type="button"
         onClick={handleDecrease}
         disabled={disabled || value <= min}
-        className="p-3 text-primary hover:text-secondary disabled:text-text-light disabled:cursor-not-allowed transition-colors"
+        className="p-3 text-encre transition-colors hover:text-framboise disabled:cursor-not-allowed disabled:text-encre/40"
         aria-label="Diminuer la quantité"
       >
         <Minus className="h-4 w-4" />
       </button>
 
-      <span className="w-12 text-center font-display text-lg text-primary">
+      <span className="w-12 text-center font-titre text-lg text-encre">
         {value}
       </span>
 
       <button
+        type="button"
         onClick={handleIncrease}
         disabled={disabled || value >= max}
-        className="p-3 text-primary hover:text-secondary disabled:text-text-light disabled:cursor-not-allowed transition-colors"
+        className="p-3 text-encre transition-colors hover:text-framboise disabled:cursor-not-allowed disabled:text-encre/40"
         aria-label="Augmenter la quantité"
       >
         <Plus className="h-4 w-4" />

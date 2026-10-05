@@ -158,6 +158,29 @@ variables Netlify de la liste ci-dessus sont à jour.
   empêche les robots de lire la balise `noindex` ; les deux se complètent
   (aucun lien externe ne mène à `/admin`).
 
+- Session I : panier et tunnel de commande (`panier/page.tsx`,
+  `commande/page.tsx`, `confirmation/page.tsx`) et composants partagés
+  `Button.tsx`, `CartItem.tsx`, `QuantitySelector.tsx` migrés vers le devis.
+  `Button.tsx` : primaire en aplat `safran` + texte `encre`, rayon 4 px,
+  police `titre`, anneau de focus `framboise` ; `secondary` en `encre`,
+  `outline` en `framboise`, `ghost` en `encre/10` au survol. Cela règle
+  aussi les boutons roses de l'admin et ceux de `/contact` et `/404`.
+  Champs de formulaire : fond `surface`, bordure `encre/25`, état actif
+  `framboise` (bordure et anneau de 1 px), fond bleuté de l'autoremplissage
+  du navigateur neutralisé. Blocs : bord net `encre/10`, fond `surface`, sans
+  ombre ni rayon, marge intérieure 24 px ; marges de page 24 / 64 px,
+  espacement vertical 56 / 96 px ; titres cadrés à gauche, `font-corps` sur
+  la page. Vignette du panier en 4:5, sans rayon. « Gratuite » et les états
+  de succès de la confirmation en `lichen`. Constantes de livraison :
+  `panier` et `commande` utilisent `src/lib/tarifs.ts` (seuil 75 $, frais
+  10 $), comme le serveur. Tutoiement complet (états vides, messages
+  d'erreur, confirmation). La mention périmée « Paiement sécurisé par
+  Virement Interac » du panier est remplacée par « Paiement sécurisé par
+  carte, via Stripe ». Logique de paiement et appels API non touchés.
+  Vérifié à 1280 et 375 px (aucun débordement) : panier, commande (erreurs,
+  focus), confirmation, et rendu de `Button` / `QuantitySelector` sur
+  `/contact`, `/404`, la page produit et la connexion admin.
+
 ### Cas ambigus laissés tels quels (Session E)
 Notés plutôt que décidés, à trancher avant de les traiter :
 - **Couleurs d'état, hors des six valeurs du devis** (49 occurrences) :
@@ -174,21 +197,27 @@ Notés plutôt que décidés, à trancher avant de les traiter :
   96 · 160` (`p-1`, `p-3`, `gap-3`, `mb-3`, `py-1.5`, `p-8`, `py-12`…),
   contre 220 sur l'échelle. Laissées pour ne pas modifier la mise en page
   dense de l'admin, comme déjà fait pour les pastilles des pages publiques.
-- **`Button.tsx` (composant partagé)** : encore sur l'ancienne palette,
-  donc le bouton « Connexion » et les trois boutons de la fenêtre de détail
-  de `/admin` restent rose tant que la Session I n'est pas faite.
 - **Échelle typographique** : les tailles (`text-sm`, `text-lg`, `text-xl`,
   `text-2xl`) n'ont pas été ramenées à l'échelle 14 / 17 / 24 / 36 / 56.
 
+### Cas laissés tels quels (Session I)
+- **Messages d'erreur du formulaire de commande** : bordure et texte en
+  `red-500` conservés (aucune couleur d'erreur dans les six valeurs du
+  devis ; `framboise` sert déjà à l'état actif). Le texte `red-500` sur fond
+  `surface` a un contraste d'environ 3,8:1, sous 4,5:1 pour du petit texte :
+  à décider (par exemple `red-700`).
+- **Marges intérieures des contrôles** (`py-3` des champs, tailles de
+  `Button`) : hors échelle, conservées comme sur la page produit pour ne pas
+  changer la taille des zones tactiles.
+- **`container-custom` et `section-padding`** (globals.css) : toujours
+  utilisés par les pages publiques non migrées ; les pages de la Session I
+  utilisent des marges explicites 24 / 64 px.
+- **Pages encore sur l'ancien fond `cream-light`** : `/contact` et `/404`
+  (Boutons déjà migrés via `Button.tsx`, pas le reste de leur page).
+
 ### À faire, par ordre de priorité
 
-1. **Session I — Panier et tunnel de commande**
-   `panier/page.tsx`, `commande/page.tsx`, `confirmation/page.tsx`,
-   `CartItem.tsx`, `QuantitySelector.tsx` (partagé avec la page produit —
-   vérifier son rendu là aussi), `Button.tsx` (partagé partout — encore
-   sur l'ancienne palette). **C'est le prochain point de reprise.**
-
-2. **Session F — Couleurs du footer**
+1. **Session F — Couleurs du footer** **(prochain point de reprise visuel)**
    Jetons `bg-primary`, `text-white`, `text-cream`, `text-accent`.
    **Inclut aussi le logo du footer** : la Session H voulait remplacer
    le texte "MToi Créations" par `public/images/logo.png`, mais ce
@@ -198,7 +227,7 @@ Notés plutôt que décidés, à trancher avant de les traiter :
    soit une variante claire du logo, soit un fond de footer plus clair,
    soit garder le texte.
 
-3. **Session G — Gabarits de courriels**
+2. **Session G — Gabarits de courriels**
    Environ 79 valeurs hex codées en dur dans `api/admin`,
    `api/checkout`, `api/commandes`, `api/commandes/[id]`, `api/contact`
 
@@ -337,9 +366,9 @@ avis en `safran`, "Achat vérifié" en `lichen`.
 `QuantitySelector`, à peu près toutes les pages pour `Button`). La page
 produit n'utilise plus `Button.tsx` (remplacé par des classes locales
 `btnPrimary`/`btnSecondary`/lien `framboise` dans `ProduitClient.tsx`,
-même approche qu'aux Sessions B/C/H), mais `QuantitySelector` reste sur
-l'ancienne palette (`cream`/`primary`/`secondary`) et se voit donc tel
-quel sur la page produit en attendant la Session I.
+même approche qu'aux Sessions B/C/H), mais `QuantitySelector` restait sur
+l'ancienne palette (`cream`/`primary`/`secondary`) ; il a été migré à la
+Session I.
 
 ## Comment traiter ceci
 

@@ -20,18 +20,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    // Rayon de 4 px et police des titres : DIRECTION-VISUELLE.md, section 5
     const baseStyles =
-      "inline-flex items-center justify-center font-display font-medium transition-all duration-200 rounded-button focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+      "inline-flex items-center justify-center font-titre font-medium transition-colors duration-200 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-framboise focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
     const variants = {
-      primary:
-        "bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary",
-      secondary:
-        "bg-primary text-white hover:bg-primary-light focus:ring-primary",
+      // Aplat safran, texte encre (jamais de texte clair sur safran)
+      primary: "bg-safran text-encre hover:bg-safran/90",
+      secondary: "bg-encre text-fond hover:bg-encre/90",
       outline:
-        "border-2 border-secondary text-secondary hover:bg-secondary hover:text-white focus:ring-secondary",
-      ghost:
-        "text-primary hover:bg-cream focus:ring-primary",
+        "border border-framboise text-framboise hover:bg-framboise hover:text-fond",
+      ghost: "text-encre hover:bg-encre/10",
     };
 
     const sizes = {

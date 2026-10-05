@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCartStore } from "@/lib/store";
 import { formatPrice } from "@/lib/utils";
+import { enCents, fraisLivraisonCents, SEUIL_LIVRAISON_GRATUITE } from "@/lib/tarifs";
 import CartItemComponent from "@/components/CartItem";
 import Button from "@/components/Button";
 import { ShoppingBag, ArrowLeft, Trash2 } from "lucide-react";
@@ -11,18 +12,20 @@ export default function PanierPage() {
   const { items, clearCart, getTotal } = useCartStore();
 
   const sousTotal = getTotal();
-  const fraisLivraison = sousTotal >= 75 ? 0 : 10;
+  const fraisLivraison = fraisLivraisonCents(enCents(sousTotal)) / 100;
   const total = sousTotal + fraisLivraison;
 
   if (items.length === 0) {
     return (
-      <div className="section-padding bg-cream-light min-h-screen">
-        <div className="container-custom">
-          <div className="max-w-2xl mx-auto text-center">
-            <ShoppingBag className="h-16 w-16 text-text-light mx-auto mb-6" />
-            <h1 className="heading-2 text-primary mb-4">Votre panier est vide</h1>
-            <p className="text-text-secondary mb-8">
-              Découvrez nos créations artisanales et trouvez la pièce parfaite pour vous.
+      <div className="min-h-screen bg-fond py-14 font-corps md:py-24">
+        <div className="mx-auto max-w-7xl px-6 lg:px-16">
+          <div className="max-w-[65ch]">
+            <ShoppingBag className="mb-6 h-12 w-12 text-encre/65" />
+            <h1 className="mb-4 font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">
+              Ton panier est vide
+            </h1>
+            <p className="mb-10 text-[17px] leading-[1.65] text-encre/80">
+              Découvre nos créations artisanales et trouve la pièce parfaite pour toi.
             </p>
             <Link href="/boutique">
               <Button size="lg">Découvrir la boutique</Button>
@@ -34,16 +37,18 @@ export default function PanierPage() {
   }
 
   return (
-    <div className="section-padding bg-cream-light min-h-screen">
-      <div className="container-custom">
-        <h1 className="heading-2 text-primary mb-8">Votre panier</h1>
+    <div className="min-h-screen bg-fond py-14 font-corps md:py-24">
+      <div className="mx-auto max-w-7xl px-6 lg:px-16">
+        <h1 className="mb-10 font-titre text-[36px] font-semibold leading-[1.05] text-encre md:text-[56px]">
+          Ton panier
+        </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-x-16">
           {/* Liste des articles */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-card p-6 shadow-soft">
+            <div className="border border-encre/10 bg-surface p-6">
               {/* En-tête desktop */}
-              <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto] gap-6 pb-4 border-b border-cream-dark text-sm font-display text-text-secondary">
+              <div className="hidden grid-cols-[1fr_auto_auto_auto] gap-6 border-b border-encre/10 pb-4 font-titre text-sm text-encre/70 md:grid">
                 <span>Produit</span>
                 <span className="w-32 text-center">Quantité</span>
                 <span className="w-28 text-right">Total</span>
@@ -60,20 +65,20 @@ export default function PanierPage() {
               ))}
 
               {/* Actions */}
-              <div className="mt-6 pt-6 border-t border-cream-dark flex flex-wrap justify-between items-center gap-4">
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pt-6">
                 <Link
                   href="/boutique"
-                  className="inline-flex items-center text-text-secondary hover:text-secondary transition-colors"
+                  className="inline-flex items-center text-encre/70 transition-colors hover:text-framboise"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  <ArrowLeft className="mr-2 h-4 w-4" />
                   Continuer les achats
                 </Link>
 
                 <button
                   onClick={clearCart}
-                  className="inline-flex items-center text-text-secondary hover:text-red-500 transition-colors"
+                  className="inline-flex items-center text-encre/70 transition-colors hover:text-framboise"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                   Vider le panier
                 </button>
               </div>
@@ -82,40 +87,40 @@ export default function PanierPage() {
 
           {/* Récapitulatif */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-card p-6 shadow-soft sticky top-24">
-              <h2 className="font-serif text-xl text-primary mb-6">Récapitulatif</h2>
+            <div className="border border-encre/10 bg-surface p-6 lg:sticky lg:top-24">
+              <h2 className="mb-6 font-titre text-xl text-encre">Récapitulatif</h2>
 
-              <div className="space-y-3 text-sm">
+              <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-text-secondary">Sous-total</span>
-                  <span className="font-medium">{formatPrice(sousTotal)}</span>
+                  <span className="text-encre/70">Sous-total</span>
+                  <span className="font-medium text-encre">{formatPrice(sousTotal)}</span>
                 </div>
 
                 <div className="flex justify-between">
-                  <span className="text-text-secondary">Livraison</span>
-                  <span className="font-medium">
+                  <span className="text-encre/70">Livraison</span>
+                  <span className="font-medium text-encre">
                     {fraisLivraison === 0 ? (
-                      <span className="text-green-600">Gratuite</span>
+                      <span className="text-lichen">Gratuite</span>
                     ) : (
                       formatPrice(fraisLivraison)
                     )}
                   </span>
                 </div>
 
-                {sousTotal < 75 && (
-                  <p className="text-xs text-text-light pt-2">
-                    Plus que {formatPrice(75 - sousTotal)} pour la livraison gratuite !
+                {fraisLivraison > 0 && (
+                  <p className="pt-2 text-xs text-encre/65">
+                    Plus que {formatPrice(SEUIL_LIVRAISON_GRATUITE - sousTotal)} pour la livraison gratuite !
                   </p>
                 )}
 
-                <div className="pt-4 border-t border-cream-dark flex justify-between items-center">
-                  <span className="font-display text-lg text-primary">Total</span>
-                  <span className="font-display text-2xl text-secondary font-semibold">
+                <div className="mt-4 flex items-center justify-between border-t border-encre/10 pt-4">
+                  <span className="font-titre text-lg text-encre">Total</span>
+                  <span className="font-titre text-2xl font-semibold text-framboise">
                     {formatPrice(total)}
                   </span>
                 </div>
 
-                <p className="text-xs text-text-light text-center pt-2">
+                <p className="pt-2 text-center text-xs text-encre/65">
                   Taxes non applicables — petit fournisseur
                 </p>
               </div>
@@ -128,8 +133,8 @@ export default function PanierPage() {
                 </Link>
               </div>
 
-              <div className="mt-4 text-center text-xs text-text-light">
-                Paiement sécurisé par Virement Interac
+              <div className="mt-4 text-center text-xs text-encre/65">
+                Paiement sécurisé par carte, via Stripe
               </div>
             </div>
           </div>

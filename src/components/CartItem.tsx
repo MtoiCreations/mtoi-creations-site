@@ -31,11 +31,11 @@ export default function CartItem({ item, index }: CartItemProps) {
   };
 
   return (
-    <div className="flex gap-4 py-6 border-b border-cream-dark">
-      {/* Image */}
+    <div className="flex gap-4 border-b border-encre/10 py-6">
+      {/* Image : cadrage 4:5, bord net */}
       <Link
         href={`/produit/${produit.id}`}
-        className="relative flex-shrink-0 w-24 h-32 rounded-lg overflow-hidden"
+        className="relative aspect-[4/5] w-24 flex-shrink-0 overflow-hidden bg-surface"
       >
         <Image
           src={photoUrl}
@@ -47,15 +47,15 @@ export default function CartItem({ item, index }: CartItemProps) {
       </Link>
 
       {/* Détails */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <Link
           href={`/produit/${produit.id}`}
-          className="font-serif text-lg text-primary hover:text-secondary transition-colors line-clamp-1"
+          className="line-clamp-1 font-titre text-lg text-encre transition-colors hover:text-framboise"
         >
           {produit.nom}
         </Link>
 
-        <div className="mt-1 space-y-1 text-sm text-text-secondary">
+        <div className="mt-2 space-y-2 text-sm text-encre/70">
           {/* Nouvelle variante */}
           {varianteSelectionnee && <p>Couleur/Motif: {varianteSelectionnee.nom}</p>}
 
@@ -65,10 +65,10 @@ export default function CartItem({ item, index }: CartItemProps) {
 
           {/* Accessoires sélectionnés */}
           {accessoiresSelectionnes && accessoiresSelectionnes.length > 0 && (
-            <div className="mt-2 pt-2 border-t border-cream">
+            <div className="mt-2 space-y-2 border-t border-encre/10 pt-2">
               {accessoiresSelectionnes.map(({ accessoire, variante }) => (
                 <p key={accessoire.id} className="flex items-center gap-2">
-                  <span className="text-text-light">{accessoire.nom}:</span>
+                  <span className="text-encre/65">{accessoire.nom}:</span>
                   <span>{variante.nom}</span>
                 </p>
               ))}
@@ -76,12 +76,12 @@ export default function CartItem({ item, index }: CartItemProps) {
           )}
         </div>
 
-        <p className="mt-2 font-display text-lg text-secondary">
+        <p className="mt-2 font-titre text-lg text-framboise">
           {formatPrice(produit.prix, produit.devise)}
         </p>
 
         {/* Actions mobiles */}
-        <div className="mt-3 flex items-center justify-between md:hidden">
+        <div className="mt-4 flex items-center justify-between md:hidden">
           <QuantitySelector
             value={quantite}
             onChange={handleQuantiteChange}
@@ -89,7 +89,7 @@ export default function CartItem({ item, index }: CartItemProps) {
           />
           <button
             onClick={handleRemove}
-            className="p-2 text-text-secondary hover:text-red-500 transition-colors"
+            className="p-2 text-encre/70 transition-colors hover:text-framboise"
             aria-label="Retirer du panier"
           >
             <Trash2 className="h-5 w-5" />
@@ -98,20 +98,20 @@ export default function CartItem({ item, index }: CartItemProps) {
       </div>
 
       {/* Actions desktop */}
-      <div className="hidden md:flex items-center gap-6">
+      <div className="hidden items-center gap-6 md:flex">
         <QuantitySelector
           value={quantite}
           onChange={handleQuantiteChange}
           max={maxQuantite}
         />
 
-        <p className="w-28 text-right font-display text-lg text-primary">
+        <p className="w-28 text-right font-titre text-lg text-encre">
           {formatPrice(produit.prix * quantite, produit.devise)}
         </p>
 
         <button
           onClick={handleRemove}
-          className="p-2 text-text-secondary hover:text-red-500 transition-colors"
+          className="p-2 text-encre/70 transition-colors hover:text-framboise"
           aria-label="Retirer du panier"
         >
           <Trash2 className="h-5 w-5" />
