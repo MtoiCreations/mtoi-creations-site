@@ -116,10 +116,10 @@ export default function ContactPage() {
                         value={formData.nom}
                         onChange={handleChange}
                         className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                          errors.nom ? "border-red-500" : "border-cream-dark"
+                          errors.nom ? "border-erreur" : "border-cream-dark"
                         }`}
                       />
-                      {errors.nom && <p className="mt-1 text-sm text-red-500">{errors.nom}</p>}
+                      {errors.nom && <p className="mt-1 text-sm text-erreur">{errors.nom}</p>}
                     </div>
 
                     <div>
@@ -132,10 +132,10 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleChange}
                         className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary ${
-                          errors.email ? "border-red-500" : "border-cream-dark"
+                          errors.email ? "border-erreur" : "border-cream-dark"
                         }`}
                       />
-                      {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+                      {errors.email && <p className="mt-1 text-sm text-erreur">{errors.email}</p>}
                     </div>
                   </div>
 
@@ -148,7 +148,7 @@ export default function ContactPage() {
                       value={formData.sujet}
                       onChange={handleChange}
                       className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary bg-white ${
-                        errors.sujet ? "border-red-500" : "border-cream-dark"
+                        errors.sujet ? "border-erreur" : "border-cream-dark"
                       }`}
                     >
                       <option value="">Sélectionnez un sujet</option>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                       <option value="collaboration">Proposition de collaboration</option>
                       <option value="autre">Autre</option>
                     </select>
-                    {errors.sujet && <p className="mt-1 text-sm text-red-500">{errors.sujet}</p>}
+                    {errors.sujet && <p className="mt-1 text-sm text-erreur">{errors.sujet}</p>}
                   </div>
 
                   <div>
@@ -171,11 +171,11 @@ export default function ContactPage() {
                       onChange={handleChange}
                       rows={6}
                       className={`w-full px-4 py-3 border rounded-button focus:outline-none focus:ring-2 focus:ring-secondary resize-none ${
-                        errors.message ? "border-red-500" : "border-cream-dark"
+                        errors.message ? "border-erreur" : "border-cream-dark"
                       }`}
                     />
                     {errors.message && (
-                      <p className="mt-1 text-sm text-red-500">{errors.message}</p>
+                      <p className="mt-1 text-sm text-erreur">{errors.message}</p>
                     )}
                   </div>
 

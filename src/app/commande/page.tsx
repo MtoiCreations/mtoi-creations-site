@@ -39,7 +39,7 @@ export default function CommandePage() {
   // de l'autoremplissage du navigateur est neutralisé.
   const champ =
     "w-full rounded-[4px] border bg-surface px-4 py-3 text-encre placeholder:text-encre/50 focus:border-framboise focus:outline-none focus:ring-1 focus:ring-framboise [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_theme(colors.surface)] [&:-webkit-autofill]:[-webkit-text-fill-color:theme(colors.encre)]";
-  const bordureChamp = (erreur?: string) => (erreur ? "border-red-500" : "border-encre/25");
+  const bordureChamp = (erreur?: string) => (erreur ? "border-erreur" : "border-encre/25");
 
   const sousTotal = getTotal();
   const fraisLivraison = fraisLivraisonCents(enCents(sousTotal)) / 100;
@@ -226,7 +226,7 @@ export default function CommandePage() {
                       onChange={handleChange}
                       className={`${champ} ${bordureChamp(errors.prenom)}`}
                     />
-                    {errors.prenom && <p className="mt-2 text-sm text-red-500">{errors.prenom}</p>}
+                    {errors.prenom && <p className="mt-2 text-sm text-erreur">{errors.prenom}</p>}
                   </div>
 
                   <div>
@@ -240,7 +240,7 @@ export default function CommandePage() {
                       onChange={handleChange}
                       className={`${champ} ${bordureChamp(errors.nom)}`}
                     />
-                    {errors.nom && <p className="mt-2 text-sm text-red-500">{errors.nom}</p>}
+                    {errors.nom && <p className="mt-2 text-sm text-erreur">{errors.nom}</p>}
                   </div>
 
                   <div>
@@ -254,7 +254,7 @@ export default function CommandePage() {
                       onChange={handleChange}
                       className={`${champ} ${bordureChamp(errors.email)}`}
                     />
-                    {errors.email && <p className="mt-2 text-sm text-red-500">{errors.email}</p>}
+                    {errors.email && <p className="mt-2 text-sm text-erreur">{errors.email}</p>}
                   </div>
 
                   <div>
@@ -290,7 +290,7 @@ export default function CommandePage() {
                       className={`${champ} ${bordureChamp(errors.adresseLigne1)}`}
                     />
                     {errors.adresseLigne1 && (
-                      <p className="mt-2 text-sm text-red-500">{errors.adresseLigne1}</p>
+                      <p className="mt-2 text-sm text-erreur">{errors.adresseLigne1}</p>
                     )}
                   </div>
 
@@ -318,7 +318,7 @@ export default function CommandePage() {
                       onChange={handleChange}
                       className={`${champ} ${bordureChamp(errors.ville)}`}
                     />
-                    {errors.ville && <p className="mt-2 text-sm text-red-500">{errors.ville}</p>}
+                    {errors.ville && <p className="mt-2 text-sm text-erreur">{errors.ville}</p>}
                   </div>
 
                   <div>
@@ -352,7 +352,7 @@ export default function CommandePage() {
                       className={`${champ} ${bordureChamp(errors.codePostal)}`}
                     />
                     {errors.codePostal && (
-                      <p className="mt-2 text-sm text-red-500">{errors.codePostal}</p>
+                      <p className="mt-2 text-sm text-erreur">{errors.codePostal}</p>
                     )}
                   </div>
                 </div>

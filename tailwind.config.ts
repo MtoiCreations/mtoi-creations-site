@@ -39,6 +39,7 @@ const config: Config = {
         safran: "#E9A200",
         framboise: "#A93F5B",
         lichen: "#6E7F58",
+        erreur: "#8C2A2A",
       },
       backgroundImage: {
         sunset: "linear-gradient(135deg, #FFC978 0%, #F0724F 45%, #C43852 100%)",

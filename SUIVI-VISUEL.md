@@ -181,6 +181,15 @@ variables Netlify de la liste ci-dessus sont à jour.
   focus), confirmation, et rendu de `Button` / `QuantitySelector` sur
   `/contact`, `/404`, la page produit et la connexion admin.
 
+- Jeton `erreur` (`#8C2A2A`, septième jeton de `DIRECTION-VISUELLE.md`) :
+  réservé aux messages d'erreur, jamais décoratif. Appliqué au texte et à la
+  bordure des champs en erreur (commande, contact), au message d'erreur de
+  connexion admin et aux bandeaux d'erreur des formulaires de produits et de
+  variantes. Contraste ≈ 8,1:1 sur `surface` (l'ancien `red-500` : 3,6:1).
+  Restent en `red-*`, volontairement, car ce ne sont pas des messages
+  d'erreur : survol des boutons de suppression, pastille de suppression
+  sur les photos et pastille de statut « Annulée » de l'admin.
+
 ### Cas ambigus laissés tels quels (Session E)
 Notés plutôt que décidés, à trancher avant de les traiter :
 - **Couleurs d'état, hors des six valeurs du devis** (49 occurrences) :
@@ -201,11 +210,6 @@ Notés plutôt que décidés, à trancher avant de les traiter :
   `text-2xl`) n'ont pas été ramenées à l'échelle 14 / 17 / 24 / 36 / 56.
 
 ### Cas laissés tels quels (Session I)
-- **Messages d'erreur du formulaire de commande** : bordure et texte en
-  `red-500` conservés (aucune couleur d'erreur dans les six valeurs du
-  devis ; `framboise` sert déjà à l'état actif). Le texte `red-500` sur fond
-  `surface` a un contraste d'environ 3,8:1, sous 4,5:1 pour du petit texte :
-  à décider (par exemple `red-700`).
 - **Marges intérieures des contrôles** (`py-3` des champs, tailles de
   `Button`) : hors échelle, conservées comme sur la page produit pour ne pas
   changer la taille des zones tactiles.

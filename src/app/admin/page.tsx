@@ -213,7 +213,7 @@ export default function AdminPage() {
               className="w-full px-4 py-3 border border-encre/25 rounded-button focus:outline-none focus:ring-2 focus:ring-framboise mb-4"
             />
 
-            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            {error && <p className="text-erreur text-sm mb-4">{error}</p>}
 
             <Button type="submit" fullWidth disabled={isLoading}>
               {isLoading ? (

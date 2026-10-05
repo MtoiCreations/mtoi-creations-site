@@ -37,7 +37,7 @@ Ce concept répond directement au problème de mise en page : il donne une raiso
 
 ## 3. Palette
 
-Six valeurs, pas une de plus.
+Six valeurs de palette, plus un septième jeton fonctionnel (`erreur`). Pas une de plus.
 
 | Nom | Hex | Rôle |
 |---|---|---|
@@ -47,13 +47,15 @@ Six valeurs, pas une de plus.
 | `safran` | `#E9A200` | L'élément rayonnant. Aplats, boutons principaux, graphiques. |
 | `framboise` | `#A93F5B` | Liens, prix, états actifs. |
 | `lichen` | `#6E7F58` | Vert grisé. Blocs secondaires, catégories, équilibre. |
+| `erreur` | `#8C2A2A` | Rouge profond. **Messages d'erreur uniquement, jamais décoratif** : texte et bordure d'un message ou d'un champ en erreur, et fond très léger (`erreur` à 10 %) d'un bandeau d'erreur. |
 
-**Répartition 60 / 30 / 10** : 60 % de `fond` et `surface`, 30 % d'`encre`, 10 % réparti entre `safran`, `framboise` et `lichen`. L'accent doit rester rare pour rester rayonnant.
+**Répartition 60 / 30 / 10** : 60 % de `fond` et `surface`, 30 % d'`encre`, 10 % réparti entre `safran`, `framboise` et `lichen`. L'accent doit rester rare pour rester rayonnant. `erreur` est hors répartition : il n'apparaît que lorsqu'il y a une erreur à signaler.
 
 **Contraintes d'accessibilité** :
 - `safran` ne sert jamais de couleur de texte sur fond pâle (contraste insuffisant). Il sert de fond, avec du texte `encre` par-dessus.
 - `framboise` est acceptable pour les liens et les prix à partir de 16 px.
 - `encre` sur `fond` est le couple par défaut pour tout le corps de texte.
+- `erreur` dépasse 4,5:1 pour du texte de toute taille : environ 8,1:1 sur `surface`, 7,4:1 sur `fond` et 6,8:1 sur son propre fond à 10 %. Il ne sert ni de couleur d'accent, ni de survol, ni d'icône décorative ; une action destructive (supprimer) n'est pas un message d'erreur.
 
 ---
 

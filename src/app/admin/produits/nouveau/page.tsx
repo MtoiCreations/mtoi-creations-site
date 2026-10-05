@@ -483,7 +483,7 @@ export default function NouveauProduitPage() {
 
           {/* Error */}
           {error && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
+            <div className="border border-erreur/30 bg-erreur/10 text-erreur px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}

@@ -366,7 +366,7 @@ export default function VariantesPage() {
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-8">
         {/* Message d'erreur */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+          <div className="border border-erreur/30 bg-erreur/10 text-erreur px-4 py-3 rounded-lg text-sm">
             {error}
           </div>
         )}

@@ -156,7 +156,8 @@ requires updating that allowlist. Static/manual product photos instead live unde
 (`SUIVI-VISUEL.md`) is in progress:
 
 - **Current** (`DIRECTION-VISUELLE.md`): colors `encre`, `fond`, `surface`, `safran`,
-  `framboise`, `lichen`; fonts `font-titre` (Bricolage Grotesque) and `font-corps` (Literata).
+  `framboise`, `lichen`, plus `erreur` (`#8C2A2A`, form error messages only, never
+  decorative); fonts `font-titre` (Bricolage Grotesque) and `font-corps` (Literata).
   Use these for any new or reworked page.
 - **Legacy**, still referenced by pages not yet migrated (cart, checkout, confirmation, admin,
   footer, email templates): `primary`, `secondary`, `accent`, `cream`, `text-*`, the
