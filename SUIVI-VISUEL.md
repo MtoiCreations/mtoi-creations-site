@@ -67,6 +67,21 @@ courriels/domaine, pas `DIRECTION-VISUELLE.md`.
   fait : aucune route d'écriture n'est sans protection ; les routes
   publiques voulues sont `GET /api/produits`, `GET /api/settings`,
   `POST /api/checkout` et `POST /api/contact`.
+- **503 sur `/api/checkout` en production : cause trouvée et réglée.** Le
+  serveur lit le catalogue avec la clé `service_role`, qui avait besoin de
+  droits de table (`GRANT`) sur `variantes`, `accessoires`,
+  `accessoire_variantes` et `settings`, comme pour `produits` auparavant
+  (le RLS ne suffit pas : `service_role` l'ignore, mais Postgres vérifie
+  d'abord les privilèges de table). Les droits ont été accordés dans
+  Supabase et le paiement refonctionne. Leçon : toute nouvelle table lue
+  ou écrite par le serveur doit recevoir son `GRANT` explicite à
+  `service_role`.
+- **Diagnostic des 503 simplifié** : les messages de
+  `src/lib/catalogue.ts` incluent maintenant l'étape qui échoue, le code
+  SQLSTATE, le détail et l'indice de Supabase (par exemple
+  `Lecture des variantes impossible : [42501] permission denied for table
+  variantes`). Ils sont visibles dans Netlify, Logs, Functions, `api/checkout`
+  (recherche « Catalogue indisponible ») ; la réponse HTTP reste générique.
 
 ### Prochain point de reprise
 **Webhook Stripe** (plan rédigé, à confirmer avant de coder). Problème

@@ -13,6 +13,22 @@ export class CatalogueIndisponibleError extends Error {
   }
 }
 
+// Message de journal : l'étape qui échoue avec le code SQLSTATE, le détail et l'indice
+// de Supabase (ex. « [42501] permission denied for table variantes »). Il va dans les
+// journaux serveur seulement : la réponse HTTP reste générique (503).
+function decrireErreur(
+  etape: string,
+  e: { message: string; code?: string; details?: string; hint?: string }
+): string {
+  const morceaux = [
+    e.code ? `[${e.code}]` : "",
+    e.message,
+    e.details ? `détails : ${e.details}` : "",
+    e.hint ? `indice : ${e.hint}` : "",
+  ].filter(Boolean);
+  return `${etape} impossible : ${morceaux.join(" ")}`;
+}
+
 export interface ProduitPourCommande {
   id: string;
   nom: string;
@@ -42,7 +58,7 @@ export async function lireProduitsPourCommande(
     .select("*")
     .in("id", ids);
   if (erreurProduits) {
-    throw new CatalogueIndisponibleError(`Lecture des produits impossible : ${erreurProduits.message}`);
+    throw new CatalogueIndisponibleError(decrireErreur("Lecture des produits", erreurProduits));
   }
 
   const { data: variantes, error: erreurVariantes } = await supabaseAdmin
@@ -51,7 +67,7 @@ export async function lireProduitsPourCommande(
     .in("produit_id", ids)
     .order("ordre", { ascending: true });
   if (erreurVariantes) {
-    throw new CatalogueIndisponibleError(`Lecture des variantes impossible : ${erreurVariantes.message}`);
+    throw new CatalogueIndisponibleError(decrireErreur("Lecture des variantes", erreurVariantes));
   }
 
   const { data: accessoires, error: erreurAccessoires } = await supabaseAdmin
@@ -60,7 +76,7 @@ export async function lireProduitsPourCommande(
     .in("produit_id", ids)
     .order("ordre", { ascending: true });
   if (erreurAccessoires) {
-    throw new CatalogueIndisponibleError(`Lecture des accessoires impossible : ${erreurAccessoires.message}`);
+    throw new CatalogueIndisponibleError(decrireErreur("Lecture des accessoires", erreurAccessoires));
   }
 
   const idsAccessoires = ((accessoires || []) as AccessoireDB[]).map((a) => a.id);
@@ -72,7 +88,7 @@ export async function lireProduitsPourCommande(
       .in("accessoire_id", idsAccessoires)
       .order("ordre", { ascending: true });
     if (error) {
-      throw new CatalogueIndisponibleError(`Lecture des variantes d'accessoires impossible : ${error.message}`);
+      throw new CatalogueIndisponibleError(decrireErreur("Lecture des variantes d'accessoires", error));
     }
     variantesAccessoires = (data || []) as AccessoireVarianteDB[];
   }
@@ -117,7 +133,7 @@ export async function accepteCommandesSurMesure(): Promise<boolean> {
     .eq("id", "global")
     .maybeSingle();
   if (error) {
-    throw new CatalogueIndisponibleError(`Lecture des réglages impossible : ${error.message}`);
+    throw new CatalogueIndisponibleError(decrireErreur("Lecture des réglages", error));
   }
   return data?.accepte_commandes_sur_mesure ?? true;
 }
