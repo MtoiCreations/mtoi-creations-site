@@ -8,7 +8,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/panier", "/commande", "/confirmation"],
+        // « /admin » (sans barre finale) couvre la page de connexion /admin et tout /admin/*.
+        disallow: ["/admin", "/api/", "/panier", "/commande", "/confirmation"],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

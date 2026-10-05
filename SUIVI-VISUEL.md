@@ -151,6 +151,12 @@ variables Netlify de la liste ci-dessus sont à jour.
   barre. Vérifié sur toutes les pages admin, sur mobile, et les pages
   publiques sont inchangées. Sur téléphone, la barre s'étale sur trois
   lignes : utilisable, à resserrer si ça gêne.
+- Admin hors des moteurs de recherche : le layout admin déclare
+  `noindex, nofollow` ; `robots.ts` bloquait `/admin/` mais pas la page de
+  connexion `/admin` elle-même, corrigé en `/admin`. Le sitemap ne contient
+  aucune URL admin (vérifié). Note : un robots.txt qui interdit l'exploration
+  empêche les robots de lire la balise `noindex` ; les deux se complètent
+  (aucun lien externe ne mène à `/admin`).
 
 ### Cas ambigus laissés tels quels (Session E)
 Notés plutôt que décidés, à trancher avant de les traiter :
